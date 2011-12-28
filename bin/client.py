@@ -49,21 +49,24 @@ def main():
         sys.exit(1)
 
     parser = OptionParser(version="%%prog %s" % VERSION)
+
+    cmd  = args[1]
+    args = args[2:]
+
 #   parser.add_option('--config', metavar='CONFIG')
+    if cmd == 'list':
+        parser.add_option('--master', metavar='SERVER')
 #   if args[1] == 'start':
-#       parser.add_option('--host', metavar='HOSTNAME')
-#       parser.add_option('--port', type=int, metavar='PORT')
 #       parser.add_option('--daemon', action='store_true', default=False, dest='daemonize')
 #       parser.add_option('--no-daemon', action='store_false', default=False, dest='daemonize')
 #       parser.add_option('--debug', action='store_true', default=False, dest='debug')
 
-    (options, args) = parser.parse_args()
+    (options, params) = parser.parse_args()
 
     if getattr(options, 'debug', False):
         django_settings.DEBUG = True
 
-    if args[0] == 'list':
-        send_command('list', args[1])
+    send_command(cmd, *args)
 
 
 #   elif args[0] == 'start':
@@ -73,10 +76,6 @@ def main():
 #           call_command('collectstatic', 
 #                   database=settings.DATABASE_USING or 'default', 
 #                   interactive=False)
-#       app = DukeMasterServer(host=options.host, port=options.port,
-#                          pidfile=options.pidfile, logfile=options.logfile,
-#                          daemonize=options.daemonize, debug=options.debug)
-#       app.execute(args[0])
 
 
     sys.exit(0)
