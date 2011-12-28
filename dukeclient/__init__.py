@@ -12,6 +12,7 @@ conf = ConfigManager()
 VERSION = '0.0.1-alpha' 
 
 REMOTE_TIMEOUT = 300
+PROTOCOL = 'http' # https
 
 #logger = logging.getLogger('dukeclient.errors')
 
@@ -26,7 +27,23 @@ logger = TempLogger()
 
 class DukeClient(object):
 
+    def _get_server_url(self, server):
+        """
+        Returns the server's URL constructed from the local config file
+        """
+        port = conf.get('port', server)
+        out = [
+            PROTOCOL,'://',
+            conf.get('address', server),
+            port and ':%s' % port or '',
+            '/api/command/', 
+        ]
+        return "".join(out)
+
     def send_remote(self, url, data, headers={}):
+        """
+        Taken from Sentry
+        """
         req = urllib2.Request(url, headers=headers)
         try:
             response = urllib2.urlopen(req, data, settings.REMOTE_TIMEOUT).read()
@@ -56,7 +73,8 @@ class DukeClient(object):
 
         try:
             #TODO: support for https
-            address = "http://%s/api/command/" % conf.get('address', server)
+            address = "%sapi/command/" % self._get_server_url(server)
+            
             print address
             return self.send_remote(url=address, data=message, headers=headers)
         except urllib2.HTTPError, e:
