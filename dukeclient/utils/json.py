@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from dukeclient.utils import simplejson
 
@@ -40,9 +41,6 @@ sentry.utils.json
 :copyright: (c) 2010 by the Sentry Team, see AUTHORS for more details.
 :license: BSD, see LICENSE for more details.
 """
-
-import datetime
-import uuid
 
 class BetterJSONEncoder(DjangoJSONEncoder):
     def default(self, obj):

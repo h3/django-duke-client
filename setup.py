@@ -17,6 +17,7 @@ except ImportError:
 
 install_requires = [
     'simplejson',
+    'GitPython',
 ]
 
 try:

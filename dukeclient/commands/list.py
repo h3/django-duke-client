@@ -7,4 +7,4 @@ class ListCommand(BaseCommand):
     accept_kwargs = ['servers', 'projects']
 
     def call(self, *a, **k):
-        client.send(command='list', args=a, flags=k)
+        print client.send(command='list', args=a, flags=k)

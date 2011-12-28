@@ -75,7 +75,6 @@ class DukeClient(object):
             #TODO: support for https
             address = "%sapi/command/" % self._get_server_url(server)
             rs = self.send_remote(url=address, data=message, headers=headers)
-            print rs
             return rs
         except urllib2.HTTPError, e:
             body = e.read()

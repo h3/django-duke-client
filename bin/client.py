@@ -19,13 +19,10 @@ from dukeclient.utils.conf import ConfigManager
 conf = ConfigManager()
 
 
-#def upgrade(interactive=True):
-#    from dukemaster.conf import settings
+# call_command('syncdb', database=settings.DATABASE_USING or 'default', interactive=interactive)
 #
-#    call_command('syncdb', database=settings.DATABASE_USING or 'default', interactive=interactive)
-#
-#    if 'south' in django_settings.INSTALLED_APPS:
-#        call_command('migrate', database=settings.DATABASE_USING or 'default', interactive=interactive)
+# if 'south' in django_settings.INSTALLED_APPS:
+#     call_command('migrate', database=settings.DATABASE_USING or 'default', interactive=interactive)
 
 def main():
     command_list = (
@@ -33,8 +30,8 @@ def main():
        #'django',           # ++
        #'rollback',         # +
        #'service',          # +++
-        'list',             # +++++
-       #'importproject',    # +++++
+        'list',
+        'checkout',         # +++++
        #'update',           # +++
        #'workon',           # ++++
        #'workout',          # +
@@ -54,29 +51,17 @@ def main():
     args = args[2:]
 
 #   parser.add_option('--config', metavar='CONFIG')
-    if cmd == 'list':
+#   parser.add_option('--debug', action='store_true', default=False, dest='debug')
+
+    if cmd in ['list', 'checkout']:
         parser.add_option('--master', metavar='SERVER')
-#   if args[1] == 'start':
-#       parser.add_option('--daemon', action='store_true', default=False, dest='daemonize')
-#       parser.add_option('--no-daemon', action='store_false', default=False, dest='daemonize')
-#       parser.add_option('--debug', action='store_true', default=False, dest='debug')
 
     (options, params) = parser.parse_args()
 
     if getattr(options, 'debug', False):
         django_settings.DEBUG = True
 
-    send_command(cmd, *args)
-
-
-#   elif args[0] == 'start':
-
-#       if not os.path.exists(os.path.join(DUKEMASTER_ROOT, 'static/')):
-#           from dukemaster.conf import settings
-#           call_command('collectstatic', 
-#                   database=settings.DATABASE_USING or 'default', 
-#                   interactive=False)
-
+    print send_command(cmd, *args)
 
     sys.exit(0)
 
