@@ -36,7 +36,7 @@ def get_signature(key, message, timestamp):
     return hmac.new(key, '%s %s' % (timestamp, message), sha1).hexdigest()
 
 def get_auth_header(signature, timestamp, client):
-    return 'Sentry sentry_signature=%s, sentry_timestamp=%s, sentry_client=%s' % (
+    return 'Duke duke_signature=%s, duke_timestamp=%s, duke_client=%s' % (
         signature,
         timestamp,
         dukeclient.VERSION,
