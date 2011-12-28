@@ -63,7 +63,7 @@ def main():
         django_settings.DEBUG = True
 
     if args[0] == 'list':
-        send_command('list', 'servers')
+        send_command('list', args[1])
 
 
 #   elif args[0] == 'start':
