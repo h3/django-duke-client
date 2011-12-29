@@ -78,7 +78,7 @@ class ConfigManager():
         >>> dukemaster.example.com
         """
         server = self.get_server(name)
-        return key in server and server[key] or 'default'
+        return key in server and server[key] or None
 
     def set(self, key, value, server='default'):
         """

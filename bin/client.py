@@ -61,7 +61,7 @@ def main():
     if getattr(options, 'debug', False):
         django_settings.DEBUG = True
 
-    print send_command(cmd, *args)
+    send_command(cmd, *args)
 
     sys.exit(0)
 

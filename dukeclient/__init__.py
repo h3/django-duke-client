@@ -36,7 +36,7 @@ class DukeClient(object):
             PROTOCOL,'://',
             conf.get('address', server),
             port and ':%s' % port or '',
-            '/api/command/', 
+            '/',
         ]
         return "".join(out)
 
