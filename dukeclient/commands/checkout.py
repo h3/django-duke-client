@@ -1,3 +1,4 @@
+import sys
 import git
 
 from dukeclient import client
@@ -13,6 +14,11 @@ class CheckoutCommand(BaseCommand):
     def call(self, *a, **k):
         rs = self.json(client.send(command='checkout', args=a, flags=k))
         if rs['protocol'] == 'git':
-            print git.Git().clone(rs['url'])
+            try:
+                print git.Git().clone(rs['url'])
+            except git.exc.GitCommandError, e:
+                print "Error: %s" % e
+            finally:
+                sys.exit(0)
 
 

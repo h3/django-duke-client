@@ -4,7 +4,9 @@ from dukeclient.commands import BaseCommand
 
 class ListCommand(BaseCommand):
 
-    accept_kwargs = ['servers', 'projects']
+    options = [
+        ('-m', '--master', {'metavar': 'SERVER', 'dest': 'server'}),
+    ]
 
     def call(self, *a, **k):
         print client.send(command='list', args=a, flags=k)

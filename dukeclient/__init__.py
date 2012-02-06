@@ -6,6 +6,7 @@ import logging
 
 from dukeclient.utils import json, get_auth_header, get_signature
 from dukeclient.utils.conf import ConfigManager
+from dukeclient.utils.html import html_to_text
 
 conf = ConfigManager()
 
@@ -77,7 +78,9 @@ class DukeClient(object):
             rs = self.send_remote(url=address, data=message, headers=headers)
             return rs
         except urllib2.HTTPError, e:
-            body = e.read()
+            body = html_to_text(e.read())
+           #data = data.replace('\\n', '\n')
+           #data = data.replace("\'", "'")
             logger.error('Unable to reach Dukemaster server: %s (url: %%s, body: %%s)' % (e,), address, body,
                          exc_info=True, extra={'data': {'body': body, 'remote_url': address}})
             logger.log(kwargs.pop('level', None) or logging.ERROR, kwargs.pop('message', None))

@@ -13,7 +13,7 @@ from optparse import OptionParser
 
 from dukeclient import VERSION
 
-from dukeclient.commands import send_command
+from dukeclient.commands import send_command, get_command_options
 from dukeclient.utils.conf import ConfigManager
 
 conf = ConfigManager()
@@ -26,42 +26,47 @@ conf = ConfigManager()
 
 def main():
     command_list = (
+        'dev',
        #'deploy',           # ++++
        #'django',           # ++
        #'rollback',         # +
        #'service',          # +++
+        'init',
         'list',
         'checkout',         # +++++
        #'update',           # +++
        #'workon',           # ++++
        #'workout',          # +
     )
-    args = sys.argv
-    if len(args) < 2 or args[1] not in command_list:
-        print "usage: duke [command] [options]"
-        print
+    if len(sys.argv) < 2 or sys.argv[1] not in command_list:
+        print "usage: duke [command] [options]\n"
         print "Available subcommands:"
         for cmd in command_list:
             print " ", cmd
         sys.exit(1)
 
     parser = OptionParser(version="%%prog %s" % VERSION)
-
-    cmd  = args[1]
-    args = args[2:]
+    cmd  = sys.argv[1]
 
 #   parser.add_option('--config', metavar='CONFIG')
 #   parser.add_option('--debug', action='store_true', default=False, dest='debug')
 
-    if cmd in ['list', 'checkout']:
-        parser.add_option('--master', metavar='SERVER')
+    
+#   if cmd in ['list', 'checkout']:
+#       parser.add_option('--master', metavar='SERVER')
+    for opts in get_command_options(cmd):
+        if isinstance(opts[1], dict): # ex: -h
+           parser.add_option(opts[0], **opts[1])
+        else: # ex: -h, --help
+           parser.add_option(opts[0], opts[1], **opts[2])
 
-    (options, params) = parser.parse_args()
+
+    (options, args) = parser.parse_args()
 
     if getattr(options, 'debug', False):
         django_settings.DEBUG = True
 
-    send_command(cmd, *args)
+    send_command(cmd, *args, **options.__dict__)
 
     sys.exit(0)
 

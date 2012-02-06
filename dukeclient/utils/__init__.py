@@ -9,6 +9,22 @@ from hashlib import sha1
 
 import dukeclient
 
+
+def create_from_template(template, dest, variables=None):
+    if os.path.isdir(dest):
+        dest = os.path.join(dest, template)
+    basedir = os.path.dirname(dukeclient.__file__)
+    src = os.path.join(basedir, 'templates/', template)
+    fs = open(src, 'r')
+    fd = open(dest, 'w+')
+    buff = fs.read()
+    if variables:
+        fd.write(buff % variables)
+    else:
+        fd.write(buff)
+    fd.close()
+    fs.close()
+
 def yes_no_prompt(message, default=False):
 
     if default:
