@@ -27,6 +27,7 @@ conf = ConfigManager()
 def main():
     command_list = (
         'dev',
+        'clean',
        #'deploy',           # ++++
        #'django',           # ++
        #'rollback',         # +

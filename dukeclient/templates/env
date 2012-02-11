@@ -52,6 +52,10 @@ PATH="$DUKE_ENV/bin:$PATH"
 export PATH
 chmod a+x $DUKE_ENV/bin/*
 
+# Make sure that while within the dev environment we only
+# use the sandboxed python interpreter.
+alias python="$DUKE_ENV/bin/python" 
+
 # unset PYTHONHOME if set
 # this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
 # could use `if (set -u; : $PYTHONHOME) ;` in bash
@@ -82,4 +86,3 @@ fi
 if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
     hash -r
 fi
-

@@ -9,7 +9,12 @@ from dukeclient.utils import create_from_template
 class InitCommand(BaseCommand):
 
     options = [
-        ('-p', '--python', {'dest': 'python'}),
+        ('-d', '--distribute', {
+            'dest': 'distribute', 'action': 'store_true', 'default': False,
+            'help': 'Use distribute instead of setuptools'}),
+        ('-p', '--python', {
+            'dest': 'python', 
+            'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
     ]
 
     base_path = os.getcwd()
@@ -19,27 +24,36 @@ class InitCommand(BaseCommand):
             self.info("usage: duke init <project> [options]\n")
             sys.exit(1)
 
-        project_name = args[1].replace('/', '')
+        if args[1][:1] == '/':
+            project_name = args[1].split('/')[-2]
+        else:
+            project_name = args[1].split('/')[-1]
 
         # bootstrap.py
         if os.path.exists(os.path.join(self.base_path, 'bootstrap.py')):
-            self.error("Project already initialized")
+            self.warning("Found a bootstrap.py file.. skipping its creation.")
         else:
             self.info("Installing bootstrap.py..")
             create_from_template('bootstrap.py', self.base_path)
 
         # buildout.cfg
+        print self.base_path
         if os.path.exists(os.path.join(self.base_path, 'buildout.cfg')):
             self.info("A buildout.cfg file has been found, will be using it.")
         else:
             self.info("Installing default buildout.cfg file")
             create_from_template('buildout.cfg', self.base_path, {
-                'project_name': project_name})
+                'project_name': project_name,
+                # TODO: find the parent dir automatically..
+                'parent_dirname': 'duke-website'})
 
         self.info("Initializing zc.buildout")
         
+        boot_opts = ''
         python = getattr(options, 'python', 'python')
-        status, output = self.local('%s bootstrap.py -d' % python)
+        if getattr(options, 'distribute', False):
+            opts = ' -d'
+        status, output = self.local('%s bootstrap.py%s' % (python, boot_opts))
         self.debug(output)
 
         # Dev source
