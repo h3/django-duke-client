@@ -38,16 +38,26 @@ class InitCommand(BaseCommand):
             self.info("Installing bootstrap.py..")
             create_from_template('bootstrap.py', self.base_path)
 
+        # Variables passed to generated .cfg files
+        config_context = {
+            'duke_client_version': dukeclient.VERSION,
+            'project_name': project_name,
+            'parent_dirname': os.path.basename(os.path.abspath(self.base_path))
+        }
+
         # buildout.cfg
         if os.path.exists(os.path.join(self.base_path, 'buildout.cfg')):
             self.info("A buildout.cfg file has been found, will be using it.")
         else:
             self.info("Installing default buildout.cfg file")
-            create_from_template('buildout.cfg', self.base_path, {
-                'duke_client_version': dukeclient.VERSION,
-                'project_name': project_name,
-                # TODO: find the parent dir automatically..
-                'parent_dirname': os.path.basename(os.path.abspath(self.base_path))})
+            create_from_template('buildout.cfg', self.base_path, config_context)
+
+        # dev.cfg
+        if os.path.exists(os.path.join(self.base_path, 'dev.cfg')):
+            self.info("A dev.cfg file has been found, will be using it.")
+        else:
+            self.info("Installing default dev.cfg file")
+            create_from_template('dev.cfg', self.base_path, config_context)
 
         self.info("Initializing zc.buildout")
         
@@ -69,7 +79,7 @@ class InitCommand(BaseCommand):
         create_from_template('dev', os.path.join(self.base_path, 'bin/'), dev_args)
         create_from_template('env', os.path.join(self.base_path, 'bin/'), dev_args)
 
-        self.info("Done! (It is recommanded to add only bootstrap.py and buildout.cfg to your VCS).\n")
-        self.info("Edit buildout.cfg to configure and type \"buildout\" to install requirements.\n")
+        self.info("Done! (It is recommanded to add only bootstrap.py, buildout.cfg and dev.cfg to your VCS).\n")
+        self.info("Edit buildout.cfg and dev.cfg to configure and type \"buildout\" to install requirements.")
 
         DevCommand().call()

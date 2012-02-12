@@ -34,14 +34,17 @@ This is the minimal project layout to initialize duke::
     project-root-folder/
       - setup.py
       + src/
-        + projectname/
+      + projectname/
         - settings.py
+        - development.py
+        - production.py
 
 When the project is built, it looks like this::
 
     project-root-folder/
       - bootstrap.py
       - buildout.cfg
+      - dev.cfg
       - setup.py
       + bin/
       + develop-eggs/
@@ -49,11 +52,10 @@ When the project is built, it looks like this::
       + eggs/
       + parts/
       + src/
-        + projectname/
-          - settings.py
-          + conf/
-            - dev.py
-            - prod.py
+      + projectname/
+        - settings.py
+        - development.py
+        - production.py
 
 Most of the directory and files created by duke should not be added to your 
 VCS. This way you can trash and reload the entire environment easily using
@@ -64,13 +66,12 @@ command::
 
     project-root-folder/
       - buildout.cfg
+      - dev.cfg
       - setup.py
-      + src/
-        + projectname/
-          - settings.py
-          + conf/
-          - dev.py
-          - prod.py
+      + projectname/
+        - settings.py
+        - development.py
+        - production.py
 
 What's left is basically what should be in your VCS.
 
@@ -164,14 +165,17 @@ meet your requirements and then enter in development mode to run buildout::
 
 In dev mode, duke does some magic behind the scene to make your life easier.
 This is why I don't need to run ./bin/buildout and instead I can just run 
-buildout. Duke makes the binaries and script living int ./bin/ available 
+buildout which will in fact run ./bin/buildout -c dev.cfg when working in dev 
+mode. 
+
+Duke makes the binaries and script living int ./bin/ available 
 locally. Once you get out of dev mode, these command shortcuts wont be 
 available anymore.. until you re-enter the dev mode of course.
 
-You'll notice that buildout installs a python binary in ./bin/. This means 
-that when you invoke the python interpreter in dev mode, it actually invoke 
-./bin/python which is a sandboxed python. This allows encapsulation of your 
-environment, the modules you install are installed only within this 
+You'll also notice that buildout installs a python binary in ./bin/. This 
+means that when you invoke the python interpreter in dev mode, it actually 
+invoke ./bin/python which is a sandboxed python. This allows encapsulation 
+of your environment, the modules you install are installed only within this 
 environment.
 
 When working in dev mode the project name will be prefixed to your command 
