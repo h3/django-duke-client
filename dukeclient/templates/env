@@ -1,13 +1,8 @@
 # based on virtualenv's activate
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
-#
- 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
 
+# Deactivate the development environment.
 deactivate () {
     # reset old environment variables
     if [ -n "$_OLD_DUKE_PATH" ] ; then
@@ -46,8 +41,11 @@ deactivate nondestructive
 
 DUKE_ENV="%(base_path)s"
 export DUKE_ENV
-
 _OLD_DUKE_PATH="$PATH"
+
+# Add bin/ to the executable path to make them available
+# without having to type their path and make all scripts 
+# in it executables.
 PATH="$DUKE_ENV/bin:$PATH"
 export PATH
 chmod a+x $DUKE_ENV/bin/*
@@ -63,7 +61,31 @@ if [ -n "$PYTHONHOME" ] ; then
     _OLD_DUKE_PYTHONHOME="$PYTHONHOME"
     unset PYTHONHOME
 fi
+ 
+# This should detect bash and zsh, which have a hash command that must
+# be called to get it to forget past commands.  Without forgetting
+# past commands the $PATH changes we made may not be respected
+if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
+    hash -r
+fi
 
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color) color_prompt=yes;;
+esac
+
+# Add come color goodies, just because we can
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# Prefix the command prompt with the (project_name)
 if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
     _OLD_DUKE_PS1="$PS1"
     if [ "x" != x ] ; then
@@ -78,11 +100,4 @@ if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
     fi
     fi
     export PS1
-fi
-
-# This should detect bash and zsh, which have a hash command that must
-# be called to get it to forget past commands.  Without forgetting
-# past commands the $PATH changes we made may not be respected
-if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
-    hash -r
 fi
