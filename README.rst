@@ -29,13 +29,13 @@ The django duke client tries to be independent as possible
 in term of project layout. However a minimal structure is
 required for it to work properly.
 
-This isthe minimal project layout to initialize duke::
+This is the minimal project layout to initialize duke::
 
     project-root-folder/
       - setup.py
       + src/
-            + projectname/
-                - settings.py
+        + projectname/
+        - settings.py
 
 When the project is built, it looks like this::
 
@@ -49,11 +49,11 @@ When the project is built, it looks like this::
       + eggs/
       + parts/
       + src/
-            + projectname/
-                - settings.py
-                + conf/
-                  - dev.py
-                  - prod.py
+        + projectname/
+          - settings.py
+          + conf/
+            - dev.py
+            - prod.py
 
 Most of the directory and files created by duke should not be added to your 
 VCS. This way you can trash and reload the entire environment easily using
@@ -66,14 +66,13 @@ command::
       - buildout.cfg
       - setup.py
       + src/
-            + projectname/
-                - settings.py
-                + conf/
-                  - dev.py
-                  - prod.py
+        + projectname/
+          - settings.py
+          + conf/
+          - dev.py
+          - prod.py
 
 What's left is basically what should be in your VCS.
-
 
 Commands
 --------
@@ -182,12 +181,20 @@ type `deactivate`.
 References
 ----------
 
- setup.py               http://www.buildout.org/docs/tutorial.html
- Buildout               http://www.buildout.org/docs/   
-                        http://pypi.python.org/pypi/zc.buildout/1.5.2
- djangorecipe           http://pypi.python.org/pypi/djangorecipe/0.99
- z3c.recipe.scripts     http://pypi.python.org/pypi/z3c.recipe.scripts
- mr.developer           http://pypi.python.org/pypi/mr.developer
- Django                 https://docs.djangoproject.com/
- Django + buildout      http://jacobian.org/writing/django-apps-with-buildout/
++-------------------+--------------------------------------------------------+
+| setup.py          | http://www.buildout.org/docs/tutorial.html             |
++-------------------+--------------------------------------------------------+
+| Buildout          | http://www.buildout.org/docs/                          |
+|                   | http://pypi.python.org/pypi/zc.buildout/1.5.2          | 
++-------------------+--------------------------------------------------------+
+| djangorecipe      | http://pypi.python.org/pypi/djangorecipe/0.99          |
++-------------------+--------------------------------------------------------+
+| z3c.recipe.scripts| http://pypi.python.org/pypi/z3c.recipe.scripts         |
++-------------------+--------------------------------------------------------+
+| mr.developer      | http://pypi.python.org/pypi/mr.developer               |
++-------------------+--------------------------------------------------------+
+| Django            | https://docs.djangoproject.com/                        |
++-------------------+--------------------------------------------------------+
+| Django & buildout | http://jacobian.org/writing/django-apps-with-buildout/ |
++----------------------------------------------------------------------------+
 
