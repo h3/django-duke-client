@@ -34,10 +34,15 @@ This is the minimal project layout to initialize duke::
     project-root-folder/
       - setup.py
       + src/
-      + projectname/
+      + projectname/ *
         - settings.py
         - development.py
         - production.py
+
+* The django project is actually optionnal, if it isn't present it will be 
+  created automatically when running buildout. Note that if you start from
+  an existing project you should still create the development.py and 
+  production.py settings files.
 
 When the project is built, it looks like this::
 
@@ -83,7 +88,7 @@ Duke
 
 All duke client commands are invoked using `duke` like such::
 
-    $: duke clean
+    $: duke <command>
 
 Here's the list of available duke commands so far:
 
