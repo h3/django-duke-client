@@ -4,10 +4,11 @@ import dukeclient
 from dukeclient.commands import BaseCommand
 from dukeclient.commands.dev import DevCommand
 from dukeclient.utils import create_from_template
-#from dukeclient import client
-# ./buildout -c .duke/buildout.cfg
 
 class InitCommand(BaseCommand):
+    """
+    Initialize duke for an existing project.
+    """
 
     options = [
         ('-d', '--distribute', {
@@ -21,14 +22,11 @@ class InitCommand(BaseCommand):
     base_path = os.getcwd()
 
     def call(self, *args, **options):
+
         if len(args) < 2:
             self.info("usage: duke init <project> [options]\n")
             sys.exit(1)
 
-       #if args[1][:1] == '/':
-       #    project_name = args[1].split('/')[-2]
-       #else:
-       #    project_name = args[1].split('/')[-1]
         project_name = args[1].replace('/', '')
 
         # bootstrap.py
@@ -64,6 +62,9 @@ class InitCommand(BaseCommand):
         boot_opts = ''
         python = options['python'] or 'python' # and python !
 
+        # Even though distribute is considered superior and better maintained
+        # than setuptools, it is disabled by default because I cannot get the
+        # project sandboxing to work properly with it .. bummer.
         if options['distribute']:
             opts = ' -d'
 

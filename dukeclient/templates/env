@@ -54,6 +54,9 @@ chmod a+x $DUKE_ENV/bin/*
 # use the sandboxed python interpreter.
 alias python="$DUKE_ENV/bin/python" 
 
+# Having an executable script called test isn't such great idea.
+alias run_tests="$DUKE_ENV/bin/test" 
+
 # unset PYTHONHOME if set
 # this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
 # could use `if (set -u; : $PYTHONHOME) ;` in bash

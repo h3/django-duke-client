@@ -92,15 +92,17 @@ All duke client commands are invoked using `duke` like such::
 
 Here's the list of available duke commands so far:
 
- +----------+-----------+------------------------------+
- | Command  | Args      | Description                  | 
- +----------+-----------+------------------------------+
- | clean    |           | Cleanup dev environment      |
- +----------+-----------+------------------------------+
- | dev      |           | Activate development mode    |
- +----------+-----------+------------------------------+
- | init     | <project> | Initialize duke on a project |
- +----------+-----------+------------------------------+
+ +--------------+----------------+-----------------------------------+
+ | Command      | Args           | Description                       | 
+ +--------------+----------------+-----------------------------------+
+ | clean        |                | Cleanup dev environment           |
+ +--------------+----------------+-----------------------------------+
+ | dev          |                | Activate development mode         |
+ +--------------+----------------+-----------------------------------+
+ | init         | <project>      | Initialize duke on a project      |
+ +--------------+----------------+-----------------------------------+
+ | startproject | <project-root> | Initialize a project from scratch |
+ +--------------+----------------+-----------------------------------+
 
 Dev
 ^^^
@@ -117,10 +119,15 @@ available (no need to type duke before).
  +------------+------------------------------------------+
  | django     | Use this instead of manage.py            |
  +------------+------------------------------------------+
- | test       | Runs the django test suite               |
- +------------+------------------------------------------+
  | python     | A sandboxed python interpreter           |
  +------------+------------------------------------------+
+ | run_tests  | Runs the django test suite *             |
+ +------------+------------------------------------------+
+
+ * If you look in the `./bin/` directory you'll notice that the script isn't
+   named "run_tests" but "test". While there is no problem running the test
+   from the relative path (ex: `./bin/test`), making `test` available globally 
+   breaks things because of a clash with `/usr/bin/test`.
 
 All these commands are scripts that reside in `./bin/`. The development 
 environment makes them available globally.
@@ -132,13 +139,23 @@ Workflow
 
 Here's a real world example of how you can use duke to bootstrap a project, 
 please note that duke commands must be run within the root folder of you 
-project::
+project.
+
+Starting from scratch::
+
+    $: duke startproject duke-website
+    Created project duke-website
+    $: cd duke-website/
+    $duke-website/: ls
+    README.rst  setup.py
+
+Using an exising project::
 
     $: cd ~/www/
     $: git clone git://github.com/h3/duke-website.git
     $: cd duke-website/
     $: ls
-    README.rst  setup.py  website
+    README.rst  setup.py  dukewebsite
 
 The a setup.py file and a python module is the bare minimum required to get 
 started. You can see what the setup.py file looks like (and use it as 
@@ -146,14 +163,15 @@ template) at this URL:
 https://github.com/h3/duke-website/blob/master/setup.py
 
 Now we want to bootstrap the project, which basically means setup buildout 
-for it::
+for it. Considering our django project is called `dukewebsite`::
 
-    $: duke init website
+    $: duke init dukewebsite
     Installing dev hooks
     Done. It is recommanded to add bootstrap.py and buildout.cfg to your VCS.
 
     $: ls
-    bin  bootstrap.py  buildout.cfg  develop-eggs  eggs  parts  README.rst	setup.py  website
+    bin  bootstrap.py  buildout.cfg  develop-eggs  eggs  parts  README.rst	
+    setup.py  dukewebsite
 
 As you can see, duke created the bootstrap.py and buildout.cfg files and 
 initialized buildout for you. The next step is to configure buildout.cfg to 
@@ -186,6 +204,16 @@ environment.
 When working in dev mode the project name will be prefixed to your command 
 prompt to indicate in which project you are working. To leave dev mode simply 
 type `deactivate`.
+
+Bonus
+-----
+
+Here's a one liner example to start and initialize a project from scratch::
+
+    duke startproject duke-website && cd duke-website && duke init dukewebsite
+
+Then you only have to edit buildout.cfg (and/or dev.cfg) and type `buildout` to
+update dependencies.
 
 References
 ----------

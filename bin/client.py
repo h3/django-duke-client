@@ -26,15 +26,16 @@ conf = ConfigManager()
 
 def main():
     command_list = (
-        'dev',
         'clean',
+        'dev',
+        'init',
+        'startproject',
        #'deploy',           # ++++
        #'django',           # ++
        #'rollback',         # +
        #'service',          # +++
-        'init',
-        'list',
-        'checkout',         # +++++
+       #'list',
+       #'checkout',         # +++++
        #'update',           # +++
        #'workon',           # ++++
        #'workout',          # +
