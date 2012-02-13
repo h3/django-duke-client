@@ -43,6 +43,9 @@ DUKE_ENV="%(base_path)s"
 export DUKE_ENV
 _OLD_DUKE_PATH="$PATH"
 
+# Typing "--settings=projectname.settingsfile" is annoying.
+DJANGO_SETTINGS_MODULE=%(project_name)s.development
+
 # Add bin/ to the executable path to make them available
 # without having to type their path and make all scripts 
 # in it executables.
