@@ -11,7 +11,11 @@ class StartprojectCommand(BaseCommand):
     Create a new project from scratch.
     """
 
-    options   = []
+    options   = [
+       #('-g', '--git', {
+       #    'dest': 'git', 
+       #    'help': 'Initialize a git repository for this project'}),
+    ]
     base_path = os.getcwd()
 
     def call(self, *args, **options):
