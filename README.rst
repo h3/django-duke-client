@@ -110,17 +110,17 @@ All duke client commands are invoked using `duke` like such::
 
 Here's the list of available duke commands so far:
 
- +--------------+----------------+-----------------------------------+
- | Command      | Args           | Description                       | 
- +--------------+----------------+-----------------------------------+
- | clean        |                | Cleanup dev environment           |
- +--------------+----------------+-----------------------------------+
- | dev          |                | Activate development mode         |
- +--------------+----------------+-----------------------------------+
- | init         | <project>      | Initialize duke on a project      |
- +--------------+----------------+-----------------------------------+
- | startproject | <project-root> | Initialize a project from scratch |
- +--------------+----------------+-----------------------------------+
++--------------+----------------+-----------------------------------+
+| Command      | Args           | Description                       | 
++--------------+----------------+-----------------------------------+
+| clean        |                | Cleanup dev environment           |
++--------------+----------------+-----------------------------------+
+| dev          |                | Activate development mode         |
++--------------+----------------+-----------------------------------+
+| init         | <project>      | Initialize duke on a project      |
++--------------+----------------+-----------------------------------+
+| startproject | <project-root> | Initialize a project from scratch |
++--------------+----------------+-----------------------------------+
 
 Dev
 ^^^
@@ -128,24 +128,24 @@ Dev
 When the development environment has been activated some shell commands become
 available (no need to type duke before).
 
- +------------+------------------------------------------+
- | Command    | Description                              | 
- +------------+------------------------------------------+
- | buildout   | Run buildout                             |
- +------------+------------------------------------------+
- | deactivate | Deactivates the development environment. |
- +------------+------------------------------------------+
- | django     | Use this instead of manage.py            |
- +------------+------------------------------------------+
- | python     | A sandboxed python interpreter           |
- +------------+------------------------------------------+
- | run_tests  | Runs the django test suite *             |
- +------------+------------------------------------------+
++------------+------------------------------------------+
+| Command    | Description                              | 
++------------+------------------------------------------+
+| buildout   | Run buildout                             |
++------------+------------------------------------------+
+| deactivate | Deactivates the development environment. |
++------------+------------------------------------------+
+| django     | Use this instead of manage.py            |
++------------+------------------------------------------+
+| python     | A sandboxed python interpreter           |
++------------+------------------------------------------+
+| run_tests  | Runs the django test suite *             |
++------------+------------------------------------------+
 
- * If you look in the `./bin/` directory you'll notice that the script isn't
-   named "run_tests" but "test". While there is no problem running the test
-   from the relative path (ex: `./bin/test`), making `test` available globally 
-   breaks things because of a clash with `/usr/bin/test`.
+* If you look in the `./bin/` directory you'll notice that the script isn't
+  named "run_tests" but "test". While there is no problem running the test
+  from the relative path (ex: `./bin/test`), making `test` available globally 
+  breaks things because of a clash with `/usr/bin/test`.
 
 All these commands are scripts that reside in `./bin/`. The development 
 environment makes them available globally.
