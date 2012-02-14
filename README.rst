@@ -19,7 +19,7 @@ For the impatients
 Install django duke client::
 
     git clone git://github.com/h3/django-duke-client.git
-    cd django-duke-client && git checkout djangodukerecipe
+    cd django-duke-client
     sudo python setup.py develop
 
 Create a project::
