@@ -12,6 +12,24 @@ It makes heavy uses of buildout. My first attempt was using pip+virtualenv,
 but it soon became evident that buildout was the way to go in term of 
 efficiency and extensibility.
 
+
+For the impatients
+------------------
+
+Install django duke client::
+
+    git clone git://github.com/h3/django-duke-client.git
+    cd django-duke-client && git checkout djangodukerecipe
+    sudo python setup.py develop
+
+Create a project::
+
+    duke startproject test-project
+    cd test-project
+    duke init testproject
+    buildout
+
+
 Installation
 ------------
 
