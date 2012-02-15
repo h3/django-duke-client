@@ -12,11 +12,11 @@ class DevCommand(BaseCommand):
     base_path = os.getcwd()
 
     def call(self, *args, **options):
-        if not os.path.exists(os.path.join(self.base_path, 'bin')):
+        if not os.path.exists(os.path.join(self.base_path, '.duke/')):
             self.error("not within a duke managed project.")
 
         if os.getenv("DUKE_ENV"):
             env = os.path.basename(os.getenv("DUKE_ENV"))
             self.error("dev environment \"%s\" already loaded" % env)
         else:
-            os.system('bash --rcfile bin/dev')
+            os.system('bash --rcfile .duke/bin/dev')

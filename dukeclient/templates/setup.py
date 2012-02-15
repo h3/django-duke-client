@@ -11,7 +11,7 @@ setup(
     license = "",
     description = "",
     author = '',
-    packages = find_packages('eggs'),
+    packages = find_packages('.duke/eggs/'),
     package_dir = {'': '.'},
     install_requires = [],
 )
