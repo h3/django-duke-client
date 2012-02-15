@@ -1,2 +1,2 @@
 #!/bin/bash
-. %(base_path)s/bin/env
+. %(base_path)s/.duke/bin/env

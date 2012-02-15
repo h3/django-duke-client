@@ -19,13 +19,17 @@ class InitCommand(BaseCommand):
             'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
     ]
 
-    base_path = os.getcwd()
-
     def call(self, *args, **options):
+        self.base_path = os.getcwd()
+        self.duke_path = os.path.join(self.base_path, '.duke/')
+        self.bin_path  = os.path.join(self.duke_path, 'bin/')
 
         if len(args) < 2:
             self.info("usage: duke init <project> [options]\n")
             sys.exit(1)
+
+        if not os.path.exists(self.duke_path):
+            os.makedirs(self.duke_path)
 
         project_name = args[1].replace('/', '')
 
@@ -45,17 +49,31 @@ class InitCommand(BaseCommand):
 
         # buildout.cfg
         if os.path.exists(os.path.join(self.base_path, 'buildout.cfg')):
-            self.info("A buildout.cfg file has been found, will be using it.")
+            self.info("A buildout.cfg has been found, will be using it.")
         else:
-            self.info("Installing default buildout.cfg file")
+            self.info("Installing default buildout.cfg")
             create_from_template('buildout.cfg', self.base_path, config_context)
 
-        # dev.cfg
-        if os.path.exists(os.path.join(self.base_path, 'dev.cfg')):
-            self.info("A dev.cfg file has been found, will be using it.")
+        # .duke/base.cfg
+        if os.path.exists(os.path.join(self.duke_path, 'base.cfg')):
+            self.info("A base.cfg has been found, will be using it.")
         else:
-            self.info("Installing default dev.cfg file")
+            self.info("Installing default base.cfg")
+            create_from_template('base.cfg', self.duke_path, config_context)
+
+        # .duke/dev.cfg
+        if os.path.exists(os.path.join(self.base_path, 'dev.cfg')):
+            self.info("A dev.cfg has been found, will be using it.")
+        else:
+            self.info("Installing default dev.cfg")
             create_from_template('dev.cfg', self.base_path, config_context)
+
+        # .duke/prod.cfg
+        if os.path.exists(os.path.join(self.base_path, 'prod.cfg')):
+            self.info("A prod.cfg has been found, will be using it.")
+        else:
+            self.info("Installing default prod.cfg")
+            create_from_template('prod.cfg', self.base_path, config_context)
 
         self.info("Initializing zc.buildout")
         
@@ -73,12 +91,18 @@ class InitCommand(BaseCommand):
 
         # Dev source
         self.info("Installing dev hooks")
+
+        if not os.path.exists(self.bin_path):
+            os.makedirs(self.bin_path)
+
         dev_args = {
             'project_name': project_name,
-            'base_path': self.base_path}
+            'base_path': self.base_path,
+            'duke_path': self.duke_path,
+            }
 
-        create_from_template('dev', os.path.join(self.base_path, 'bin/'), dev_args)
-        create_from_template('env', os.path.join(self.base_path, 'bin/'), dev_args)
+        create_from_template('dev', self.bin_path, dev_args)
+        create_from_template('env', self.bin_path, dev_args)
 
         self.info("Done! (It is recommanded to add only bootstrap.py, buildout.cfg and dev.cfg to your VCS).\n")
         self.info("Edit buildout.cfg and dev.cfg to configure and type \"buildout\" to install requirements.")

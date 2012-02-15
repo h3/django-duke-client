@@ -44,21 +44,21 @@ export DUKE_ENV
 _OLD_DUKE_PATH="$PATH"
 
 # Typing "--settings=projectname.settingsfile" is annoying.
-DJANGO_SETTINGS_MODULE=%(project_name)s.development
+DJANGO_SETTINGS_MODULE=%(project_name)s.settings
 
 # Add bin/ to the executable path to make them available
 # without having to type their path and make all scripts 
 # in it executables.
-PATH="$DUKE_ENV/bin:$PATH"
+PATH="$DUKE_ENV/.duke/bin:$PATH"
 export PATH
-chmod a+x $DUKE_ENV/bin/*
+chmod a+x $DUKE_ENV/.duke/bin/*
 
 # Make sure that while within the dev environment we only
 # use the sandboxed python interpreter.
-alias python="$DUKE_ENV/bin/python" 
+alias python="$DUKE_ENV/.duke/bin/python -S" 
 
 # Having an executable script called test isn't such great idea.
-alias run_tests="$DUKE_ENV/bin/test" 
+alias run_tests="$DUKE_ENV/.duke/bin/test" 
 
 # unset PYTHONHOME if set
 # this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
@@ -90,6 +90,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+alias django='djangodev'
+alias syncdb='djangodev syncdb'
+alias runserver='djangodev runserver'
+alias shell='djangodev shell'
+alias dbshell='djangodev dbshell'
+alias loaddata='djangodev loaddata'
+alias dumpdata='djangodev dumpdata'
 
 # Prefix the command prompt with the (project_name)
 if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
