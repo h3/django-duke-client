@@ -8,7 +8,7 @@ Installation
 Official releases
 =================
 
-**Official releases will eventually be available from `PyPI`_.**
+Official releases will eventually be available from `PyPI`_.
 
 Download the .zip distribution file and unpack it. Inside is a script
 named ``setup.py``. Enter this command::
