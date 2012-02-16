@@ -91,6 +91,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+alias buildout='buildout -c dev.cfg'
 alias django='djangodev'
 alias syncdb='djangodev syncdb'
 alias runserver='djangodev runserver'
