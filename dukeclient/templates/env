@@ -44,7 +44,7 @@ export DUKE_ENV
 _OLD_DUKE_PATH="$PATH"
 
 # Typing "--settings=projectname.settingsfile" is annoying.
-DJANGO_SETTINGS_MODULE=%(project_name)s.settings
+DJANGO_SETTINGS_MODULE=%(settings_module)s
 
 # Add bin/ to the executable path to make them available
 # without having to type their path and make all scripts 
@@ -99,7 +99,7 @@ alias dbshell='djangodev dbshell'
 alias loaddata='djangodev loaddata'
 alias dumpdata='djangodev dumpdata'
 
-# Prefix the command prompt with the (project_name)
+# Prefix the command prompt with %(project_name)s
 if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
     _OLD_DUKE_PS1="$PS1"
     if [ "x" != x ] ; then
@@ -108,9 +108,9 @@ if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
     if [ "`basename \"$DUKE_ENV\"`" = "__" ] ; then
         # special case for Aspen magic directories
         # see http://www.zetadev.com/software/aspen/
-        PS1="[`basename \`dirname \"$DUKE_ENV\"\``] $PS1"
+        PS1="[%(project_name)s] $PS1"
     else
-        PS1="\[\e[0;36m\](`basename \"$DUKE_ENV\"`)\[\e[0m\]$PS1"
+        PS1="\[\e[0;36m\](%(project_name)s)\[\e[0m\]$PS1"
     fi
     fi
     export PS1
