@@ -104,7 +104,7 @@ class InitCommand(BaseCommand):
         create_from_template('dev', self.bin_path, context)
         create_from_template('env', self.bin_path, context)
 
-        self.info("Done! (It is recommanded to add only bootstrap.py, buildout.cfg and dev.cfg to your VCS).\n")
-        self.info("Edit buildout.cfg and dev.cfg to configure and type \"buildout\" to install requirements.")
+        self.info("Done!\n")
+        self.info("Type \"buildout\" to build the environment and install requirements.")
 
         DevCommand().call()
