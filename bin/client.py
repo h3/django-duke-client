@@ -31,14 +31,11 @@ def main():
         'init',
         'startproject',
        #'deploy',           # ++++
-       #'django',           # ++
+       #'django',           # ++ ?
        #'rollback',         # +
        #'service',          # +++
        #'list',
-       #'checkout',         # +++++
        #'update',           # +++
-       #'workon',           # ++++
-       #'workout',          # +
     )
     if len(sys.argv) < 2 or sys.argv[1] not in command_list:
         print "usage: duke [command] [options]\n"
