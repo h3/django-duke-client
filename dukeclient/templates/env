@@ -92,6 +92,8 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias buildout='buildout -c dev.cfg'
+
+# Django
 alias django='djangodev'
 alias syncdb='djangodev syncdb'
 alias runserver='djangodev runserver'
@@ -99,6 +101,15 @@ alias shell='djangodev shell'
 alias dbshell='djangodev dbshell'
 alias loaddata='djangodev loaddata'
 alias dumpdata='djangodev dumpdata'
+
+# Git
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit -v'
+alias gd='git diff | mate'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status'
 
 # Prefix the command prompt with %(project_name)s
 if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
