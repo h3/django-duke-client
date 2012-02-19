@@ -8,9 +8,7 @@ from tests import run_duke
 class TestCommandStartproject(unittest.TestCase):
     """
     Tests for:
-    duke startproject <project>
-
-    Note: Popen(["/bin/mycmd", "myarg"], env={"PATH": "/usr/bin"})
+    duke init <projectname>
     """
     def setUp(self):
         self.tmp_dir = '/tmp/'

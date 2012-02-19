@@ -25,24 +25,6 @@ def create_from_template(template, dest, variables=None):
     fd.close()
     fs.close()
 
-def yes_no_prompt(message, default=False):
-
-    if default:
-        yn = "[Y/n]"
-    else:
-        yn = "[y/N]"
-
-    rs = raw_input('%s %s: ' % (message, yn))
-
-    if rs == '':
-        return default
-
-    elif rs not in ['y','yes','n', 'no']:
-        return yes_no_prompt(message, default)
-
-    else:
-        return rs in ['y', 'yes']
-
 """
 Taken/modified from Sentry
 https://github.com/dcramer/sentry/blob/master/sentry/utils/__init__.py

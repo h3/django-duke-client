@@ -2,7 +2,7 @@ import re
 import HTMLParser
 pars = HTMLParser.HTMLParser()
 
-def html_to_text(data):       
+def html_to_text(data): # pragma: no cover
     # remove the newlines
     data = data.replace("\n", " ")
     data = data.replace("\r", " ")

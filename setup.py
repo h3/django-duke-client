@@ -46,7 +46,7 @@ setup(
     install_requires=install_requires,
     dependency_links=[],
     test_suite='nose.collector',
-    tests_require=['nose'],
+    tests_require=['nose', 'nose-cov', 'setuptools', 'distribute'], #'pep8'
    #tests_require=tests_require,
    #extras_require={'test': tests_require},
    #test_suite='nose.collector',

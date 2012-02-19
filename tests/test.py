@@ -4,7 +4,6 @@ import shutil
 import unittest
 from tests import run_duke
 
-
 class TestCommandStartproject(unittest.TestCase):
     """
     Tests for: duke 
