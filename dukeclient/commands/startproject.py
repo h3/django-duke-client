@@ -12,15 +12,22 @@ class StartprojectCommand(BaseCommand):
     """
 
     options   = [
-       #('-g', '--git', {
-       #    'dest': 'git', 
-       #    'help': 'Initialize a git repository for this project'}),
+        ('-m', '--minimal', {
+            'dest': 'minimal', 
+            'help': 'Create only the project folder with the setup.py file (no readme/license/tests.'}),
+        ('-b', '--base-path', {
+            'dest': 'base_path', 
+            'help': 'Directory where the project should be created.'}),
     ]
-    base_path = os.getcwd()
 
     def call(self, *args, **options):
+        self.base_path = options.get('base_path', os.getcwd())
+
         if len(args) < 2:
             self.error("usage: duke startproject <project-name> [options]\n")
+       #else:
+       #    django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$', 
+       #            default=project_name.split('.')[0].replace('-','_'))
 
         project_name = args[1].replace('/', '')
         project_path = os.path.join(self.base_path, project_name)
@@ -34,12 +41,10 @@ class StartprojectCommand(BaseCommand):
             'project_name': project_name,
             'duke_client_version': dukeclient.VERSION,
         })
-        
-        self.local('touch %s' % os.path.join(project_path, 'README.rst'))
-       #self.local('touch %s' % os.path.join(project_path, 'LICENSE'))
-       #self.local('touch %s' % os.path.join(project_path, 'CHANGELOG'))
 
-       #django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$', 
-       #        default=project_name.split('.')[0].replace('-','_'))
+        if not options['minimal']:
+            os.makedirs(os.path.join(project_path, 'tests/'))
+            self.local('touch %s' % os.path.join(project_path, 'README.rst'))
+            self.local('touch %s' % os.path.join(project_path, 'LICENSE'))
 
         self.info("Created project %s" % project_name)

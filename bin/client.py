@@ -37,6 +37,7 @@ def main():
        #'list',
        #'update',           # +++
     )
+
     if len(sys.argv) < 2 or sys.argv[1] not in command_list:
         print "usage: duke [command] [options]\n"
         print "Available subcommands:"
@@ -69,6 +70,5 @@ def main():
 
     sys.exit(0)
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()
-
