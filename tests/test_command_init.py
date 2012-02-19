@@ -1,30 +1,35 @@
+import os, sys
 import random
+import shutil
 import unittest
+from tests import run_duke
 
-class TestSequenceFunctions(unittest.TestCase):
 
+class TestCommandStartproject(unittest.TestCase):
+    """
+    Tests for:
+    duke startproject <project>
+
+    Note: Popen(["/bin/mycmd", "myarg"], env={"PATH": "/usr/bin"})
+    """
     def setUp(self):
-        self.seq = range(10)
+        self.tmp_dir = '/tmp/'
 
-    def test_shuffle(self):
-        # make sure the shuffled sequence does not lose any elements
-        random.shuffle(self.seq)
-        self.seq.sort()
-        self.assertEqual(self.seq, range(10))
+    def test_basic(self):
+        self.tmp_path = os.path.join(self.tmp_dir, "/tmp/test-project")
 
-        # should raise an exception for an immutable sequence
-        self.assertRaises(TypeError, random.shuffle, (1,2,3))
+        if os.path.exists(self.tmp_path):
+            shutil.rmtree(self.tmp_path)
 
-    def test_choice(self):
-        element = random.choice(self.seq)
-        self.assertTrue(element in self.seq)
+        stdout, stderr, returncode = \
+                run_duke('duke startproject test-project -b /tmp/')
 
-    def test_sample(self):
-        with self.assertRaises(ValueError):
-            random.sample(self.seq, 20)
-        for element in random.sample(self.seq, 5):
-            self.assertTrue(element in self.seq)
+        self.assertTrue(stdout.startswith('Created project test-project'))
+        self.assertEquals(0, returncode)
+
+    def tearDown(self):
+        if os.path.exists(self.tmp_path):
+            shutil.rmtree(self.tmp_path)
 
 if __name__ == '__main__':
     unittest.main()
-

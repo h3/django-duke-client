@@ -2,18 +2,13 @@ import os, sys
 import random
 import shutil
 import unittest
-import subprocess
-
-
-def run_duke(cmd):
-    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    stdout, stderr = proc.communicate()
-    return (stdout, stderr, proc.returncode)
+from tests import run_duke
 
 
 class TestCommandStartproject(unittest.TestCase):
     """
-    Popen(["/bin/mycmd", "myarg"], env={"PATH": "/usr/bin"})
+    Tests for:
+    duke startproject <project>
     """
     def setUp(self):
         self.tmp_dir = '/tmp/'
@@ -24,7 +19,9 @@ class TestCommandStartproject(unittest.TestCase):
         if os.path.exists(self.tmp_path):
             shutil.rmtree(self.tmp_path)
 
-        stdout, stderr, returncode = run_duke('duke startproject test-project -b /tmp/')
+        stdout, stderr, returncode = \
+                run_duke('duke startproject test-project -b /tmp/')
+
         self.assertTrue(stdout.startswith('Created project test-project'))
         self.assertEquals(0, returncode)
 
@@ -34,4 +31,3 @@ class TestCommandStartproject(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
