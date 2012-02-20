@@ -14,6 +14,7 @@ class StartprojectCommand(BaseCommand):
     options   = [
         ('-m', '--minimal', {
             'dest': 'minimal', 
+            'action': 'store_true',
             'help': 'Create only the project folder with the setup.py file (no readme/license/tests.'}),
         ('-b', '--base-path', {
             'dest': 'base_path', 
@@ -21,7 +22,7 @@ class StartprojectCommand(BaseCommand):
     ]
 
     def call(self, *args, **options):
-        self.base_path = options.get('base_path', os.getcwd())
+        self.base_path = options['base_path'] or os.getcwd()
 
         if len(args) < 2:
             self.error("usage: duke startproject <project-name> [options]\n")

@@ -13,22 +13,42 @@ class TestCommandStartproject(unittest.TestCase):
     Tests for:
     duke startproject <project>
     """
+
+    def _path_exists(self, path):
+        return os.path.exists(os.path.join(self.tmp_dir, \
+                self.project_name, path))
+
     def setUp(self):
         self.tmp_dir = '/tmp/'
+        self.project_name = 'test-project'
 
     def test_basic(self):
-        self.tmp_path = os.path.join(self.tmp_dir, "/tmp/test-project")
+        self.tmp_path = os.path.join(self.tmp_dir, self.project_name)
 
         if os.path.exists(self.tmp_path):
             shutil.rmtree(self.tmp_path)
 
         stdout, stderr, returncode = \
-                run_duke('duke startproject test-project -b /tmp/')
+                run_duke('duke startproject test-project -b %s' % self.tmp_dir)
 
-        print stdout
-        print stderr
-        self.assertTrue(stdout.startswith('Created project test-project'))
+        self.assertTrue(stdout.startswith('Created project %s' % self.project_name))
         self.assertEquals(0, returncode)
+        self.assertTrue(self._path_exists('setup.py'))
+        self.assertTrue(self._path_exists('README.rst'))
+        self.assertTrue(self._path_exists('LICENSE'))
+
+    def test_minimal(self):
+        self.tmp_path = os.path.join(self.tmp_dir, self.project_name)
+
+        if os.path.exists(self.tmp_path):
+            shutil.rmtree(self.tmp_path)
+
+        stdout, stderr, returncode = \
+                run_duke('duke startproject test-project -b %s' % self.tmp_dir)
+
+        self.assertTrue(stdout.startswith('Created project %s' % self.project_name))
+        self.assertEquals(0, returncode)
+        self.assertTrue(os.path.exists(os.path.join(self.tmp_dir, self.project_name, 'setup.py')))
 
     def tearDown(self):
         if os.path.exists(self.tmp_path):
