@@ -1,9 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 django-duke-client
-~~~~~~~~~~~~~~~~~~
-
 """
 
 VERSION = __import__('dukeclient').VERSION
@@ -18,6 +15,7 @@ except ImportError:
 install_requires = [
     'simplejson',
     'GitPython',
+    'PyYAML',
 ]
 
 try:
@@ -25,12 +23,6 @@ try:
 except ImportError:
     # uuid ensures compatibility with older versions of Python
     install_requires.append('uuid')
-
-#tests_require = [
-   #'logbook',
-   #'nose',
-   #'unittest2',
-#]
 
 setup(
     name='dukeclient',
@@ -41,16 +33,13 @@ setup(
     description = 'Duke client',
     long_description=__doc__,
     packages=find_packages(exclude=['tests']),
-    zip_safe=False,
     license='BSD',
     install_requires=install_requires,
     dependency_links=[],
     test_suite='nose.collector',
-    tests_require=['nose', 'nose-cov', 'setuptools', 'distribute'], #'pep8'
-   #tests_require=tests_require,
-   #extras_require={'test': tests_require},
-   #test_suite='nose.collector',
+    tests_require=['nose', 'nose-cov', 'coverage', 'setuptools', 'distribute'], #'pep8'
     include_package_data=True,
+    zip_safe=False,
     entry_points = {
         'console_scripts': [
             'duke = bin.client:main',
