@@ -22,15 +22,16 @@ class StartprojectCommand(BaseCommand):
     ]
 
     def call(self, *args, **options):
-        self.base_path = options['base_path'] or os.getcwd()
+        self._options = options
+        self.base_path = 'base_path' in options and options['base_path'] or os.getcwd()
 
-        if len(args) < 2:
+        if len(args) < 1:
             self.error("usage: duke startproject <project-name> [options]\n")
        #else:
        #    django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$', 
        #            default=project_name.split('.')[0].replace('-','_'))
 
-        project_name = args[1].replace('/', '')
+        project_name = args[0].replace('/', '')
         project_path = os.path.join(self.base_path, project_name)
 
         if os.path.exists(project_path):
@@ -43,7 +44,7 @@ class StartprojectCommand(BaseCommand):
             'duke_client_version': dukeclient.VERSION,
         })
 
-        if not options['minimal']:
+        if self.option('minimal') is not True:
             os.makedirs(os.path.join(project_path, 'tests/'))
             self.local('touch %s' % os.path.join(project_path, 'README.rst'))
             self.local('touch %s' % os.path.join(project_path, 'LICENSE'))

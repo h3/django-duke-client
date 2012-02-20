@@ -2,3 +2,4 @@
 export NOSE_WITH_COVERAGE=true
 coverage run setup.py test
 coverage report --rcfile=tests/.coveragerc -m dukeclient/*.py dukeclient/commands/*.py
+#coverage debug --rcfile=tests/.coveragerc data

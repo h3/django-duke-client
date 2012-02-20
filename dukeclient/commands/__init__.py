@@ -6,6 +6,21 @@ from dukeclient.utils import simplejson
 
 class BaseCommand(object):
 
+    def __init__(self, shell=False):
+        self.is_shell = shell
+
+    def option(self, name, value=None):
+        if value:
+            self._options[name] = value
+            return value
+        if self.is_shell:
+            return self._options[name]
+        else:
+            if name in self._options:
+                return self._options[name]
+            else:
+                return False
+
     @abstractmethod
     def call(self):
         pass
@@ -39,7 +54,7 @@ class BaseCommand(object):
 def get_command(cmd):
     class_name = '%sCommand' % (cmd[0].capitalize() + cmd[1:])
     module  = __import__('dukeclient.commands.%s' % cmd, {}, {}, class_name)
-    return getattr(module, class_name)()
+    return getattr(module, class_name)(shell=True)
 
 def send_command(cmd, *args, **kwargs):
     return get_command(cmd).call(*args, **kwargs)
