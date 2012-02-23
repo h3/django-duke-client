@@ -16,39 +16,39 @@ class TestCommandInit(unittest.TestCase):
         return os.path.exists(os.path.join(self.tmp_dir, \
                 self.project_name, path))
 
-    def setUp(self):
-        self.tmp_dir = '/tmp/'
-        self.project_name = 'test-project'
-        self.django_project_name = 'testproject'
-        self.project_path = os.path.join(self.tmp_dir, self.project_name)
-        if os.path.exists(self.project_path):
-                shutil.rmtree(self.project_path)
+#   def setUp(self):
+#       self.tmp_dir = '/tmp/'
+#       self.project_name = 'test-project'
+#       self.django_project_name = 'testproject'
+#       self.project_path = os.path.join(self.tmp_dir, self.project_name)
+#       if os.path.exists(self.project_path):
+#               shutil.rmtree(self.project_path)
 
-        run('duke startproject %s -m -b %s' \
-                % (self.project_name, self.tmp_dir))
+#       run('duke startproject %s -m -b %s' \
+#               % (self.project_name, self.tmp_dir))
 
-    def test_args_length(self):
-        self.setUp()
-        stdout, stderr, returncode = run('duke init %s' \
-                % self.django_project_name)
-        run('deactivate')
-        self.assertEquals(1, returncode)
-        self.assertTrue(stdout.startswith('Error:'))
+#   def test_args_length(self):
+#       self.setUp()
+#       stdout, stderr, returncode = run('duke init %s' \
+#               % self.django_project_name)
+#       run('deactivate')
+#       self.assertEquals(1, returncode)
+#       self.assertTrue(stdout.startswith('Error:'))
 
-    def test_initialized_twice(self):
-        self.setUp()
-        run('duke init testproject %s' % self.django_project_name)
+#   def test_initialized_twice(self):
+#       self.setUp()
+#       run('duke init testproject %s' % self.django_project_name)
 
-        stdout, stderr, returncode = \
-                run('duke init %s' % self.django_project_name)
-        run('deactivate')
+#      #stdout, stderr, returncode = \
+#      #        run('duke init %s' % self.django_project_name)
+#      #run('deactivate')
 
-        self.assertTrue(stdout.startswith('Error:'))
+#       self.assertTrue(stdout.startswith('Error:'))
 
 
-    def tearDown(self):
-        if os.path.exists(self.project_path):
-            shutil.rmtree(self.project_path)
+#   def tearDown(self):
+#       if os.path.exists(self.project_path):
+#           shutil.rmtree(self.project_path)
 
 if __name__ == '__main__':
     unittest.main()
