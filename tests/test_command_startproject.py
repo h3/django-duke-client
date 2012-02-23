@@ -32,9 +32,6 @@ class TestCommandStartproject(unittest.TestCase):
 
     def test_args_length(self):
         self.setUp()
-        StartprojectCommand().call(self.project_name, \
-                base_path=self.tmp_dir, minimal=True)
-
         stdout, stderr, returncode = run('duke startproject')
         self.assertTrue(stdout.startswith('Error:'))
 

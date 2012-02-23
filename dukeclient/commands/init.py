@@ -24,13 +24,13 @@ class InitCommand(BaseCommand):
         self.duke_path = os.path.join(self.base_path, '.duke/')
         self.bin_path  = os.path.join(self.duke_path, 'bin/')
 
-        if len(args) < 2:
+        if len(args) < 1:
             self.error("usage: duke init <project> [options]\n")
 
         if not os.path.exists(self.duke_path):
             os.makedirs(self.duke_path)
 
-        project_name = args[1].replace('/', '')
+        project_name = args[0].replace('/', '')
 
         # bootstrap.py
         if os.path.exists(os.path.join(self.base_path, 'bootstrap.py')):
