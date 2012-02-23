@@ -2,7 +2,7 @@ import os, sys
 import random
 import shutil
 import unittest
-from tests import run_duke
+from tests import run
 
 class TestCommandStartproject(unittest.TestCase):
     """
@@ -10,13 +10,13 @@ class TestCommandStartproject(unittest.TestCase):
     """
 
     def test_basic(self):
-        stdout, stderr, returncode = run_duke('duke')
+        stdout, stderr, returncode = run('duke')
 
         self.assertTrue(stdout.startswith('usage: duke [command] [options]'))
         self.assertEquals(1, returncode)
 
     def test_help(self):
-        stdout, stderr, returncode = run_duke('duke -h')
+        stdout, stderr, returncode = run('duke -h')
 
         self.assertTrue(stdout.startswith('usage: duke [command] [options]'))
         self.assertEquals(1, returncode)

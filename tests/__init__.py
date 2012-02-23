@@ -2,7 +2,7 @@ import os
 import subprocess
 import coverage
 
-def run_duke(cmd):
+def run(cmd):
     coverage.process_startup()
     env = os.environ
     env['COVERAGE_PROCESS_START'] = 'tests/.coveragerc'

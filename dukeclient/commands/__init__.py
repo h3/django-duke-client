@@ -35,7 +35,7 @@ class BaseCommand(object):
         return simplejson.loads(string)
 
     def exit(self, code=0):
-        sys.exit(0)
+        sys.exit(code)
 
     def debug(self, msg):
         print "Debug: %s" % msg
