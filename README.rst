@@ -253,3 +253,6 @@ References
 | django/buildout   | http://jacobian.org/writing/django-apps-with-buildout/ |
 +-------------------+--------------------------------------------------------+
 
+TODO / To fix
+-------------
+* Add sources to the PYTHONPATH (i.e.: if we add a source for a github repo. The 'src/modulename' needs to be added in 'projectname/.duke/bin/djangodev' file.
