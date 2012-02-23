@@ -25,8 +25,7 @@ class InitCommand(BaseCommand):
         self.bin_path  = os.path.join(self.duke_path, 'bin/')
 
         if len(args) < 2:
-            self.info("usage: duke init <project> [options]\n")
-            sys.exit(1)
+            self.error("usage: duke init <project> [options]\n")
 
         if not os.path.exists(self.duke_path):
             os.makedirs(self.duke_path)

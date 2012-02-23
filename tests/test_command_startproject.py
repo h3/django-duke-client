@@ -3,7 +3,7 @@ import random
 import shutil
 import unittest
 import coverage
-from tests import run_duke
+from tests import run
 
 #sys.path.append(os.path.realpath('../dukeclient/'))
 
@@ -19,6 +19,7 @@ class TestCommandStartproject(unittest.TestCase):
     """
 
     def _path_exists(self, path):
+        # Check if a file exists within the root directory of the project.
         return os.path.exists(os.path.join(self.tmp_dir, \
                 self.project_name, path))
 
@@ -34,7 +35,7 @@ class TestCommandStartproject(unittest.TestCase):
         StartprojectCommand().call(self.project_name, \
                 base_path=self.tmp_dir, minimal=True)
 
-        stdout, stderr, returncode = run_duke('duke startproject')
+        stdout, stderr, returncode = run('duke startproject')
         self.assertTrue(stdout.startswith('Error:'))
 
     def test_existing_target(self):
@@ -43,7 +44,7 @@ class TestCommandStartproject(unittest.TestCase):
                 base_path=self.tmp_dir, minimal=True)
 
         stdout, stderr, returncode = \
-                run_duke('duke startproject %s -m -b %s' \
+                run('duke startproject %s -m -b %s' \
                 % (self.project_name, self.tmp_dir))
 
         self.assertTrue(stdout.startswith('Error:'))
@@ -51,7 +52,7 @@ class TestCommandStartproject(unittest.TestCase):
     def test_cli_basic(self):
         self.setUp()
         stdout, stderr, returncode = \
-                run_duke('duke startproject %s -b %s' \
+                run('duke startproject %s -b %s' \
                 % (self.project_name, self.tmp_dir))
 
         self.assertTrue(stdout.startswith('Created project %s' \
@@ -64,7 +65,7 @@ class TestCommandStartproject(unittest.TestCase):
     def test_cli_minimal(self):
         self.setUp()
         stdout, stderr, returncode = \
-                run_duke('duke startproject %s -m -b %s' \
+                run('duke startproject %s -m -b %s' \
                 % (self.project_name, self.tmp_dir))
 
         self.assertTrue(stdout.startswith('Created project %s' \
