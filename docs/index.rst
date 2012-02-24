@@ -17,6 +17,7 @@ Django duke client aims provide a turnkey development environment for django and
    install
    tutorial
    development_mode 
+   project_configuration
 
 Topic docs:
 
