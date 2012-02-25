@@ -73,13 +73,6 @@ class InitCommand(BaseCommand):
             self.info("Installing default dev.cfg")
             create_from_template('dev.cfg', self.base_path, context)
 
-        # .duke/prod.cfg
-        if os.path.exists(os.path.join(self.base_path, 'prod.cfg')):
-            self.info("A prod.cfg has been found, will be using it.")
-        else:
-            self.info("Installing default prod.cfg")
-            create_from_template('prod.cfg', self.base_path, context)
-
         self.info("Initializing zc.buildout")
         
         boot_opts = ''
