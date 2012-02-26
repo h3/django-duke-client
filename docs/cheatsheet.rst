@@ -33,39 +33,41 @@ Dev commands
 +-------------------------------------+--------------------------------------+
 | `run_test`                          | Run .duke/bin/test                   |
 +-------------------------------------+--------------------------------------+
-| `develop activate <package-r>`      | Add packages to the list of          |
+| `dev`                               | Alias of develop                     |
++-------------------------------------+--------------------------------------+
+| `dev activate <package-r>`          | Add packages to the list of          |
 |                                     | development packages.                |
 +-------------------------------------+--------------------------------------+
-| `develop checkout <package-r>`      | Make a checkout of the packages      |
+| `dev checkout <package-r>`          | Make a checkout of the packages      |
 |                                     | matching the regular expressions and |
 |                                     | add them to the list of development  |
 |                                     | packages.                            |
 +-------------------------------------+--------------------------------------+
-| `develop deactivate <package-r>`    | Remove packages from the list of     |
+| `dev deactivate <package-r>`        | Remove packages from the list of     |
 |                                     | development packages.                |
 +-------------------------------------+--------------------------------------+
-| `develop info <package-r>`          | Lists informations about packages.   |
+| `dev info <package-r>`              | Lists informations about packages.   |
 +-------------------------------------+--------------------------------------+
-| `develop list <package-r>`          | Lists tracked packages.              |
+| `dev list <package-r>`              | Lists tracked packages.              |
 +-------------------------------------+--------------------------------------+
-| `develop purge <package-r>`         | Remove checked out packages which    |
+| `dev purge <package-r>`             | Remove checked out packages which    |
 |                                     | aren't active anymore.               |
 +-------------------------------------+--------------------------------------+
-| `develop rebuild/rb <package-r>`    | Run buildout with the last used      |
+| `dev rebuild/rb <package-r>`        | Run buildout with the last used      |
 |                                     | arguments.                           |
 +-------------------------------------+--------------------------------------+
-| `develop reset <package-r>`         | Resets the packages develop status.  |
+| `dev reset <package-r>`             | Resets the packages develop status.  |
 |                                     | This is useful when switching to a   |
 |                                     | new buildout configuration.          |
 +-------------------------------------+--------------------------------------+
-| `develop status/stat/st <package-r>`| Shows the status of tracked packages,| 
+| `dev status/stat/st <package-r>`    | Shows the status of tracked packages,| 
 |                                     | filtered if <package-regexps> is     |
 |                                     | given.                               |
 +-------------------------------------+--------------------------------------+
-| `develop update <package-r>`        | Updates all known packages currently |
+| `dev update <package-r>`            | Updates all known packages currently |
 |                                     | checked out.                         |
 +-------------------------------------+--------------------------------------+
-| `develop info <package-r>`          | Lists informations about packages.   |
+| `dev info <package-r>`              | Lists informations about packages.   |
 +-------------------------------------+--------------------------------------+
 
 Django commands & shortcuts

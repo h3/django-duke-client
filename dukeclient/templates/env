@@ -92,15 +92,15 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias buildout='buildout -c dev.cfg'
+alias dev='develop'
 
 # Django
-alias django='djangodev'
-alias syncdb='djangodev syncdb'
-alias runserver='djangodev runserver'
-alias shell='djangodev shell'
-alias dbshell='djangodev dbshell'
-alias loaddata='djangodev loaddata'
-alias dumpdata='djangodev dumpdata'
+alias syncdb='django syncdb'
+alias runserver='django runserver'
+alias shell='django shell'
+alias dbshell='django dbshell'
+alias loaddata='django loaddata'
+alias dumpdata='django dumpdata'
 
 # Git
 alias gb='git branch'
