@@ -11,19 +11,22 @@ class InitCommand(BaseCommand):
     """
 
     options = [
+        ('-b', '--base-path', {
+            'dest': 'base_path', 
+            'help': 'Directory where the project should be initialized.'}),
         ('-d', '--distribute', {
             'dest': 'distribute', 'action': 'store_true', 'default': False,
             'help': 'Use distribute instead of setuptools'}),
-        ('-p', '--python', {
-            'dest': 'python', 
-            'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
         ('-n', '--nodev', {
             'dest': 'nodev', 'action': 'store_true', 'default': False,
             'help': 'Do not launch development env once init is complete'}),
+        ('-p', '--python', {
+            'dest': 'python', 
+            'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
     ]
 
     def call(self, *args, **options):
-        self.base_path = os.getcwd()
+        self.base_path = 'base_path' in options and options['base_path'] or os.getcwd()
         self.duke_path = os.path.join(self.base_path, '.duke/')
         self.bin_path  = os.path.join(self.duke_path, 'bin/')
 
