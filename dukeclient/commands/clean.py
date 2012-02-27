@@ -15,7 +15,7 @@ class CleanCommand(BaseCommand):
     base_path = os.getcwd()
 
     def call(self, *args, **options):
-        dirs = ['src', 'parts', 'bin', 'eggs', 'develop-eggs']
+        dirs = ['.duke']
         for d in dirs:
             path = os.path.join(self.base_path, '%s/' % d)
             if os.path.exists(path):
