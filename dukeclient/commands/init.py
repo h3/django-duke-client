@@ -18,8 +18,8 @@ class InitCommand(BaseCommand):
             'dest': 'python', 
             'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
         ('-n', '--nodev', {
-            'dest': 'nodev', 
-            'help': 'Do launch env once init is complete'}),
+            'dest': 'nodev', 'action': 'store_true', 'default': False,
+            'help': 'Do not launch development env once init is complete'}),
     ]
 
     def call(self, *args, **options):
