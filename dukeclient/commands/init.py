@@ -17,6 +17,9 @@ class InitCommand(BaseCommand):
         ('-p', '--python', {
             'dest': 'python', 
             'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
+        ('-n', '--nodev', {
+            'dest': 'nodev', 
+            'help': 'Do launch env once init is complete'}),
     ]
 
     def call(self, *args, **options):
@@ -99,4 +102,5 @@ class InitCommand(BaseCommand):
         self.info("Done!\n")
         self.info("Type \"buildout\" to build the environment and install requirements.")
 
-        DevCommand().call()
+        if not options['nodev']:
+            DevCommand().call()
