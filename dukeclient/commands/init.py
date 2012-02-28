@@ -33,10 +33,14 @@ class InitCommand(BaseCommand):
         if len(args) < 1:
             self.error("usage: duke init <project> [options]\n")
 
+
+
         if not os.path.exists(self.duke_path):
             os.makedirs(self.duke_path)
 
-        project_name = args[0].replace('/', '')
+        # FIXME: Validate for proper python module name
+        project_name = args[0].replace('/', '').replace('-', '_')
+
 
         # bootstrap.py
         if os.path.exists(os.path.join(self.base_path, 'bootstrap.py')):
@@ -52,10 +56,7 @@ class InitCommand(BaseCommand):
             'parent_dirname': os.path.basename(os.path.abspath(self.base_path)),
             'base_path': self.base_path,
             'duke_path': self.duke_path,
-            # FIXME: todo, find out the settings file name from the dev.cfg file in the [djangodev] section
-            # http://svn.zope.org/zc.buildout/trunk/src/zc/buildout/buildout.py?rev=123007&view=markup
-            # see the_read_installed_part_options method for parsing example
-            'settings_module': 'settings_dev',
+            'settings_module': 'settings',
         }
 
         # buildout.cfg
