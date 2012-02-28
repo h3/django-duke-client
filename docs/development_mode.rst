@@ -1,4 +1,3 @@
-
 ================
 Development mode
 ================
@@ -51,12 +50,9 @@ Commands & shortcuts
 +------------+----------------------------------------------------------------+
 | django     | Use this instead of manage.py                                  |
 +------------+----------------------------------------------------------------+
-| python     | A sandboxed python interpreter                                 |
+| python     | A sandboxed python interpreter \*                              |
 +------------+----------------------------------------------------------------+
-| run_tests  | Runs the django test suite *                                   |
+| run_tests  | Runs the django test suite                                     |
 +------------+----------------------------------------------------------------+
 
-* If you look in the `.duke/bin/` directory you'll notice that the script 
-  isn't named "run_tests" but "test". While there is no problem running 
-  the test from the relative path (ex: `.duke/bin/test`), making `test` 
-  available globally breaks things because of a clash with `/usr/bin/test`.
+\* If IPython is installed, it will be used by default when working in the env.
