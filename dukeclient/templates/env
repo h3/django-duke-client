@@ -57,6 +57,11 @@ chmod a+x $DUKE_ENV/.duke/bin/*
 # use the sandboxed python interpreter.
 alias python="$DUKE_ENV/.duke/bin/python -S" 
 
+if [ -n "$DUKE_ENV/.duke/bin/ipython" ] ; then
+    alias python="$DUKE_ENV/.duke/bin/ipython --autoindent --no-banner --deep-reload"
+fi
+
+
 # Having an executable script called test isn't such great idea.
 alias run_tests="$DUKE_ENV/.duke/bin/test" 
 
