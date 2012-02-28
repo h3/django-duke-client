@@ -39,20 +39,20 @@ process.
 Commands & shortcuts
 ====================
 
-+------------+----------------------------------------------------------------+
-| Command    | Description                                                    |
-+------------+----------------------------------------------------------------+
-| buildout   | Run buildout to build or rebuild your environment              |
-+------------+----------------------------------------------------------------+
-| deactivate | Deactivates the development environment.                       |
-+------------+----------------------------------------------------------------+
-| develop    | Use this to install, activate or deactivate python packages.   |
-+------------+----------------------------------------------------------------+
-| django     | Use this instead of manage.py                                  |
-+------------+----------------------------------------------------------------+
-| python     | A sandboxed python interpreter \*                              |
-+------------+----------------------------------------------------------------+
-| run_tests  | Runs the django test suite                                     |
-+------------+----------------------------------------------------------------+
++----------------+----------------------------------------------------------------+
+| *Command*      | *Description*                                                  |
++----------------+----------------------------------------------------------------+
+| buildout       | Run buildout to build or rebuild your environment              |
++----------------+----------------------------------------------------------------+
+| deactivate     | Deactivates the development environment.                       |
++----------------+----------------------------------------------------------------+
+| dev or develop | Use this to install, activate or deactivate python packages.   |
++----------------+----------------------------------------------------------------+
+| django         | Use this instead of manage.py                                  |
++----------------+----------------------------------------------------------------+
+| python         | A sandboxed python interpreter \*                              |
++----------------+----------------------------------------------------------------+
+| run_tests      | Runs the django test suite                                     |
++----------------+----------------------------------------------------------------+
 
 \* If IPython is installed, it will be used by default when working in the env.
