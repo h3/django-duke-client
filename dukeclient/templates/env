@@ -96,7 +96,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-alias buildout='buildout -c dev.cfg'
+#ocho  FIXME: The -vv flag is only a dirty hack to workaround a suspected 
+# threading issue with python. For some reason, on a fast machine with 
+# multiple cores, buildout hangs randomly. Increasing buildout's output
+# solves this issue. If you are still experiencing this problem, consider
+# using -vvv for even more output.
+# https://github.com/fschulze/mr.developer/pull/76
+alias buildout='buildout -c dev.cfg -vv'
+
 alias dev='develop'
 
 # Django
@@ -117,18 +124,35 @@ alias gp='git push'
 alias gst='git status'
 
 # Prefix the command prompt with %(project_name)s
-if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
-    _OLD_DUKE_PS1="$PS1"
-    if [ "x" != x ] ; then
-	PS1="$PS1"
+
+function __in_project {
+   #"\[\033[00;35m\]:django\[\e[0m\]"
+    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
+        echo ":django"
     else
-    if [ "`basename \"$DUKE_ENV\"`" = "__" ] ; then
-        # special case for Aspen magic directories
-        # see http://www.zetadev.com/software/aspen/
-        PS1="[%(project_name)s] $PS1"
-    else
-        PS1="\[\e[0;36m\](%(project_name)s)\[\e[0m\]$PS1"
+        echo ""
     fi
+}
+
+function __duke_prompt {
+    if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
+        _OLD_DUKE_PS1="$PS1"
+        if [ "x" != x ] ; then
+        PS1="$PS1"
+        else
+        if [ "`basename \"$DUKE_ENV\"`" = "__" ] ; then
+            # special case for Aspen magic directories
+            # see http://www.zetadev.com/software/aspen/
+            PS1="(%(project_name)s$(in_project)) $PS1"
+        else
+            PS1="\[\e[0;36m\](%(project_name)s$(__in_project))\[\e[0m\]$PS1"
+        fi
+        fi
+        export PS1
     fi
-    export PS1
-fi
+}
+
+__duke_prompt
+
+ 
+#PS1='\[\033[01;37m\]\w\[\033[00;35m\]$(parse_git_branch)\[\033[00m\] \$ '
