@@ -2,6 +2,20 @@
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
 
+
+# Shell colors
+##
+BLACK="\[\e[0;30m\]" BOLD_BLACK="\[\e[1;30m\]" UNDER_BLACK="\[\e[4;30m\]"
+RED="\[\e[0;31m\]" BOLD_RED="\[\e[1;31m\]" UNDER_RED="\[\e[4;31m\]"
+GREEN="\[\e[0;32m\]" BOLD_GREEN="\[\e[1;32m\]" UNDER_GREEN="\[\e[4;32m\]"
+YELLOW="\[\e[0;33m\]" BOLD_YELLOW="\[\e[1;33m\]" UNDER_YELLOW="\[\e[4;33m\]"
+BLUE="\[\e[0;34m\]" BOLD_BLUE="\[\e[1;34m\]" UNDER_BLUE="\[\e[4;34m\]"
+PURPLE="\[\e[0;35m\]" BOLD_PURPLE="\[\e[1;35m\]" UNDER_PURPLE="\[\e[4;35m\]"
+CYAN="\[\e[0;36m\]" BOLD_CYAN="\[\e[1;36m\]" UNDER_CYAN="\[\e[4;36m\]"
+WHITE="\[\e[0;37m\]" BOLD_WHITE="\[\e[1;37m\]" UNDER_WHITE="\[\e[4;37m\]"
+NO_COLOR="\[\e[0m\]"
+
+
 # Deactivate the development environment.
 deactivate () {
     # reset old environment variables
@@ -27,6 +41,26 @@ deactivate () {
         PS1="$_OLD_DUKE_PS1"
         export PS1
         unset _OLD_DUKE_PS1
+    fi
+
+    if [ -n "$_OLD_DUKE_PS2" ] ; then
+        PS1="$_OLD_DUKE_PS2"
+        export PS1
+        unset _OLD_DUKE_PS2
+    fi
+
+    if [ -n "$_OLD_DUKE_PS4" ] ; then
+        PS1="$_OLD_DUKE_PS4"
+        export PS1
+        unset _OLD_DUKE_PS4
+    fi
+
+    echo 'maybe'
+    if [ -n "$_OLD_DIRTRIM" ] ; then
+        echo "Resetting dirtrim"
+        PROMPT_DIRTRIM="$_OLD_DIRTRIM"
+        export PROMPT_DIRTRIM
+        unset _OLD_DIRTRIM
     fi
 
     unset DUKE_ENV
@@ -123,6 +157,26 @@ alias gl='git pull'
 alias gp='git push'
 alias gst='git status'
 
+
+
+parse_git_branch () {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+parse_git_dirty () {
+  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
+}
+
+__vcs_status () {
+    if [ -d "$PWD/.svn" ]; then
+        #echo "Controlled by SVN"
+        echo ":svn"
+    elif [ parse_git_branch ]; then
+        echo ":git"
+        #echo "${GREEN}\$(parse_git_branch)${RED}\$(parse_git_dirty)"
+    fi
+}
+
+
 # Prefix the command prompt with %(project_name)s
 
 function __in_project {
@@ -137,6 +191,10 @@ function __in_project {
 function __duke_prompt {
     if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
         _OLD_DUKE_PS1="$PS1"
+        #_OLD_DUKE_PS2="$PS2"
+        #_OLD_DUKE_PS4="$PS4"
+        _OLD_DIRTRIM="$PROMPT_DIRTRIM"
+        
         if [ "x" != x ] ; then
         PS1="$PS1"
         else
@@ -144,11 +202,20 @@ function __duke_prompt {
             # special case for Aspen magic directories
             # see http://www.zetadev.com/software/aspen/
             PS1="(%(project_name)s$(in_project)) $PS1"
+            PROMPT_DIRTRIM="$PROMPT_DIRTRIM"
         else
-            PS1="\[\e[0;36m\](%(project_name)s$(__in_project))\[\e[0m\]$PS1"
+            PROMPT_DIRTRIM=2
+            #PS1="\[\e[0;36m\](%(project_name)s$(__in_project))\[\e[0m\]$PS1"
+            PS1="${CYAN}(%(project_name)s$(__in_project))${PURPLE}\u@\h${WHITE}[${YELLOW}\w${GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} "
+            #PS2=" > "
+            #PS4=" + "
+            
         fi
         fi
+        export PROMPT_DIRTRIM
         export PS1
+        #export PS2
+        #export PS4
     fi
 }
 
