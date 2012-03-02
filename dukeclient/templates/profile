@@ -1,0 +1,57 @@
+# Typing "--settings=projectname.settingsfile" is annoying.
+DJANGO_SETTINGS_MODULE=settings
+
+function __format_vcs {
+    VCS="$(__vcs_status)"
+    if [ -n "$VCS" ] ; then
+        RET="$VCS:"
+    else
+        RET=""
+    fi
+    echo "$RET"
+}
+
+#function __get_duke_ps1 {
+#    #echo "${NO_COLOR}\u@\h[${CYAN}oxygeneregional${NO_COLOR}$(__django_status)]${YELLOW}\w${NO_COLOR}${GREEN}$(__vcs_status)${NO_COLOR}\$ "
+#    echo "${WHITE}(${CYAN}%(project_name)s$(__in_project)${WHITE})${PURPLE}\u@\h${WHITE}[${YELLOW}\w${UNDER_GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} "
+#}
+
+function __set_duke_ps1 {
+    PROMPT_DIRTRIM=2
+    PS1="${WHITE}(${CYAN}%(project_name)s$(__in_project)${WHITE})${PURPLE}\u@\h${WHITE}[${UNDER_GREEN}\$(__format_vcs)${YELLOW}\w${WHITE}]${NO_COLOR} "
+    export PS1
+    export PROMPT_DIRTRIM
+}
+
+
+
+# FIXME: The -vv flag is only a dirty hack to workaround a suspected 
+# threading issue with python. For some reason, on a fast machine with 
+# multiple cores, buildout hangs randomly. Increasing buildout's output
+# solves this issue. If you are still experiencing this problem, consider
+# using -vvv for even more output.
+# https://github.com/fschulze/mr.developer/pull/76
+alias buildout='buildout -c dev.cfg -vv'
+alias dev='develop'
+
+# Django
+alias syncdb='django syncdb'
+alias runserver='django runserver'
+alias shell='django shell'
+alias dbshell='django dbshell'
+alias loaddata='django loaddata'
+alias dumpdata='django dumpdata'
+
+
+# Having an executable script called test isn't such great idea.
+alias run_tests="$DUKE_ENV/.duke/bin/test" 
+
+# Make sure that while within the dev environment we only
+# use the sandboxed python interpreter.
+alias python="$DUKE_ENV/.duke/bin/python -S" 
+
+# Use IPython if installed
+if [ -n "$DUKE_ENV/.duke/bin/ipython" ] ; then
+    alias python="$DUKE_ENV/.duke/bin/ipython --autoindent --no-banner --deep-reload"
+fi
+
