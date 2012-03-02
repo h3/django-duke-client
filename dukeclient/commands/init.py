@@ -101,7 +101,9 @@ class InitCommand(BaseCommand):
             os.makedirs(self.bin_path)
 
         create_from_template('dev', self.bin_path, context)
+        print "creating the env file"
         create_from_template('env', self.bin_path, context)
+        print "env file created"
 
         self.info("Done!\n")
         self.info("Type \"buildout\" to build the environment and install requirements.")

@@ -11,9 +11,14 @@ import dukeclient
 
 
 def create_from_template(template, dest, variables=None):
+    if os.path.exists(os.path.join(os.environ['HOME'], '.duke/templates')) and template in ('env', 'profile'):
+        basedir = os.path.join(os.environ['HOME'], '.duke/')
+    else:
+        basedir = os.path.dirname(dukeclient.__file__)
+
+
     if os.path.isdir(dest):
         dest = os.path.join(dest, template)
-    basedir = os.path.dirname(dukeclient.__file__)
     src = os.path.join(basedir, 'templates/', template)
     fs = open(src, 'r')
     fd = open(dest, 'w+')
@@ -24,6 +29,8 @@ def create_from_template(template, dest, variables=None):
         fd.write(buff)
     fd.close()
     fs.close()
+    if os.path.exists(os.path.join(os.environ['HOME'], '.duke/templates')) and template == 'env':
+        create_from_template('profile', os.path.join(variables['duke_path'], 'bin/profile'), variables)
 
 """
 Taken/modified from Sentry

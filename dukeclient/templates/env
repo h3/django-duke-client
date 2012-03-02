@@ -1,10 +1,10 @@
+. ~/.bashrc 
 # based on virtualenv's activate
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
 
 
 # Shell colors
-##
 BLACK="\[\e[0;30m\]" BOLD_BLACK="\[\e[1;30m\]" UNDER_BLACK="\[\e[4;30m\]"
 RED="\[\e[0;31m\]" BOLD_RED="\[\e[1;31m\]" UNDER_RED="\[\e[4;31m\]"
 GREEN="\[\e[0;32m\]" BOLD_GREEN="\[\e[1;32m\]" UNDER_GREEN="\[\e[4;32m\]"
@@ -15,69 +15,60 @@ CYAN="\[\e[0;36m\]" BOLD_CYAN="\[\e[1;36m\]" UNDER_CYAN="\[\e[4;36m\]"
 WHITE="\[\e[0;37m\]" BOLD_WHITE="\[\e[1;37m\]" UNDER_WHITE="\[\e[4;37m\]"
 NO_COLOR="\[\e[0m\]"
 
-# Deactivate the development environment.
-deactivate () {
-    # reset old environment variables
-    if [ -n "$_OLD_DUKE_PATH" ] ; then
-        PATH="$_OLD_DUKE_PATH"
-        export PATH
-        unset _OLD_DUKE_PATH
-    fi
-    if [ -n "$_OLD_DUKE_PYTHONHOME" ] ; then
-        PYTHONHOME="$_OLD_DUKE_PYTHONHOME"
-        export PYTHONHOME
-        unset _OLD_DUKE_PYTHONHOME
-    fi
 
-    # This should detect bash and zsh, which have a hash command that must
-    # be called to get it to forget past commands.  Without forgetting
-    # past commands the $PATH changes we made may not be respected
-    if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
-        hash -r
-    fi
 
-    if [ -n "$_OLD_DUKE_PS1" ] ; then
-        PS1="$_OLD_DUKE_PS1"
-        export PS1
-        unset _OLD_DUKE_PS1
-    fi
+## Prefix the command prompt with oxygeneregional
+#function __django_status {
+#   #"\[\033[00;35m\]:django\[\e[0m\]"
+#    if [ $(pwd | xargs basename) = "oxygeneregional" ] ; then
+#        echo ":django"
+#    else
+#        echo $(pwd | xargs basename)
+#    fi
+#}
 
-    if [ -n "$_OLD_DUKE_PS2" ] ; then
-        PS1="$_OLD_DUKE_PS2"
-        export PS1
-        unset _OLD_DUKE_PS2
-    fi
-
-    if [ -n "$_OLD_DUKE_PS4" ] ; then
-        PS1="$_OLD_DUKE_PS4"
-        export PS1
-        unset _OLD_DUKE_PS4
-    fi
-
-    if [ -n "$_OLD_DIRTRIM" ] ; then
-        PROMPT_DIRTRIM="$_OLD_DIRTRIM"
-        export PROMPT_DIRTRIM
-        unset _OLD_DIRTRIM
+# Prefix the command prompt with %(project_name)s
+function __in_project {
+   #"\[\033[00;35m\]:django\[\e[0m\]"
+    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
+        echo ":django"
     else
-        export PROMPT_DIRTRIM=""
-    fi
-
-    unset DUKE_ENV
-    if [ ! "$1" = "nondestructive" ] ; then
-    # Self destruct!
-        unset -f deactivate
+        echo ""
     fi
 }
 
-# unset irrelavent variables
-deactivate nondestructive
 
-DUKE_ENV="%(base_path)s"
+parse_git_branch () {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+
+parse_git_dirty () {
+  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
+}
+
+__vcs_status () {
+    if [ -d "$PWD/.svn" ]; then
+        #echo "Controlled by SVN"
+        echo "svn"
+    elif [ -n "$(parse_git_branch)" ]; then
+        echo "git"
+        #echo "${GREEN}\$(parse_git_branch)${RED}\$(parse_git_dirty)"
+    fi
+}
+
+# Duke client default environment variables
+
+#DUKE_ENV="/media/00343df4-04ec-4efe-a035-955c5ae83551/www/oxygene-regional.qc.ca/trunk/oxygene-regional"
+DUKE_ENV="$PWD"
+#DUKE_PS1="${CYAN}(oxygeneregional$(__django_status))${PURPLE}\u@\h${WHITE}[${YELLOW}\w${GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} (${TEST})"
+DUKE_DIRTRIM=2
+
+CUSTOM_TEMPLATES="~/.duke/templates"
+
+_DUKE_OLD_PATH="$PATH"
+
+
 export DUKE_ENV
-_OLD_DUKE_PATH="$PATH"
-
-# Typing "--settings=projectname.settingsfile" is annoying.
-DJANGO_SETTINGS_MODULE=%(settings_module)s
 
 # Add bin/ to the executable path to make them available
 # without having to type their path and make all scripts 
@@ -86,23 +77,11 @@ PATH="$DUKE_ENV/.duke/bin:$PATH"
 export PATH
 chmod a+x $DUKE_ENV/.duke/bin/*
 
-# Make sure that while within the dev environment we only
-# use the sandboxed python interpreter.
-alias python="$DUKE_ENV/.duke/bin/python -S" 
-
-if [ -n "$DUKE_ENV/.duke/bin/ipython" ] ; then
-    alias python="$DUKE_ENV/.duke/bin/ipython --autoindent --no-banner --deep-reload"
-fi
-
-
-# Having an executable script called test isn't such great idea.
-alias run_tests="$DUKE_ENV/.duke/bin/test" 
-
 # unset PYTHONHOME if set
 # this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
 # could use `if (set -u; : $PYTHONHOME) ;` in bash
 if [ -n "$PYTHONHOME" ] ; then
-    _OLD_DUKE_PYTHONHOME="$PYTHONHOME"
+    _DUKE_OLD_PYTHONHOME="$PYTHONHOME"
     unset PYTHONHOME
 fi
  
@@ -118,118 +97,32 @@ case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
 
-# Add come color goodies, just because we can
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-#ocho  FIXME: The -vv flag is only a dirty hack to workaround a suspected 
-# threading issue with python. For some reason, on a fast machine with 
-# multiple cores, buildout hangs randomly. Increasing buildout's output
-# solves this issue. If you are still experiencing this problem, consider
-# using -vvv for even more output.
-# https://github.com/fschulze/mr.developer/pull/76
-alias buildout='buildout -c dev.cfg -vv'
-
-alias dev='develop'
-
-# Django
-alias syncdb='django syncdb'
-alias runserver='django runserver'
-alias shell='django shell'
-alias dbshell='django dbshell'
-alias loaddata='django loaddata'
-alias dumpdata='django dumpdata'
-
-# Git
-alias gb='git branch'
-alias gba='git branch -a'
-alias gc='git commit -v'
-alias gd='git diff'
-alias gl='git pull'
-alias gp='git push'
-alias gst='git status'
-
-
-
-parse_git_branch () {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
-}
-parse_git_dirty () {
-  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
-}
-
-__vcs_status () {
-    if [ -d "$PWD/.svn" ]; then
-        #echo "Controlled by SVN"
-        echo ":svn"
-    elif [ -n "$(parse_git_branch)" ]; then
-        echo ":git"
-        #echo "${GREEN}\$(parse_git_branch)${RED}\$(parse_git_dirty)"
-    fi
-}
-
-
-# Prefix the command prompt with %(project_name)s
-
-function __in_project {
-   #"\[\033[00;35m\]:django\[\e[0m\]"
-    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
-        echo ":django"
-    else
-        echo ""
-    fi
-}
-
 function __duke_prompt {
     if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
-        _OLD_DUKE_PS1="$PS1"
-        #_OLD_DUKE_PS2="$PS2"
-        #_OLD_DUKE_PS4="$PS4"
-        _OLD_DIRTRIM="$PROMPT_DIRTRIM"
+        _DUKE_OLD_PS1="$PS1"
+        _DUKE_OLD_DIRTRIM="$PROMPT_DIRTRIM"
+        #source "$DUKE_ENV/.duke/bin/profile"
+        #source "$CUSTOM_TEMPLATES/profile"
+        . profile
         
         if [ "x" != x ] ; then
-        PS1="$PS1"
-        else
-        if [ "`basename \"$DUKE_ENV\"`" = "__" ] ; then
+            PS1="$PS1"
+        elif [ "`basename \"$DUKE_ENV\"`" = "__" ] ; then
             # special case for Aspen magic directories
             # see http://www.zetadev.com/software/aspen/
             PS1="(%(project_name)s$(in_project)) $PS1"
             PROMPT_DIRTRIM="$PROMPT_DIRTRIM"
         else
-            #GOAL PROMPT:
-            #
-            #(oxygeneregional:django:svn)h3@ion:oxygene-regional$
-            #
-            # ####################################################
-            PROMPT_DIRTRIM=2
-            #PS1="\[\e[0;36m\](%(project_name)s$(__in_project))\[\e[0m\]$PS1"
-            PS1="${WHITE}(${CYAN}%(project_name)s$(__in_project)${UNDER_GREEN}\$(__vcs_status)${WHITE})${PURPLE}\u@\h${WHITE}[${YELLOW}\w${WHITE}]${NO_COLOR} "
-            #PS2=" > "
-            #PS4=" + "
+            PROMPT_DIRTRIM=DUKE_DIRTRIM
+            #echo $PWD 
+            #echo "$CUSTOM_TEMPLATES"
+            #PS1="$(__get_duke_ps1)"
+            __set_duke_ps1
+            #PS1="${NO_COLOR}\u@\h[${CYAN}oxygeneregional${NO_COLOR}$(__django_status)]${YELLOW}\w${NO_COLOR}${GREEN}$(__vcs_status)${NO_COLOR}\$ "
             
         fi
-        fi
-        export PROMPT_DIRTRIM
-        export PS1
-        #export PS2
-        #export PS4
+        #export PROMPT_DIRTRIM
+        #export PS1
     fi
 }
-
-
-function __show_backups {
-    echo $_OLD_DUKE_PS1
-    echo $_OLD_DIRTRIM
-}
-
 __duke_prompt
-
- 
-#PS1='\[\033[01;37m\]\w\[\033[00;35m\]$(parse_git_branch)\[\033[00m\] \$ '
