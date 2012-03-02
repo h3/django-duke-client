@@ -15,7 +15,6 @@ CYAN="\[\e[0;36m\]" BOLD_CYAN="\[\e[1;36m\]" UNDER_CYAN="\[\e[4;36m\]"
 WHITE="\[\e[0;37m\]" BOLD_WHITE="\[\e[1;37m\]" UNDER_WHITE="\[\e[4;37m\]"
 NO_COLOR="\[\e[0m\]"
 
-
 # Deactivate the development environment.
 deactivate () {
     # reset old environment variables
@@ -55,12 +54,12 @@ deactivate () {
         unset _OLD_DUKE_PS4
     fi
 
-    echo 'maybe'
     if [ -n "$_OLD_DIRTRIM" ] ; then
-        echo "Resetting dirtrim"
         PROMPT_DIRTRIM="$_OLD_DIRTRIM"
         export PROMPT_DIRTRIM
         unset _OLD_DIRTRIM
+    else
+        export PROMPT_DIRTRIM=""
     fi
 
     unset DUKE_ENV
@@ -170,7 +169,7 @@ __vcs_status () {
     if [ -d "$PWD/.svn" ]; then
         #echo "Controlled by SVN"
         echo ":svn"
-    elif [ parse_git_branch ]; then
+    elif [ -n "$(parse_git_branch)" ]; then
         echo ":git"
         #echo "${GREEN}\$(parse_git_branch)${RED}\$(parse_git_dirty)"
     fi
@@ -204,9 +203,14 @@ function __duke_prompt {
             PS1="(%(project_name)s$(in_project)) $PS1"
             PROMPT_DIRTRIM="$PROMPT_DIRTRIM"
         else
+            #GOAL PROMPT:
+            #
+            #(oxygeneregional:django:svn)h3@ion:oxygene-regional$
+            #
+            # ####################################################
             PROMPT_DIRTRIM=2
             #PS1="\[\e[0;36m\](%(project_name)s$(__in_project))\[\e[0m\]$PS1"
-            PS1="${CYAN}(%(project_name)s$(__in_project))${PURPLE}\u@\h${WHITE}[${YELLOW}\w${GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} "
+            PS1="${WHITE}(${CYAN}%(project_name)s$(__in_project)${UNDER_GREEN}\$(__vcs_status)${WHITE})${PURPLE}\u@\h${WHITE}[${YELLOW}\w${WHITE}]${NO_COLOR} "
             #PS2=" > "
             #PS4=" + "
             
@@ -217,6 +221,12 @@ function __duke_prompt {
         #export PS2
         #export PS4
     fi
+}
+
+
+function __show_backups {
+    echo $_OLD_DUKE_PS1
+    echo $_OLD_DIRTRIM
 }
 
 __duke_prompt
