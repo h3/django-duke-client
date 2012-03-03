@@ -52,8 +52,7 @@ def create_from_template(template, dest, variables=None):
     fs   = open(src, 'r')
     fd   = open(dest, 'w+')
     buff = fs.read()
-    print variables
-    args = [variables is None and buff or buff % variables]
+    args = [variables is False and buff or buff % variables]
     fd.write(*args)
     fd.close()
     fs.close()

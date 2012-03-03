@@ -56,9 +56,9 @@ class InitCommand(BaseCommand):
             self.info("Creating default global configuration file")
             self.install_file('duke_conf.yml', self.conf_path, context)
 
-        self.install_file('bootstrap.py', self.base_path, context)
+        self.install_file('bootstrap.py', self.base_path)
         self.install_file('buildout.cfg', self.base_path, context)
-        self.install_file('base.cfg', self.base_path, context)
+        self.install_file('base.cfg', self.duke_path, context)
         self.install_file('dev.cfg', self.base_path, context)
 
         self.info("Initializing zc.buildout")
