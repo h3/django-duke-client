@@ -34,6 +34,7 @@ class DevCommand(BaseCommand):
                 'duke_path': self.duke_path,
                 'settings_module': 'settings',
             }
+
             self.install_file('dev', self.bin_path, context, quiet=True)
             self.install_file('env', self.bin_path, context, quiet=True)
             self.install_file('profile', self.bin_path, context, quiet=True)

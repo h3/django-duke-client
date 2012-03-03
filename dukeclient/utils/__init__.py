@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 import sys
+import errno
 
 from hashlib import sha1
 
@@ -18,14 +19,14 @@ def get_template_path(template):
     >>> get_template_path('env')
     ~/.duke/templates/env
     """
-    path = os.path.join(os.environ['HOME'], '.duke/templates/', template)
+    path = os.path.join(os.getenv("HOME"), '.duke/templates/', template)
     if os.path.exists(path):
         return path
     else:
         return os.path.join(os.path.dirname(\
                 dukeclient.__file__), 'templates/', template)
 
-def copy_template(template, dest):
+def copy_template(template, dest, src=False):
     """
     Copy a raw template to a specific destination (no context)
 
@@ -33,7 +34,8 @@ def copy_template(template, dest):
     True
     """
     dest = os.path.join(dest, template)
-    src  = get_template_path(template)
+    if src is False:
+        src  = get_template_path(template)
     shutil.copy2(src, dest)
 
 
@@ -75,3 +77,11 @@ def get_auth_header(signature, timestamp, client):
 
 def parse_auth_header(header):
     return dict(map(lambda x: x.strip().split('='), header.split(' ', 1)[1].split(',')))
+
+def mkdir(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST:
+            pass
+        else: raise
