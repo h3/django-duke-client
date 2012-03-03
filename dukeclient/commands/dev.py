@@ -35,8 +35,8 @@ class DevCommand(BaseCommand):
                 'settings_module': 'settings',
             }
 
-            self.install_file('dev', self.bin_path, context, quiet=True)
-            self.install_file('env', self.bin_path, context, quiet=True)
-            self.install_file('profile', self.bin_path, context, quiet=True)
+            self.install_file('dev', self.bin_path, context, quiet=True, overwrite=True)
+            self.install_file('env', self.bin_path, context, quiet=True, overwrite=True)
+            self.install_file('profile', self.bin_path, context, quiet=True, overwrite=True)
 
             os.system('bash --rcfile .duke/bin/dev')

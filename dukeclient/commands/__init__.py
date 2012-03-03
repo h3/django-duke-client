@@ -25,14 +25,14 @@ class BaseCommand(object):
     def call(self):
         pass
 
-    def install_file(self, filename, path, context=False, quiet=False):
-        if os.path.exists(os.path.join(path, filename)):
+    def install_file(self, filename, path, context=False, quiet=False, overwrite=False):
+        if os.path.exists(os.path.join(path, filename)) and overwrite is False:
             if quiet is False:
                 self.info("A %s has been found, will be using it." % filename)
             return False
         else:
             if quiet is False:
-                self.info("Installing default %s" % filename)
+                self.info("Installing %s" % filename)
             create_from_template(filename, path, context)
             return True
 
