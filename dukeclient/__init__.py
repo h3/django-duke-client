@@ -10,7 +10,7 @@ from dukeclient.utils.html import html_to_text
 
 conf = GlobalConfigManager()
 
-VERSION = '0.0.1-alpha' 
+VERSION = '0.0.1-beta' 
 
 REMOTE_TIMEOUT = 300
 PROTOCOL = 'http' # https
