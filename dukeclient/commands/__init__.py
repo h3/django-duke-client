@@ -2,7 +2,7 @@ import os, sys
 import commands
 from abc import abstractmethod
 
-from dukeclient.utils import simplejson
+from dukeclient.utils import simplejson, create_from_template
 
 class BaseCommand(object):
 
@@ -24,6 +24,17 @@ class BaseCommand(object):
     @abstractmethod
     def call(self):
         pass
+
+    def install_file(self, filename, path, context=False, quiet=False):
+        if os.path.exists(os.path.join(path, filename)):
+            if quiet is False:
+                self.info("A %s has been found, will be using it." % filename)
+            return False
+        else:
+            if quiet is False:
+                self.info("Installing default %s" % filename)
+            create_from_template(filename, path, context)
+            return True
 
     def local(self, cmd):
         """

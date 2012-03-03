@@ -1,36 +1,63 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import logging
 import hmac
+import logging
+import os
+import shutil
+import sys
 
 from hashlib import sha1
 
 import dukeclient
 
+def get_template_path(template):
+    """
+    Returns the custom template path if it exists.
+    Else it returns the dukeclient/templates/ path.
+
+    >>> get_template_path('env')
+    ~/.duke/templates/env
+    """
+    path = os.path.join(os.environ['HOME'], '.duke/templates/', template)
+    if os.path.exists(path):
+        return path
+    else:
+        return os.path.join(os.path.dirname(\
+                dukeclient.__file__), 'templates/', template)
+
+def copy_template(template, dest):
+    """
+    Copy a raw template to a specific destination (no context)
+
+    >>> copy_template('env', '~/.duke/templates/')
+    True
+    """
+    dest = os.path.join(dest, template)
+    src  = get_template_path(template)
+    shutil.copy2(src, dest)
+
 
 def create_from_template(template, dest, variables=None):
-    if os.path.exists(os.path.join(os.environ['HOME'], '.duke/templates')) and template in ('env', 'profile'):
-        basedir = os.path.join(os.environ['HOME'], '.duke/')
-    else:
-        basedir = os.path.dirname(dukeclient.__file__)
+    """
+    Copy a template to a specific destination. The variables kwargs should 
+    either be False or a dictionary. If the later is provided, it will be 
+    used for variables substitution in the template.
 
-
-    if os.path.isdir(dest):
-        dest = os.path.join(dest, template)
-    src = os.path.join(basedir, 'templates/', template)
-    fs = open(src, 'r')
-    fd = open(dest, 'w+')
+    >>> create_from_template('env', '/proect/path/.duke/',\
+    >>> {'project': 'my_project'})
+    True
+    """
+    dest = os.path.join(dest, template)
+    src  = get_template_path(template)
+    fs   = open(src, 'r')
+    fd   = open(dest, 'w+')
     buff = fs.read()
-    if variables:
-        fd.write(buff % variables)
-    else:
-        fd.write(buff)
+    print variables
+    args = [variables is None and buff or buff % variables]
+    fd.write(*args)
     fd.close()
     fs.close()
-    if os.path.exists(os.path.join(os.environ['HOME'], '.duke/templates')) and template == 'env':
-        create_from_template('profile', os.path.join(variables['duke_path'], 'bin/profile'), variables)
+    return True
 
 """
 Taken/modified from Sentry

@@ -14,9 +14,9 @@ from optparse import OptionParser
 from dukeclient import VERSION
 
 from dukeclient.commands import send_command, get_command_options
-from dukeclient.utils.conf import ConfigManager
+#from dukeclient.utils.conf import GlobalConfigManager
 
-conf = ConfigManager()
+#conf = GlobalConfigManager()
 
 
 # call_command('syncdb', database=settings.DATABASE_USING or 'default', interactive=interactive)
@@ -30,10 +30,10 @@ def main():
         'dev',
         'init',
         'startproject',
+        'customize',
        #'deploy',           # ++++
-       #'django',           # ++ ?
        #'rollback',         # +
-       #'service',          # +++
+       #'service',          # +++ or command ?
        #'list',
        #'update',           # +++
     )

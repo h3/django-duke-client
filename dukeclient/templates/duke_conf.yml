@@ -1,0 +1,4 @@
+servers:
+    - name: "default"
+      address: "server.adress.com"
+      key: "server_api_key"

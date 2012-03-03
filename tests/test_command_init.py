@@ -47,6 +47,7 @@ class TestCommandInit(unittest.TestCase):
         self.assertTrue(self._path_exists('.duke/base.cfg'))
         self.assertTrue(self._path_exists('.duke/bin/dev'))
         self.assertTrue(self._path_exists('.duke/bin/env'))
+        self.assertTrue(self._path_exists('.duke/bin/profile'))
         
 
     def tearDown(self):

@@ -3,7 +3,6 @@ import dukeclient
 
 from dukeclient.commands import BaseCommand
 from dukeclient.commands.dev import DevCommand
-from dukeclient.utils import create_from_template
 
 class InitCommand(BaseCommand):
     """
@@ -26,28 +25,22 @@ class InitCommand(BaseCommand):
     ]
 
     def call(self, *args, **options):
-        self.base_path = 'base_path' in options and options['base_path'] or os.getcwd()
-        self.duke_path = os.path.join(self.base_path, '.duke/')
-        self.bin_path  = os.path.join(self.duke_path, 'bin/')
-
         if len(args) < 1:
             self.error("usage: duke init <project> [options]\n")
-
-
-
-        if not os.path.exists(self.duke_path):
-            os.makedirs(self.duke_path)
 
         # FIXME: Validate for proper python module name
         project_name = args[0].replace('/', '').replace('-', '_')
 
+        self.base_path = 'base_path' in options and options['base_path'] or os.getcwd()
+        self.duke_path = os.path.join(self.base_path, '.duke/')
+        self.bin_path  = os.path.join(self.duke_path, 'bin/')
+        self.conf_path = os.path.join(os.getenv("HOME"), '.duke/')
 
-        # bootstrap.py
-        if os.path.exists(os.path.join(self.base_path, 'bootstrap.py')):
-            self.warning("Found a bootstrap.py file.. skipping its creation.")
-        else:
-            self.info("Installing bootstrap.py..")
-            create_from_template('bootstrap.py', self.base_path)
+        if not os.path.exists(self.duke_path):
+            os.makedirs(self.duke_path)
+
+        if not os.path.exists(self.conf_path):
+            os.mkdir(self.conf_path)
 
         # Variables passed to generated .cfg files
         context = {
@@ -59,26 +52,14 @@ class InitCommand(BaseCommand):
             'settings_module': 'settings',
         }
 
-        # buildout.cfg
-        if os.path.exists(os.path.join(self.base_path, 'buildout.cfg')):
-            self.info("A buildout.cfg has been found, will be using it.")
-        else:
-            self.info("Installing default buildout.cfg")
-            create_from_template('buildout.cfg', self.base_path, context)
+        if not os.path.exists(os.path.join(self.conf_path, 'duke_conf.yml')):
+            self.info("Creating default global configuration file")
+            self.install_file('duke_conf.yml', self.conf_path, context)
 
-        # .duke/base.cfg
-        if os.path.exists(os.path.join(self.duke_path, 'base.cfg')):
-            self.info("A base.cfg has been found, will be using it.")
-        else:
-            self.info("Installing default base.cfg")
-            create_from_template('base.cfg', self.duke_path, context)
-
-        # .duke/dev.cfg
-        if os.path.exists(os.path.join(self.base_path, 'dev.cfg')):
-            self.info("A dev.cfg has been found, will be using it.")
-        else:
-            self.info("Installing default dev.cfg")
-            create_from_template('dev.cfg', self.base_path, context)
+        self.install_file('bootstrap.py', self.base_path, context)
+        self.install_file('buildout.cfg', self.base_path, context)
+        self.install_file('base.cfg', self.base_path, context)
+        self.install_file('dev.cfg', self.base_path, context)
 
         self.info("Initializing zc.buildout")
         
@@ -100,10 +81,14 @@ class InitCommand(BaseCommand):
         if not os.path.exists(self.bin_path):
             os.makedirs(self.bin_path)
 
-        create_from_template('dev', self.bin_path, context)
-        print "creating the env file"
-        create_from_template('env', self.bin_path, context)
-        print "env file created"
+        self.install_file('dev', self.bin_path, context)
+        self.install_file('env', self.bin_path, context)
+        self.install_file('profile', self.bin_path, context)
+
+        # The project_conf.yml might have local modifications so we want
+        # to preserve it.
+        if not os.path.exists(os.path.join(self.duke_path, 'project_conf.yml')):
+            self.install_file('project_conf.yml', self.duke_path, context)
 
         self.info("Done!\n")
         self.info("Type \"buildout\" to build the environment and install requirements.")

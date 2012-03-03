@@ -5,10 +5,10 @@ import uuid
 import logging
 
 from dukeclient.utils import json, get_auth_header, get_signature
-from dukeclient.utils.conf import ConfigManager
+from dukeclient.utils.conf import GlobalConfigManager
 from dukeclient.utils.html import html_to_text
 
-conf = ConfigManager()
+conf = GlobalConfigManager()
 
 VERSION = '0.0.1-alpha' 
 
