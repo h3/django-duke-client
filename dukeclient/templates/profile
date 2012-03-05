@@ -1,31 +1,9 @@
 # Typing "--settings=projectname.settingsfile" is annoying.
 DJANGO_SETTINGS_MODULE=settings
-
 SEP="|"
 ENDCHAR="$ "
-PROMPT_DIRTRIM=2
-
-function __format_vcs {
-    VCS="$(__vcs_status)"
-    if [ -n "$VCS" ] ; then
-        RET="$VCS:"
-    else
-        RET=""
-    fi
-    echo "$RET"
-}
-
-# Prefix the command prompt with %(project_name)s
-function __in_project {
-    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
-        echo "django:"
-    else
-        echo ""
-    fi
-}
-
-function __set_duke_ps1 {
-    PS1="${NO_COLOR}\u@\h${SEP}${BOLD_CYAN}\$(__in_project)${CYAN}%(project_name)s${NO_COLOR}${SEP}${BOLD_YELLOW}\$(__format_vcs)${YELLOW}\w${NO_COLOR}${ENDCHAR}"
-    export PS1
-    export PROMPT_DIRTRIM
-}
+DUKE_DIRTRIM=2
+DUKE_DJANGO_STR="django:"
+DUKE_SVN_STR="svn:"
+DUKE_GIT_STR="git:"
+DUKE_PS1="${NO_COLOR}\u@\h${SEP}${BOLD_CYAN}\$(__in_project)${CYAN}%(project_name)s${NO_COLOR}${SEP}${BOLD_YELLOW}\$(__vcs_status)${YELLOW}\w${NO_COLOR}${ENDCHAR}"
