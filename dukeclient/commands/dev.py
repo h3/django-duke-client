@@ -12,13 +12,13 @@ class DevCommand(BaseCommand):
    #    ('-p', '--python', {'dest': 'python'}),
    #]
 
-    base_path = os.getcwd()
-    project = ProjectConfigManager(base_path)
 
     def call(self, *args, **options):
         if not os.path.exists(os.path.join(self.base_path, '.duke/')):
             self.error("not within a duke managed project.")
 
+        self.base_path = os.getcwd()
+        self.project = ProjectConfigManager(base_path)
         self.duke_path = os.path.join(self.base_path, '.duke/')
         self.bin_path  = os.path.join(self.duke_path, 'bin/')
 
