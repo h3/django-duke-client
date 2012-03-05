@@ -30,11 +30,6 @@ function __in_project {
     fi
 }
 
-#function __get_duke_ps1 {
-#    #echo "${NO_COLOR}\u@\h[${CYAN}oxygeneregional${NO_COLOR}$(__django_status)]${YELLOW}\w${NO_COLOR}${GREEN}$(__vcs_status)${NO_COLOR}\$ "
-#    echo "${WHITE}(${CYAN}%(project_name)s$(__in_project)${WHITE})${PURPLE}\u@\h${WHITE}[${YELLOW}\w${UNDER_GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} "
-#}
-
 SEP="|"
 ENDCHAR="$ "
 
