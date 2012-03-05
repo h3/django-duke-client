@@ -3,7 +3,6 @@
 # This file must be used with "source bin/activate" *from bash*
 # you cannot run it directly
 
-
 # Shell colors
 BLACK="\[\e[0;30m\]" BOLD_BLACK="\[\e[1;30m\]" UNDER_BLACK="\[\e[4;30m\]"
 RED="\[\e[0;31m\]" BOLD_RED="\[\e[1;31m\]" UNDER_RED="\[\e[4;31m\]"
@@ -15,18 +14,6 @@ CYAN="\[\e[0;36m\]" BOLD_CYAN="\[\e[1;36m\]" UNDER_CYAN="\[\e[4;36m\]"
 WHITE="\[\e[0;37m\]" BOLD_WHITE="\[\e[1;37m\]" UNDER_WHITE="\[\e[4;37m\]"
 NO_COLOR="\[\e[0m\]"
 
-
-
-## Prefix the command prompt with oxygeneregional
-#function __django_status {
-#   #"\[\033[00;35m\]:django\[\e[0m\]"
-#    if [ $(pwd | xargs basename) = "oxygeneregional" ] ; then
-#        echo ":django"
-#    else
-#        echo $(pwd | xargs basename)
-#    fi
-#}
-
 parse_git_branch () {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
@@ -37,25 +24,18 @@ parse_git_dirty () {
 
 __vcs_status () {
     if [ -d "$PWD/.svn" ]; then
-        #echo "Controlled by SVN"
         echo "svn"
     elif [ -n "$(parse_git_branch)" ]; then
         echo "git"
-        #echo "${GREEN}\$(parse_git_branch)${RED}\$(parse_git_dirty)"
     fi
 }
 
 # Duke client default environment variables
 
-#DUKE_ENV="/media/00343df4-04ec-4efe-a035-955c5ae83551/www/oxygene-regional.qc.ca/trunk/oxygene-regional"
 DUKE_ENV="$PWD"
-#DUKE_PS1="${CYAN}(oxygeneregional$(__django_status))${PURPLE}\u@\h${WHITE}[${YELLOW}\w${GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} (${TEST})"
 DUKE_DIRTRIM=2
-
 CUSTOM_TEMPLATES="~/.duke/templates"
-
 _DUKE_OLD_PATH="$PATH"
-
 
 export DUKE_ENV
 
@@ -86,12 +66,55 @@ case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
 
+# Django commands
+
+function __django {
+    if [ -e "settings.py" ] ; then
+        django $@
+    else
+        echo "Error: You must be within a django project to use this command."
+    fi
+}
+
+alias syncdb="__django syncdb"
+alias runserver="__django runserver"
+alias shell="__django shell"
+alias dbshell="__django dbshell"
+alias loaddata="__django loaddata"
+alias dumpdata="__django dumpdata"
+
+# Duke commands 
+
+function __duke {
+    if [ -e "buildout.cfg" ] ; then
+        $@
+    else
+        echo "Error: You must be within a duke project to use this command."
+    fi
+}
+
+# FIXME: The -vv flag is only a dirty hack to workaround a suspected 
+# threading issue with python. For some reason, on a fast machine with 
+# multiple cores, buildout hangs randomly. Increasing buildout's output
+# solves this issue. If you are still experiencing this problem, consider
+# using -vvv for even more output.
+# https://github.com/fschulze/mr.developer/pull/76
+alias buildout='__duke buildout -c dev.cfg -vv'
+alias dev='__duke develop'
+
+# Python commands
+
+# Make sure that while within the dev environment we only
+# use the sandboxed python interpreter.
+alias python="$DUKE_ENV/.duke/bin/python -S" 
+alias ipython="$DUKE_ENV/.duke/bin/ipython --autoindent --no-banner --deep-reload"
+
+# Prompt
+
 function __duke_prompt {
     if [ -z "$DUKE_ENV_DISABLE_PROMPT" ] ; then
         _DUKE_OLD_PS1="$PS1"
         _DUKE_OLD_DIRTRIM="$PROMPT_DIRTRIM"
-        #source "$DUKE_ENV/.duke/bin/profile"
-        #source "$CUSTOM_TEMPLATES/profile"
         . profile
         
         if [ "x" != x ] ; then
@@ -103,15 +126,9 @@ function __duke_prompt {
             PROMPT_DIRTRIM="$PROMPT_DIRTRIM"
         else
             PROMPT_DIRTRIM=DUKE_DIRTRIM
-            #echo $PWD 
-            #echo "$CUSTOM_TEMPLATES"
-            #PS1="$(__get_duke_ps1)"
             __set_duke_ps1
-            #PS1="${NO_COLOR}\u@\h[${CYAN}oxygeneregional${NO_COLOR}$(__django_status)]${YELLOW}\w${NO_COLOR}${GREEN}$(__vcs_status)${NO_COLOR}\$ "
             
         fi
-        #export PROMPT_DIRTRIM
-        #export PS1
     fi
 }
 __duke_prompt
