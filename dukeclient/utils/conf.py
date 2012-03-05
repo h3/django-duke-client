@@ -9,6 +9,7 @@ def load_yaml(path):
     try:
         return yaml.load(file(f, 'r'))
     except IOError, e:
+        print e
         return False
     except yaml.YAMLError, e:
         print "Error: Could not parse configuration file:", e
@@ -17,13 +18,13 @@ def load_yaml(path):
 class GlobalConfigManager():
     """
     This class is used to interact with global configurations
-    stored in ~/.duke/conf.yml in YAML format
+    stored in ~/.duke/duke_conf.yml in YAML format
     """
 
     def __init__(self):
         self.homedir = os.getenv("HOME")
         self.conf_dir = os.path.join(self.homedir, '.duke/')
-        self.conf_file = os.path.join(self.conf_dir, 'conf.yml')
+        self.conf_file = os.path.join(self.conf_dir, 'duke_conf.yml')
         self.conf = load_yaml(self.conf_file)
 
     def get_server(self, name='default'):
@@ -84,7 +85,7 @@ class GlobalConfigManager():
 class ProjectConfigManager():
     """
     This class is used to interact with configurations
-    stored in /project/.duke/conf.yml in YAML format
+    stored in /project/.duke/project_conf.yml in YAML format
     """
 
     def __init__(self, project_path):
