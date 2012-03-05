@@ -20,14 +20,27 @@ function __format_vcs {
 #    aliasmagic
 }
 
+# Prefix the command prompt with %(project_name)s
+function __in_project {
+   #"\[\033[00;35m\]:django\[\e[0m\]"
+    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
+        echo "django:"
+    else
+        echo ""
+    fi
+}
+
 #function __get_duke_ps1 {
 #    #echo "${NO_COLOR}\u@\h[${CYAN}oxygeneregional${NO_COLOR}$(__django_status)]${YELLOW}\w${NO_COLOR}${GREEN}$(__vcs_status)${NO_COLOR}\$ "
 #    echo "${WHITE}(${CYAN}%(project_name)s$(__in_project)${WHITE})${PURPLE}\u@\h${WHITE}[${YELLOW}\w${UNDER_GREEN}\$(__vcs_status)${WHITE}]${NO_COLOR} "
 #}
 
+SEP="|"
+ENDCHAR="$ "
+
 function __set_duke_ps1 {
     PROMPT_DIRTRIM=2
-    PS1="${WHITE}(${CYAN}%(project_name)s$(__in_project)${WHITE})${PURPLE}\u@\h${WHITE}[${UNDER_GREEN}\$(__format_vcs)${YELLOW}\w${WHITE}]${NO_COLOR} "
+    PS1="${NO_COLOR}\u@\h${SEP}${BOLD_CYAN}\$(__in_project)${CYAN}%(project_name)s${NO_COLOR}${SEP}${BOLD_YELLOW}\$(__format_vcs)${YELLOW}\w${NO_COLOR}${ENDCHAR}"
     export PS1
     export PROMPT_DIRTRIM
 }

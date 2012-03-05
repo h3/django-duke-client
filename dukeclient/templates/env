@@ -27,17 +27,6 @@ NO_COLOR="\[\e[0m\]"
 #    fi
 #}
 
-# Prefix the command prompt with %(project_name)s
-function __in_project {
-   #"\[\033[00;35m\]:django\[\e[0m\]"
-    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
-        echo ":django"
-    else
-        echo ""
-    fi
-}
-
-
 parse_git_branch () {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
