@@ -9,7 +9,7 @@ def load_yaml(path):
     try:
         return yaml.load(file(f, 'r'))
     except IOError, e:
-        print e
+       #print e
         return False
     except yaml.YAMLError, e:
         print "Error: Could not parse configuration file:", e
