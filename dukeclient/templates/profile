@@ -1,11 +1,12 @@
 # Typing "--settings=projectname.settingsfile" is annoying.
 DJANGO_SETTINGS_MODULE=settings
 
-function aliasmagic {
-    if [ -e "$PWD/settings.py" ] ; then
-        #alias penis="echo 'roger'"
-    fi
-}
+#function aliasmagic {
+#    #if [ -e "$PWD/settings.py" ] ; then
+#    #    #alias penis="echo 'roger'"
+#    #    echo "test"
+#    #fi
+#}
 
 function __format_vcs {
     VCS="$(__vcs_status)"
@@ -16,7 +17,7 @@ function __format_vcs {
     fi
     echo "$RET"
 
-    aliasmagic
+#    aliasmagic
 }
 
 #function __get_duke_ps1 {
