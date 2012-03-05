@@ -41,7 +41,7 @@ function __in_project {
 
 # Duke client default environment variables
 
-DUKE_ENV="$PWD"
+DUKE_ENV="%(base_path)s"
 DUKE_DIRTRIM=2
 CUSTOM_TEMPLATES="~/.duke/templates"
 _DUKE_OLD_PATH="$PATH"
