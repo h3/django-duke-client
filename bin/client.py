@@ -31,6 +31,7 @@ def main():
         'init',
         'startproject',
         'customize',
+        'help',
        #'deploy',           # ++++
        #'rollback',         # +
        #'service',          # +++ or command ?
@@ -38,12 +39,17 @@ def main():
        #'update',           # +++
     )
 
-    if len(sys.argv) < 2 or sys.argv[1] not in command_list:
+    if len(sys.argv) < 2\
+        or sys.argv[1] not in command_list\
+        or sys.argv[1] == 'help':
         print "usage: duke [command] [options]\n"
         print "Available subcommands:"
         for cmd in command_list:
             print " ", cmd
-        sys.exit(1)
+        if len(sys.argv) >= 2 and sys.argv[1] == 'help':
+            print ""
+        else:
+            sys.exit(1)
 
     parser = OptionParser(version="%%prog %s" % VERSION)
     cmd  = sys.argv[1]
