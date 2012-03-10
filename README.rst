@@ -14,24 +14,6 @@ efficiency and extensibility.
 
 Official documentation: http://readthedocs.org/docs/django-duke-client/en/latest/
 
-
-For the impatients
-------------------
-
-Install django duke client::
-
-    git clone git://github.com/h3/django-duke-client.git
-    cd django-duke-client
-    sudo python setup.py develop
-
-Create a project::
-
-    duke startproject test-project
-    cd test-project
-    duke init testproject
-    buildout
-
-
 Installation
 ------------
 
@@ -41,6 +23,16 @@ source::
    $: git clone git://github.com/h3/django-duke-client.git
    $: cd django-duke-client/
    $: sudo python setup.py develop
+
+For the impatients
+------------------
+
+Create a project::
+
+    duke startproject test-project
+    cd test-project
+    duke init testproject
+    buildout
 
 Minimal project layout
 ----------------------
