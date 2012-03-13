@@ -16,7 +16,12 @@ class DevCommand(BaseCommand):
     def call(self, *args, **options):
         self.base_path = os.getcwd()
         if not os.path.exists(os.path.join(self.base_path, '.duke/')):
-            self.error("not within a duke managed project.")
+            if os.path.exists(os.path.join(self.base_path, 'setup.py')):
+                self.error("not within a duke managed project, but a setup.py \
+file has been found. Initialize this project with this command\n\
+$ duke init <project_name>")
+            else:
+                self.error("not within a duke managed project.")
 
         self.project = ProjectConfigManager(self.base_path)
         self.duke_path = os.path.join(self.base_path, '.duke/')
