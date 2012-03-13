@@ -1,22 +1,17 @@
 import re
 
-def yes_no_prompt(message, default=False):
+def confirm(message, default=False, yes=['y', 'yes'], no=['n', 'no'], 
+        yn='Y/n', ny='[y/N]'):
 
-    if default:
-        yn = "[Y/n]"
-    else:
-        yn = "[y/N]"
+    if default: yn = yn
+    else:       yn = ny
 
     rs = raw_input('%s %s: ' % (message, yn))
 
-    if rs == '':
-        return default
-
-    elif rs not in ['y','yes','n', 'no']:
-        return yes_no_prompt(message, default)
-
-    else:
-        return rs in ['y', 'yes']
+    if rs == '': return default
+    elif rs not in yes + no:
+        return confirm(message, default)
+    else: return rs in yes 
 
 
 # Borrowed from fabric
