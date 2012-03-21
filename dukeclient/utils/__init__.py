@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import errno
 import hmac
 import logging
 import os
+import re
 import shutil
 import sys
-import errno
 
 from hashlib import sha1
 
@@ -85,6 +86,26 @@ def create_from_template(template, dest, variables=None):
     fd.close()
     fs.close()
     return True
+
+
+def mkdir(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST:
+            pass
+        else: raise
+
+
+def file_to_string(f):
+    """
+    Returns file content as string
+    """
+    fd = open(f)
+    buf = fd.readlines()
+    fd.close()
+    return ''.join(buf)
+
 
 """
 Taken/modified from Sentry
