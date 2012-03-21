@@ -89,12 +89,7 @@ def create_from_template(template, dest, variables=None):
 
 
 def mkdir(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc: # Python >2.5
-        if exc.errno == errno.EEXIST:
-            pass
-        else: raise
+    os.makedirs(path)
 
 
 def file_to_string(f):
@@ -124,6 +119,3 @@ def get_auth_header(signature, timestamp, client):
 
 def parse_auth_header(header):
     return dict(map(lambda x: x.strip().split('='), header.split(' ', 1)[1].split(',')))
-
-def mkdir(path):
-    os.makedirs(path)
