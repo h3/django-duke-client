@@ -36,15 +36,7 @@ def setup_permissions():
     if media_root and files.exists(media_root):
         sudo("chmod -R 777 %s" % media_root)
     
-    # FIXME: Dirty hack
-    # The fabfile should run itself remotely to discover the database
-    # type and path as described here:
-    # http://docs.fabfile.org/en/1.4.0/api/contrib/django.html
-   #project_root = get_project_path(env)
-   #dev_db_root  = os.path.join(project_root, env.site['project'], 'dev.db')
-   #if files.exists(dev_db_root):
-   #    sudo("chmod -R 777 %s" % dev_db_root)
-   #event(env, 'on-setup-permissions-done')
+    event(env, 'on-setup-permissions-done')
 
 
 @task
