@@ -1,5 +1,7 @@
 import os
 
+from fabric.api import sudo
+
 
 def get_role(env):
     for role in env.roles:
