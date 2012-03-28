@@ -1,6 +1,6 @@
 import os, sys
 import commands
-from abc import abstractmethod
+#from abc import abstractmethod
 
 from dukeclient.utils import simplejson, create_from_template
 
@@ -21,7 +21,7 @@ class BaseCommand(object):
             else:
                 return False
 
-    @abstractmethod
+   #@abstractmethod
     def call(self):
         pass
 
