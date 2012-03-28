@@ -7,11 +7,20 @@ from dukeclient.fabric.utils import get_project_path, get_conf, get_role, event,
 @task
 def media_diff(role=None):
     if role is None:
-        diff_1 = '/tmp/%s' % env.site['project']
-        sudo('ls -l %s > %s' % (get_conf(env, 'media-root'), diff_1))
+        ls = 'ls -ABFgRhl1 --ignore=.svn'
+        diff_1 = '/tmp/%s.%s' % (env.site['project'], get_role(env))
+
+        sudo('%s %s > %s' % (ls, get_conf(env, 'media-root'), diff_1))
         get(diff_1, '/tmp/')
         sudo('rm -f %s' % diff_1)
-        local('cat %s' % diff_1)
+        
+        # TODO: determine actual MEDIA_ROOT using settings
+        media_root = '%s/media/' % env.site['project']
+        diff_2 = '/tmp/%s' % env.site['project']
+
+        local('%s %s > %s' % (ls, media_root, diff_2))
+        local('vim -fdRmMn %s %s' % (diff_1, diff_2))
+        local('rm -f %s %s' % diff_1, diff_2)
 
 @task
 def setup_permissions():
