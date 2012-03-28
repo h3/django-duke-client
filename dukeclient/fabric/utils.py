@@ -4,6 +4,9 @@ from fabric.api import sudo
 
 
 def get_role(env):
+    """
+    Returns the current active role
+    """
     for role in env.roles:
         if env.host_string in env.roledefs[role]:
             return role

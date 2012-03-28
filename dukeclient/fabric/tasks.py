@@ -4,6 +4,14 @@ from fabric.api import *
 from fabric.contrib import files
 from dukeclient.fabric.utils import get_project_path, get_conf, get_role, event, duke_init
 
+@task
+def media_diff(role=None):
+    if role is None:
+        diff_1 = '/tmp/%s' % env.site['project']
+        sudo('ls -l %s > %s' % (get_conf(env, 'media-root'), diff_1))
+        get(diff_1, '/tmp/')
+        sudo('rm -f %s' % diff_1)
+        local('cat %s' % diff_1)
 
 @task
 def setup_permissions():
@@ -32,11 +40,11 @@ def setup_permissions():
     # The fabfile should run itself remotely to discover the database
     # type and path as described here:
     # http://docs.fabfile.org/en/1.4.0/api/contrib/django.html
-    project_root = get_project_path(env)
-    dev_db_root  = os.path.join(project_root, env.site['project'], 'dev.db')
-    if files.exists(dev_db_root):
-        sudo("chmod -R 777 %s" % dev_db_root)
-    event(env, 'on-setup-permissions-done')
+   #project_root = get_project_path(env)
+   #dev_db_root  = os.path.join(project_root, env.site['project'], 'dev.db')
+   #if files.exists(dev_db_root):
+   #    sudo("chmod -R 777 %s" % dev_db_root)
+   #event(env, 'on-setup-permissions-done')
 
 
 @task
