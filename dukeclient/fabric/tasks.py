@@ -128,6 +128,7 @@ def deploy(reload=True):
     """
     event(env, 'on-deploy')
     deploy_code(reload=reload)
+    collectstatic()
     setup_permissions()
     event(env, 'on-deploy-done')
 
