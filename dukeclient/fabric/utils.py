@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo
+from fabric.api import sudo, task
 
 
 def get_role(env):
@@ -12,11 +12,19 @@ def get_role(env):
             return role
 
 
+def get_roles(env):
+    """
+    Returns all available roles
+    """
+    return [x for x in env.roleconfs]
+
+
+
 def get_conf(env, key, default=None):
     if not hasattr(env, 'conf'):
         env.name  = get_role(env)
-        env.hosts = env.site[env.name]['hosts']
-        env.conf  = env.site[env.name]
+        env.hosts = env.roleconfs[env.name]['hosts']
+        env.conf  = env.roleconfs[env.name]
 
     try:
         v = env.conf[key]
@@ -40,7 +48,7 @@ def get_project_path(env):
     return os.path.join(docroot, env.site['package'])
 
 
-def event(env, name):
+def dispatch_event(env, name):
     ctx = {
         'package': env.site['package'],
         'project': env.site['project'],

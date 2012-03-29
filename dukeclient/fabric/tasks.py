@@ -6,7 +6,7 @@ from fabric.contrib.project import rsync_project
 from fabric.contrib import files, console, django
 from fabric.utils import abort, warn
 
-from dukeclient.fabric.utils import get_project_path, get_conf, get_role, event, duke_init
+from dukeclient.fabric.utils import *
 
 DEFAULT_RSYNC_EXCLUDE = (
     '.DS_Store',
@@ -39,43 +39,73 @@ def media_diff(from_role=None):
         local('vim -fdRmMn %s %s' % (diff_1, diff_2))
         local('rm -f %s %s' % diff_1, diff_2)
 
+
 @task
-def media_sync(from_role=None):
-    event(env, 'on-sync-media')
-    extra_opts = ['--omit-dir-times']
-    to_role = get_role(env)
+#@event(env, 'on-sync-media')
+def media_sync(*dest_roles):
+    """
+    Synchronize media folder accross stages
 
-    if from_role is None:
-        msg = "Media folders sync: local (dev) -> %s. Continue ?" % to_role
-    else:
-        msg = "Media folders sync: %s -> %s. Continue ?" % (from_role, to_role)
+    $ fab -R demo media_sync
+    sync demo -> local, prod
 
-    if console.confirm(msg, default=False):
+    $ fab -R demo media_sync:local
+    sync demo -> local
+
+    $ fab -R demo media_sync:prod
+    sync demo -> prod
+
+    $ fab -R prod media_sync:demo
+    sync prod -> demo
+
+    """
+    dispatch_event(env, 'on-sync-media')
+
+    src_role = get_role(env)
+
+    # If no dest_roles are specified, all available roles are used
+    # except the currently active role
+    if len(dest_roles) == 0:
+        dest_roles = [x for x in get_roles(env) if x != src_role]
+        dest_roles.append('local')
+
+    if console.confirm("Media sync %s -> %s" % (src_role, ", ".join(dest_roles)), default=False):
+
         tarfile = '%s.tar.gz' % env.site['project']
-        tmpdest = os.path.join('/tmp/', tarfile)
+        tmpdir  = '/tmp'
+        tmpdest = os.path.join(tmpdir, tarfile)
 
-        with(cd(get_conf(env, 'media-root'))):
-            sudo('cd .. && tar -czf %s media/; cd -' % tarfile)
+        media_root   = get_conf(env, 'media-root')
+        media_parent = os.path.abspath(os.path.join(media_root, '../'))
+        media_folder = os.path.basename(os.path.abspath(media_root))
 
-        get(tmpdest, '/tmp/')
+        sudo('tar -czf %s -C %s %s' % (tmpdest, media_parent, media_folder))
+    
+        for dest_role in dest_roles:
+            if dest_role == 'local':
+                get(tmpdest, tmpdir)
+                local('cd %s && tar -xvzf %s; cd -' % (tmpdir, tmpdest))
+                local('rsync --omit-dir-times --exclude ".svn" --exclude ".sass-cache" -pthrvz %s %s' % (\
+                        os.path.join(tmpdir, media_folder), os.path.join(os.getcwd(), env.site['project'])))
 
-        local('cd /tmp/ && tar -xvwzf; cd -' % tmpdest)
+               #rsync_project(get_conf(env, 'media-root'),
+               #    delete      = False,
+               #   #extra_opts  = " ".join(extra_opts),
+               #)
+
+
+            else:
+                "Sync media to %s (NOT IMPLEMENTED)" % dest_role
+
+    else:
+        print "Nothing changed."
 
        #if console.confirm('Delete out of sync files ? (WARNING: permanent !)', default=False):
        #    delete = True
        #else:
        #    delete = False
 
-       #rsync_project(get_conf(env, 'media-root'),
-       #    # TODO: determine actual MEDIA_ROOT using settings
-       #    local_dir   = '%s/media/' % env.site['project'],
-       #    # TODO: exclude should look for a .duke/rsync.exclude file which
-       #    # will be used to override DEFAULT_RSYNC_EXCLUDE if it exists.
-       #    exclude     = DEFAULT_RSYNC_EXCLUDE,
-       #    delete      = delete,
-       #    extra_opts  = " ".join(extra_opts),
-       #)
-    event(env, 'on-sync-media-done')
+    dispatch_event(env, 'on-sync-media-done')
 
 
 @task
@@ -83,7 +113,7 @@ def setup_permissions():
     """
     Setup directory permissions
     """
-    event(env, 'on-setup-permissions')
+    dispatch_event(env, 'on-setup-permissions')
     user = get_conf(env, 'user')
     group = get_conf(env, 'group')
     docroot = get_conf(env, 'document-root')
@@ -101,7 +131,7 @@ def setup_permissions():
     if media_root and files.exists(media_root):
         sudo("chmod -R 777 %s" % media_root)
     
-    event(env, 'on-setup-permissions-done')
+    dispatch_event(env, 'on-setup-permissions-done')
 
 
 @task
@@ -109,7 +139,7 @@ def setup_virtualenv():
     """
     Setup virtualenv
     """
-    event(env, 'on-setup-virtualenv')
+    dispatch_event(env, 'on-setup-virtualenv')
     puts("Setuping virtualenv on %s" % env.host)
     venv_root = os.path.join(get_conf(env, 'document-root'), 'virtualenv')
 
@@ -126,7 +156,7 @@ def setup_virtualenv():
         sudo("chown -R %s:%s %s" % (user, group, venv_root))
     elif user:
         sudo("chown -R %s %s" % (user, venv_root))
-    event(env, 'on-setup-virtualenv-done')
+    dispatch_event(env, 'on-setup-virtualenv-done')
 
 
 @task
@@ -155,7 +185,7 @@ def apache(cmd):
     """
     Manage the apache service. For example, `fab apache:restart`.
     """
-    event(env, 'on-apache-reload')
+    dispatch_event(env, 'on-apache-reload')
     if files.exists('/usr/sbin/invoke-rc.d'):
         sudo('invoke-rc.d apache2 %s' % cmd)
     elif files.exists('/etc/init.d/httpd'):
@@ -164,7 +194,7 @@ def apache(cmd):
     else:
         print "WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD"
         sys.exit(1)
-    event(env, 'on-apache-reload-done')
+    dispatch_event(env, 'on-apache-reload-done')
 
 
 @task
@@ -173,7 +203,7 @@ def buildout(reload=True):
     Run buildout on the project
     """
 
-    event(env, 'on-buildout')
+    dispatch_event(env, 'on-buildout')
     duke_init(env)
     project_path = get_project_path(env)
 
@@ -183,7 +213,7 @@ def buildout(reload=True):
     if reload:
         apache('reload')
 
-    event(env, 'on-buildout-done')
+    dispatch_event(env, 'on-buildout-done')
 
 
 @task
@@ -191,11 +221,11 @@ def deploy(reload=True):
     """
     Quick deploy: new code and an in-place reload.
     """
-    event(env, 'on-deploy')
+    dispatch_event(env, 'on-deploy')
     deploy_code(reload=reload)
     collectstatic()
     setup_permissions()
-    event(env, 'on-deploy-done')
+    dispatch_event(env, 'on-deploy-done')
 
 
 @task
@@ -213,7 +243,7 @@ def full_deploy():
      - reload apache
 
     """
-    event(env, 'on-deploy')
+    dispatch_event(env, 'on-deploy')
     if get_conf(env, 'virtualenv'):
         setup_virtualenv()
     deploy_code(reload=False)
@@ -225,7 +255,7 @@ def full_deploy():
     apache('reload')
     setup_permissions()
    #memcached("restart")
-    event(env, 'on-deploy-done')
+    dispatch_event(env, 'on-deploy-done')
 
 
 @task
@@ -233,7 +263,7 @@ def setup_vhost(reload=True):
     """
     Setup virtual host
     """
-    event(env, 'on-setup-vhost')
+    dispatch_event(env, 'on-setup-vhost')
     vhost = os.path.join(LOCAL_PATH, 'deploy/%s.vhost' % env.name)
     if os.path.exists(vhost):
         files.upload_template(vhost, get_conf(env, 'vhost-conf'), context={
@@ -244,7 +274,7 @@ def setup_vhost(reload=True):
         }, use_sudo=True, backup=False)
         if reload:
             apache('reload')
-    event(env, 'on-setup-vhost-done')
+    dispatch_event(env, 'on-setup-vhost-done')
 
 
 @task
@@ -252,7 +282,7 @@ def setup_settings(reload=True):
     """
     Setup production settings
     """
-    event(env, 'on-setup-settings')
+    dispatch_event(env, 'on-setup-settings')
     settings_file = os.path.join(LOCAL_PATH, 'deploy/%s_settings.py' % env.name)
     if os.path.exists(settings_file):
         dest_path = os.path.join(get_conf(env, 'document-root'), env.site['package'], 
@@ -265,7 +295,7 @@ def setup_settings(reload=True):
         }, use_sudo=True, backup=False)
         if reload:
             apache('reload')
-    event(env, 'on-setup-settings-done')
+    dispatch_event(env, 'on-setup-settings-done')
 
 
 @task
@@ -273,9 +303,9 @@ def collectstatic():
     """
     Run django collectstatic
     """
-    event(env, 'on-django-collectstatic')
+    dispatch_event(env, 'on-django-collectstatic')
     django('collectstatic --noinput --link')
-    event(env, 'on-django-collectstatic-done')
+    dispatch_event(env, 'on-django-collectstatic-done')
 
 
 @task
@@ -283,9 +313,9 @@ def syncdb():
     """
     Run django syncdb.
     """
-    event(env, 'on-django-syncdb')
+    dispatch_event(env, 'on-django-syncdb')
     django('syncdb')
-    event(env, 'on-django-synchdb-done')
+    dispatch_event(env, 'on-django-synchdb-done')
     #django('migrate')
 
 
@@ -294,10 +324,10 @@ def django(cmd):
     """
     Helper: run a management command remotely.
     """
-    event(env, 'on-django-' + cmd)
+    dispatch_event(env, 'on-django-' + cmd)
     django = os.path.join(get_project_path(env), '.duke/bin/django')
     sudo('%s %s --settings=%s.settings' % (django, cmd, env.site['project']))
-    event(env, 'on-django-' + cmd + '-done')
+    dispatch_event(env, 'on-django-' + cmd + '-done')
 
 
 #@task
