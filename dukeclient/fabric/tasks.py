@@ -2,11 +2,28 @@ import os, sys
 
 from fabric.api import *
 from fabric.contrib import files
+from fabric.contrib.project import rsync_project
+from fabric.contrib import files, console, django
+from fabric.utils import abort, warn
+
 from dukeclient.fabric.utils import get_project_path, get_conf, get_role, event, duke_init
 
+DEFAULT_RSYNC_EXCLUDE = (
+    '.DS_Store',
+    '.git',
+    '.hg',
+    '*.pyc',
+    'Thumbs.db',
+    '.svn',
+    '.sass-cache',
+    '~*',
+)
+
+# TODO: use decorators for events
+
 @task
-def media_diff(role=None):
-    if role is None:
+def media_diff(from_role=None):
+    if from_role is None:
         ls = 'ls -ABFgRhl1 --ignore=.svn'
         diff_1 = '/tmp/%s.%s' % (env.site['project'], get_role(env))
 
@@ -21,6 +38,45 @@ def media_diff(role=None):
         local('%s %s > %s' % (ls, media_root, diff_2))
         local('vim -fdRmMn %s %s' % (diff_1, diff_2))
         local('rm -f %s %s' % diff_1, diff_2)
+
+@task
+def media_sync(from_role=None):
+    event(env, 'on-sync-media')
+    extra_opts = ['--omit-dir-times']
+    to_role = get_role(env)
+
+    if from_role is None:
+        msg = "Media folders sync: local (dev) -> %s. Continue ?" % to_role
+    else:
+        msg = "Media folders sync: %s -> %s. Continue ?" % (from_role, to_role)
+
+    if console.confirm(msg, default=False):
+        tarfile = '%s.tar.gz' % env.site['project']
+        tmpdest = os.path.join('/tmp/', tarfile)
+
+        with(cd(get_conf(env, 'media-root'))):
+            sudo('cd .. && tar -czf %s media/; cd -' % tarfile)
+
+        get(tmpdest, '/tmp/')
+
+        local('cd /tmp/ && tar -xvwzf; cd -' % tmpdest)
+
+       #if console.confirm('Delete out of sync files ? (WARNING: permanent !)', default=False):
+       #    delete = True
+       #else:
+       #    delete = False
+
+       #rsync_project(get_conf(env, 'media-root'),
+       #    # TODO: determine actual MEDIA_ROOT using settings
+       #    local_dir   = '%s/media/' % env.site['project'],
+       #    # TODO: exclude should look for a .duke/rsync.exclude file which
+       #    # will be used to override DEFAULT_RSYNC_EXCLUDE if it exists.
+       #    exclude     = DEFAULT_RSYNC_EXCLUDE,
+       #    delete      = delete,
+       #    extra_opts  = " ".join(extra_opts),
+       #)
+    event(env, 'on-sync-media-done')
+
 
 @task
 def setup_permissions():
