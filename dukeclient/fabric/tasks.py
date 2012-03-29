@@ -264,7 +264,7 @@ def setup_vhost(reload=True):
     Setup virtual host
     """
     dispatch_event(env, 'on-setup-vhost')
-    vhost = os.path.join(LOCAL_PATH, 'deploy/%s.vhost' % env.name)
+    vhost = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
     if os.path.exists(vhost):
         files.upload_template(vhost, get_conf(env, 'vhost-conf'), context={
             'document-root': get_conf(env, 'document-root'),
@@ -283,7 +283,7 @@ def setup_settings(reload=True):
     Setup production settings
     """
     dispatch_event(env, 'on-setup-settings')
-    settings_file = os.path.join(LOCAL_PATH, 'deploy/%s_settings.py' % env.name)
+    settings_file = os.path.join(os.getcwd(), 'deploy/%s_settings.py' % env.name)
     if os.path.exists(settings_file):
         dest_path = os.path.join(get_conf(env, 'document-root'), env.site['package'], 
                         env.site['project'], 'local_settings.py')

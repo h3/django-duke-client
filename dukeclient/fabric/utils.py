@@ -1,6 +1,6 @@
 import os
 
-from fabric.api import sudo, task
+from fabric.api import *
 
 
 def get_role(env):
