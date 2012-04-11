@@ -171,4 +171,9 @@ Note that you will need to restart your environment for the changes to take effe
 
 To do so, simply hit Ctrl+D (or exit) and retype `duke dev`.
 
-And don't hesitate to share your improvements with me ! :)
+
+Finally, resist the temptation of editing files in `.duke/bin/` as they are recreated each 
+time you run the buildout command. Per project configuration is not supported as now, but it
+should be sufficiently easy to implement to be supported sooner than later.
+
+Don't hesitate to share your improvements with me ! :)
