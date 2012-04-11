@@ -1,6 +1,6 @@
-========
-Tutorial
-========
+========================
+Getting started tutorial
+========================
 
 .. contents::
    :depth: 3
