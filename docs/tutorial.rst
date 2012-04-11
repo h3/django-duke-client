@@ -210,7 +210,7 @@ should be sufficiently easy to implement to be supported sooner than later.
 Don't hesitate to share your improvements with me ! :)
 
 References
-----------
+==========
 
 +-------------------+--------------------------------------------------------+
 | setup.py          | http://www.buildout.org/docs/tutorial.html             |
