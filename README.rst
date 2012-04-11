@@ -49,7 +49,7 @@ Start working::
 Tutorials
 ^^^^^^^^^
 
- * "Official getting started tutorial":http://readthedocs.org/docs/django-duke-client/en/latest/tutorial.html
+* "Official getting started tutorial":http://readthedocs.org/docs/django-duke-client/en/latest/tutorial.html
 
 
 Credits
