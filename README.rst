@@ -1,3 +1,4 @@
+==================
 django-duke-client
 ==================
 
@@ -11,7 +12,7 @@ a priority.
 Official documentation: http://readthedocs.org/docs/django-duke-client/en/latest/
 
 Installation
-------------
+============
 
 We're still in early development so it's suggested to install it from source
 using `develop` instead of install::
@@ -27,10 +28,10 @@ To update it::
    $ sudo python setup.py develop
 
 Usage
------
+=====
 
 for the impatients
-==================
+^^^^^^^^^^^^^^^^^^
 
 Create and build a project::
 
@@ -46,13 +47,13 @@ Start working::
     user@host|testproject:~/.../trunk/test-project$ django runserver
 
 Tutorials
-=========
+^^^^^^^^^
 
  * "Official getting started tutorial":http://readthedocs.org/docs/django-duke-client/en/latest/tutorial.html
 
 
 Credits
--------
+=======
 
 This project was created and is sponsored by:
 
