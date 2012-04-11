@@ -5,6 +5,38 @@ Tutorial
 .. contents::
    :depth: 3
 
+Project layout
+==============
+
+The django duke client tries to be independent as possible in term of project layout. However a minimal structure is
+required for it to work properly.
+
+This is the absolute minimal project layout to initialize duke::
+
+    project-root-folder/
+      - setup.py
+
+When the project is built, it looks like this::
+
+    project-root-folder/
+      - bootstrap.py
+      - buildout.cfg
+      - dev.cfg
+      - setup.py
+      + .duke/
+        + bin/
+        + develop-eggs/
+        + eggs/
+        + parts/
+      + projectname.egg-info
+      + src/
+      + projectname/
+        - settings.py
+        - local_settings.py
+        + conf/
+            + settings/
+                - default.py
+                - dev.py
 
 Starting a project from scratch
 ===============================
@@ -61,7 +93,7 @@ mode (which can be done by typing `duke dev` in your project folder).
 You know when you are in development mode when your shell prompt is prefixed
 with a project name like this::
 
-    user@host|myprojectname|svn:~/.../trunk/my-project-name$$ ls
+    user@host|myprojectname:~/.../trunk/my-project-name$$ ls
     bootstrap.py  buildout.cfg  dev.cfg  prod.cfg  README.rst  setup.py
 
 You can see django duke created different configuration files which will be covered 
@@ -77,7 +109,7 @@ Building your project
 At this point you need to edit `buildout.cfg` to add the requirements you need 
 and buildout your project::
 
-    user@host|myprojectname|svn:~/.../trunk/my-project-name$ buildout
+    user@host|myprojectname:~/.../trunk/my-project-name$ buildout
     Getting distribution for 'mr.developer'.
     warning: no files found matching 'README.txt'
     Got mr.developer 1.19.
@@ -113,8 +145,8 @@ Once buildout has been run for the first time, you'll see new files in your proj
 folder::
 
     user@host|myprojectname|svn:~/.../trunk/my-project-name$ ls -a
-    bootstrap.py  buildout.cfg  dev.cfg  .duke  myprojectname  
-    my_project_name.egg-info  prod.cfg  README.rst  setup.py  src
+    bootstrap.py  buildout.cfg  dev.cfg  .duke  myprojectname/
+    my_project_name.egg-info/  prod.cfg  README.rst  setup.py  src/
 
 
 Start working !
@@ -171,9 +203,28 @@ Note that you will need to restart your environment for the changes to take effe
 
 To do so, simply hit Ctrl+D (or exit) and retype `duke dev`.
 
-
 Finally, resist the temptation of editing files in `.duke/bin/` as they are recreated each 
 time you run the buildout command. Per project configuration is not supported as now, but it
 should be sufficiently easy to implement to be supported sooner than later.
 
 Don't hesitate to share your improvements with me ! :)
+
+References
+----------
+
++-------------------+--------------------------------------------------------+
+| setup.py          | http://www.buildout.org/docs/tutorial.html             |
++-------------------+--------------------------------------------------------+
+| Buildout          | http://www.buildout.org/docs/                          |
+|                   | http://pypi.python.org/pypi/zc.buildout/1.5.2          | 
++-------------------+--------------------------------------------------------+
+| djangorecipe      | http://pypi.python.org/pypi/djangorecipe/0.99          |
++-------------------+--------------------------------------------------------+
+| z3c.recipe.scripts| http://pypi.python.org/pypi/z3c.recipe.scripts         |
++-------------------+--------------------------------------------------------+
+| mr.developer      | http://pypi.python.org/pypi/mr.developer               |
++-------------------+--------------------------------------------------------+
+| Django            | https://docs.djangoproject.com/                        |
++-------------------+--------------------------------------------------------+
+| django/buildout   | http://jacobian.org/writing/django-apps-with-buildout/ |
++-------------------+--------------------------------------------------------+
