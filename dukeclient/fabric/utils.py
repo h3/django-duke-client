@@ -69,3 +69,15 @@ def duke_init(env):
             sudo('duke init %s -n --python=%s' % (env.site['project'], pythonbin))
         else:
             sudo('duke init %s -n' % env.site['project'])
+
+
+def require_root_cwd():
+    if not os.path.exists(os.path.join(os.getcwd(), 'setup.py')):
+        puts("You must be in the root directory of your project to use this command.")
+        sys.exit(1)
+
+def is_svn(path):
+    return os.path.exists(os.path.join(path, '.svn'))
+
+def is_git(path):
+    return os.path.exists(os.path.join(path, '.git'))

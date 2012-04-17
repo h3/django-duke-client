@@ -21,8 +21,8 @@ With fabric
 Currently the duke client only offer some useful `fabric`_ tasks for 
 standard django deployment.
 
-Configuration
--------------
+Project Configurations
+----------------------
 
 To use it, simply create a file named `fabfile.py` in the root directory of 
 your project (where your `setup.py` file is).
@@ -94,6 +94,74 @@ The file content should look like this::
             ],
         },
 
+    }
+
+Deployment configurations
+-------------------------
+
+Deployment configurations must be stored in a directory named `deploy/` in
+the root directory of your project.
+
+
+Virtualhost
+^^^^^^^^^^^
+
+Virtual host files a threated as template, so you don't have to adjust them 
+every time you change a configuration.
+
+The naming convention is `<role>.vhost`. So if you have a `demo` and a `prod`
+role, your vhost files should be name `demo.vhost` and `prod.vhost`.
+
+Here's an example of a standard Apache/WSGI vhost configuration file::
+
+    <VirtualHost *:80>
+        ServerAdmin max@motion-m.ca
+        DocumentRoot %(document-root)s
+        ServerName %(project)s.d.motion-m.ca
+        ErrorLog /var/log/apache2/%(package)s.d.motion-m.ca-error_log
+        CustomLog %(project)s.d.motion-m.ca common
+        Options FollowSymLinks
+        WSGIPassAuthorization On
+        WSGIScriptAlias / %(document-root)s%(package)s/%(project)s/wsgi.py
+        WSGIDaemonProcess %(project)s user=www-data group=www-data processes=5 threads=1
+        WSGIProcessGroup %(project)s
+        Alias /static/ %(document-root)sstatic/
+        Alias /media/ %(document-root)smedia/
+        <Directory %(document-root)smedia/>
+            Order deny,allow
+            Allow from all
+            AllowOverride None
+        </Directory>
+        <Directory %(document-root)sstatic/>
+            Order deny,allow
+            Allow from all
+            AllowOverride None
+        </Directory>
+    </VirtualHost>
+
+
+Settings.py
+^^^^^^^^^^^
+
+The settings.py files can be automatically overwritten with a settings.py template.
+
+For example, to set your project's settings on a role named `demo` you would start
+by creating a file named `deploy/demo_settings.py`.
+
+Now every time you deploy your code, the file `deploy/demo_settings.py` gets copied 
+over `myproject/local_settings.py`, overriding any other settings set elsewhere.
+
+Here's an example which defines the default database backend::
+
+    from %(project)s.conf.settings.default import *
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': '%(project)s_demo',
+            'USER': '%(project)s',
+            'PASSWORD': '*********',
+        }
     }
 
 

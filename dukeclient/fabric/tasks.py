@@ -2,7 +2,6 @@ import os, sys
 
 from fabric.api import *
 from fabric.contrib import files
-from fabric.contrib.project import rsync_project
 from fabric.contrib import files, console, django
 from fabric.utils import abort, warn
 
@@ -18,6 +17,7 @@ DEFAULT_RSYNC_EXCLUDE = (
     '.sass-cache',
     '~*',
 )
+
 
 # TODO: use decorators for events
 
@@ -87,18 +87,11 @@ def media_sync(*dest_roles):
                 local('cd %s && tar -xvzf %s; cd -' % (tmpdir, tmpdest))
                 local('rsync --omit-dir-times --exclude ".svn" --exclude ".sass-cache" -pthrvz %s %s' % (\
                         os.path.join(tmpdir, media_folder), os.path.join(os.getcwd(), env.site['project'])))
-
-               #rsync_project(get_conf(env, 'media-root'),
-               #    delete      = False,
-               #   #extra_opts  = " ".join(extra_opts),
-               #)
-
-
             else:
                 "Sync media to %s (NOT IMPLEMENTED)" % dest_role
 
     else:
-        print "Nothing changed."
+        puts("Nothing changed.")
 
        #if console.confirm('Delete out of sync files ? (WARNING: permanent !)', default=False):
        #    delete = True
@@ -158,11 +151,35 @@ def setup_virtualenv():
         sudo("chown -R %s %s" % (user, venv_root))
     dispatch_event(env, 'on-setup-virtualenv-done')
 
+@task
+def update_code(reload=True):
+    """
+    Update code on the servers.
+    """
+    project_path = get_project_path(env)
+
+    with cd(project_path):
+        if is_svn(project_path):
+            sudo('svn up')
+        elif is_git(project_path):
+            sudo('git pull')
+
+@task
+def checkout_code(reload=True):
+    """
+    Update code on the servers.
+    """
+    project_path = get_project_path(env)
+    if is_svn(project_path):
+        sudo('svn co %s %s' % (env.site['repos'], project_path))
+    elif is_git(project_path):
+        sudo('git clone %s %s' % (env.site['repos'], project_path))
+
 
 @task
 def deploy_code(reload=True):
     """
-    Update code on the servers from SVN.
+    Checkout or update code on the servers.
     """
     puts("Deploying code to %s" % get_role(env))
     docroot = get_conf(env, 'document-root')
@@ -172,10 +189,9 @@ def deploy_code(reload=True):
         sudo('mkdir %s' % docroot)
 
     if not files.exists(project_path):
-        sudo('svn co %s %s' % (env.site['repos'], project_path))
+        checkout_code(reload=False)
     else:
-        with cd(project_path):
-            sudo('svn up')
+        update_code(reload=False)
     if reload:
         apache('reload')
 
@@ -192,7 +208,7 @@ def apache(cmd):
         if cmd == 'reload': cmd = 'graceful'
         sudo('/etc/init.d/httpd %s' % cmd)
     else:
-        print "WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD"
+        puts("WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
         sys.exit(1)
     dispatch_event(env, 'on-apache-reload-done')
 
@@ -229,7 +245,7 @@ def deploy(reload=True):
 
 
 @task
-def full_deploy():
+def full_deploy(no_input=False):
     """
     Full deploy: 
     
@@ -243,18 +259,27 @@ def full_deploy():
      - reload apache
 
     """
+    require_root_cwd()
     dispatch_event(env, 'on-deploy')
+
+    vhost_file = '%s.vhost' % env.name
+    vhost = os.path.join(os.getcwd(), 'deploy/', vhost_file)
+    if no_input or not os.path.exists(vhost) \
+        and console.confirm("Warning vhost file not found: deploy/%s, abort ?" % vhost_file, default=True):
+        dispatch_event(env, 'on-deploy-aborted')
+        sys.exit(0)
+
     if get_conf(env, 'virtualenv'):
         setup_virtualenv()
     deploy_code(reload=False)
     buildout()
-   #syncdb()
+    if no_input or console.confirm("Run syncdb ?", default=False):
+       syncdb()
     setup_settings(reload=False)
     setup_vhost(reload=False)
     collectstatic()
     apache('reload')
     setup_permissions()
-   #memcached("restart")
     dispatch_event(env, 'on-deploy-done')
 
 
