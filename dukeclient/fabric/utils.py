@@ -76,8 +76,11 @@ def require_root_cwd():
         puts("You must be in the root directory of your project to use this command.")
         sys.exit(1)
 
-def is_svn(path):
-    return os.path.exists(os.path.join(path, '.svn'))
+
+def is_svn(env):
+    # TODO: find a more reliable way
+    return env.site['repos'].startswith('svn:')
 
 def is_git(path):
-    return os.path.exists(os.path.join(path, '.git'))
+    # TODO: find a more reliable way
+    return env.site['repos'].startswith('git:')
