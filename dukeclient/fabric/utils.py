@@ -76,11 +76,17 @@ def require_root_cwd():
         puts("You must be in the root directory of your project to use this command.")
         sys.exit(1)
 
+def get_repos(env):
+    if '+' in env.site['repos']:
+        return env.site['repos'].split('+')
+    else:
+        if env.site['repos'].startswith('svn:'):
+            return ('svn', env.site['repos'])
+        elif env.site['repos'].startswith('svn:'):
+            return ('git', env.site['repos'])
 
 def is_svn(env):
-    # TODO: find a more reliable way
-    return env.site['repos'].startswith('svn:')
+    return get_repos(env)[0] == 'svn'
 
-def is_git(path):
-    # TODO: find a more reliable way
-    return env.site['repos'].startswith('git:')
+def is_git(env):
+    return get_repos(env)[0] == 'git'

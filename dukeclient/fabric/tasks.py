@@ -157,7 +157,6 @@ def update_code(reload=True):
     Update code on the servers.
     """
     project_path = get_project_path(env)
-    print env
 
     with cd(project_path):
         if is_svn(env):
@@ -171,10 +170,11 @@ def checkout_code(reload=True):
     Update code on the servers.
     """
     project_path = get_project_path(env)
-    if is_svn(env):
-        sudo('svn co %s %s' % (env.site['repos'], project_path))
-    elif is_git(env):
-        sudo('git clone %s %s' % (env.site['repos'], project_path))
+    kind, repos = get_repos(env)
+    if kind == 'svn':
+        sudo('svn co %s %s' % (repos, project_path))
+    elif kind == 'git':
+        sudo('git clone %s %s' % (repos, project_path))
 
 
 @task
