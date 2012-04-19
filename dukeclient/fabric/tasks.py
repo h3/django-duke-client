@@ -228,7 +228,7 @@ def buildout(reload=True):
     buildout_bin = os.path.join(project_path, '.duke/bin/buildout')
     custom_cfg = os.path.join(project_path, '%s.cfg' % get_role(env))
 
-    if os.path.exists(custom_cfg):
+    if files.exists(custom_cfg):
         puts("Using custom config (%s)" % custom_cfg)
         cfg = custom_cfg
     else:
