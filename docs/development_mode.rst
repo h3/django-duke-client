@@ -53,3 +53,4 @@ Commands & shortcuts
 | python         | A sandboxed python interpreter \*                              |
 +----------------+----------------------------------------------------------------+
 
+\* If IPython is installed, it will be used by default when working in the env.
