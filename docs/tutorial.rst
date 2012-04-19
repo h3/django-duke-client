@@ -93,7 +93,7 @@ mode (which can be done by typing `duke dev` in your project folder).
 You know when you are in development mode when your shell prompt is prefixed
 with a project name like this::
 
-    user@host|myprojectname:~/.../trunk/my-project-name$$ ls
+    user@host|myprojectname:~/.../trunk/my-project-name$ ls
     bootstrap.py  buildout.cfg  dev.cfg  prod.cfg  README.rst  setup.py
 
 You can see django duke created different configuration files which will be covered 
