@@ -222,10 +222,17 @@ def buildout(reload=True):
 
     dispatch_event(env, 'on-buildout')
     duke_init(env)
+
+    cfg = 'buildout.cfg'
     project_path = get_project_path(env)
+    buildout_bin = os.path.join(project_path, '.duke/bin/buildout')
+    custom_cfg = os.path.join(project_path, '%s.cfg' % get_role(env))
+
+    if os.path.exists(custom_cfg):
+        cfg = custom_cfg
 
     with cd(project_path):
-        sudo('%s -vvv -c buildout.cfg' % os.path.join(project_path, '.duke/bin/buildout'))
+        sudo('%s -vvv -c %s' % (buildout_bin, cfg))
 
     if reload:
         apache('reload')
