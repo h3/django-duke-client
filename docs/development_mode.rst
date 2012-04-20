@@ -64,6 +64,6 @@ Commands & shortcuts
 +----------------+----------------------------------------------------------------+
 | help           | Print all the commandes                                        |
 +----------------+----------------------------------------------------------------+
-* if ipython is install, ipython will be ruen instead of python
+\* if ipython is install, ipython will be ruen instead of python
 
 .. _customisation:
