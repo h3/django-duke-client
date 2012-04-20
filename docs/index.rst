@@ -21,5 +21,6 @@ Django duke client aims provide a turnkey development environment for django and
    project_configuration
    deploying
    cheatsheet
+   customization
 
 .. django_settings
