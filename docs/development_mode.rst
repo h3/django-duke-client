@@ -16,9 +16,9 @@ work with django.
 To activate the development environment on a project managed by duke, simply
 go in the project folder and type `duke dev`::
 
-    $: cd my-project-name/
-    $: duke dev
-    (my-project-name) $:
+    user@host$: cd my-project-name/
+    user@host$: duke dev
+    user@host|myprojectname:~/.../trunk/my-project-name$:
 
 Once the development environment is activated, the shell prompt should be 
 prefixed with the project's name to indicate that you are working within
