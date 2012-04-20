@@ -44,13 +44,26 @@ Commands & shortcuts
 +----------------+----------------------------------------------------------------+
 | buildout       | Run buildout to build or rebuild your environment              |
 +----------------+----------------------------------------------------------------+
-| exit           | Exit the development environment.                              |
+| dbshell        | Run the database shell (alias for `django runserver`)          |
 +----------------+----------------------------------------------------------------+
-| dev or develop | Use this to install, activate or deactivate python packages.   |
+| dev            | Run the duke development environement                          |
 +----------------+----------------------------------------------------------------+
-| django         | Use this instead of manage.py                                  |
+| python         | Run the python environement                                    |
 +----------------+----------------------------------------------------------------+
-| python         | A sandboxed python interpreter \*                              |
+| runserver      | Run the dev server (alias for `django runserver`)              |
 +----------------+----------------------------------------------------------------+
+| shell          | Run a python shell* (alias for `django shell`)                 |
++----------------+----------------------------------------------------------------+
+| syncdb         | Synchronize database (alias for `django syncdb`)               |
++----------------+----------------------------------------------------------------+
+| init           | Create the duke environement (run buildout after using init)   |
++----------------+----------------------------------------------------------------+
+| startproject   | Create a new django project                                    |
++----------------+----------------------------------------------------------------+
+| customize      | Copy the config of duke to ~/.duke (see Customisation_)        |
++----------------+----------------------------------------------------------------+
+| help           | Print all the commandes                                        |
++----------------+----------------------------------------------------------------+
+* if ipython is install, ipython will be ruen instead of python
 
-\* If IPython is installed, it will be used by default when working in the env.
+.. _customisation:
