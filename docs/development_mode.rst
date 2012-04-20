@@ -44,4 +44,26 @@ Commands & shortcuts
 +----------------+----------------------------------------------------------------+
 | buildout       | Run buildout to build or rebuild your environment              |
 +----------------+----------------------------------------------------------------+
-| exit
+| dbshell        | Run the database shell (alias for `django runserver`)          |
++----------------+----------------------------------------------------------------+
+| dev            | Run the duke development environement                          |
++----------------+----------------------------------------------------------------+
+| python         | Run the python environement                                    |
++----------------+----------------------------------------------------------------+
+| runserver      | Run the dev server (alias for `django runserver`)              |
++----------------+----------------------------------------------------------------+
+| shell          | Run a python shell* (alias for `django shell`)                 |
++----------------+----------------------------------------------------------------+
+| syncdb         | Synchronize database (alias for `django syncdb`)               |
++----------------+----------------------------------------------------------------+
+| init           | Create the duke environement (run buildout after using init)   |
++----------------+----------------------------------------------------------------+
+| startproject   | Create a new django project                                    |
++----------------+----------------------------------------------------------------+
+| customize      | Copy the config of duke to ~/.duke (see Customisation_)        |
++----------------+----------------------------------------------------------------+
+| help           | Print all the commandes                                        |
++----------------+----------------------------------------------------------------+
+\* if ipython is install, ipython will be ruen instead of python
+
+.. _customisation:

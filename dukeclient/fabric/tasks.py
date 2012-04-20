@@ -228,8 +228,11 @@ def buildout(reload=True):
     buildout_bin = os.path.join(project_path, '.duke/bin/buildout')
     custom_cfg = os.path.join(project_path, '%s.cfg' % get_role(env))
 
-    if os.path.exists(custom_cfg):
+    if files.exists(custom_cfg):
+        puts("Using custom config (%s)" % custom_cfg)
         cfg = custom_cfg
+    else:
+        puts("Using default config (%s)" % cfg)
 
     with cd(project_path):
         sudo('%s -vvv -c %s' % (buildout_bin, cfg))
