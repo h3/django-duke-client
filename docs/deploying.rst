@@ -198,6 +198,31 @@ Other commands
 Other commands will eventually be documented properly .. meanwhile you can 
 list them all using the `fab -l` command.
 
+Per role configurations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes you want to tweak configurations depending on which role the project
+is running on.
+
+To accomplish this, simply create a `cfg` file named after the role and make it 
+extend the `buildout.cfg` file. 
+
+The next time buildout will be run on this role, it will find the file and use it
+instead of `buildout.cfg`.
+
+Here's an example of how one could set a cron job on the production server:
+
+**prod.cfg**::
+
+    [buildout]
+    extends = buildout.cfg
+    parts += django-cleanup
+    
+    [django-cleanup]
+    recipe = z3c.recipe.usercrontab
+    times = @monthly
+    command = ${buildout:directory}/.duke/bin/django cleanup
+
 
 Development roadmap
 ===================
