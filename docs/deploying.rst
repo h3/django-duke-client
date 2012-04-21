@@ -5,11 +5,6 @@ Deploying
 .. contents::
    :depth: 3
 
-Warning
-=======
-
-
-
 
 With fabric
 ===========
@@ -204,3 +199,18 @@ Other commands will eventually be documented properly .. meanwhile you can
 list them all using the `fab -l` command.
 
 
+Development roadmap
+===================
+
+In the long term a `django duke master` will be created. The scope of the
+functionalities isn't yet fixed, but it's main purpose will be to act as a
+deployment server. It will hold servers and projects configurations and allow
+easy deployment using the `duke` command.
+
+There is several advantages of using centralized deployment  instead 
+of a distributed deployment strategy (with fabric). But the most important 
+advantage for us is to be able to assign deployment rights to developers without
+giving them actual access to the production servers.
+
+When centralized deployment will be implemented, we will probably move to other
+nice to have features like scheduled deployment and continous integration.
