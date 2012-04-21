@@ -199,7 +199,7 @@ Other commands will eventually be documented properly .. meanwhile you can
 list them all using the `fab -l` command.
 
 Per role configurations
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 Sometimes you want to tweak configurations depending on which role the project
 is running on.
