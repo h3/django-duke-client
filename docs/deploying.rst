@@ -152,13 +152,20 @@ Here's an example which defines the default database backend::
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.%%s' %% "mysql", # Read the caution below !
             'NAME': '%(project)s_demo',
             'USER': '%(project)s',
             'PASSWORD': '*********',
         }
     }
 
+.. caution::
+
+   Make sure to scape all the modulos by duplicating them like this: %%.
+
+   Since I use Advanced String Formating to replace the template variables you have to 
+   be careful when using a modulo (%). If you don't escape it Python will think it has 
+   to insert a token there and will most likely throw an exception at your next `buildout`.
 
 Usage
 -----
