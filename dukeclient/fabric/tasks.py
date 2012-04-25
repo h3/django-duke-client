@@ -285,9 +285,9 @@ def full_deploy(no_input=False):
         setup_virtualenv()
     deploy_code(reload=False)
     buildout()
+    setup_settings(reload=False)
     if no_input or console.confirm("Run syncdb ?", default=False):
        syncdb()
-    setup_settings(reload=False)
     setup_vhost(reload=False)
     collectstatic()
     apache('reload')
