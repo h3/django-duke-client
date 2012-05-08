@@ -5,11 +5,6 @@ Deploying
 .. contents::
    :depth: 3
 
-Warning
-=======
-
-
-
 
 With fabric
 ===========
@@ -157,13 +152,20 @@ Here's an example which defines the default database backend::
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
+            'ENGINE': 'django.db.backends.%%s' %% "mysql", # Read the caution below !
             'NAME': '%(project)s_demo',
             'USER': '%(project)s',
             'PASSWORD': '*********',
         }
     }
 
+.. caution::
+
+   Make sure to scape all the modulos by duplicating them like this: %%.
+
+   Since I use Advanced String Formating to replace the template variables you have to 
+   be careful when using a modulo (%). If you don't escape it Python will think it has 
+   to insert a token there and will most likely throw an exception at your next `buildout`.
 
 Usage
 -----
@@ -203,4 +205,44 @@ Other commands
 Other commands will eventually be documented properly .. meanwhile you can 
 list them all using the `fab -l` command.
 
+Per role configurations
+-----------------------
 
+Sometimes you want to tweak configurations depending on which role the project
+is running on.
+
+To accomplish this, simply create a `cfg` file named after the role and make it 
+extend the `buildout.cfg` file. 
+
+The next time buildout will be run on this role, it will find the file and use it
+instead of `buildout.cfg`.
+
+Here's an example of how one could set a cron job on the production server:
+
+**prod.cfg**::
+
+    [buildout]
+    extends = buildout.cfg
+    parts += django-cleanup
+    
+    [django-cleanup]
+    recipe = z3c.recipe.usercrontab
+    times = @monthly
+    command = ${buildout:directory}/.duke/bin/django cleanup
+
+
+Development roadmap
+===================
+
+In the long term a `django duke master` will be created. The scope of the
+functionalities isn't yet fixed, but it's main purpose will be to act as a
+deployment server. It will hold servers and projects configurations and allow
+easy deployment using the `duke` command.
+
+There is several advantages of using centralized deployment  instead 
+of a distributed deployment strategy (with fabric). But the most important 
+advantage for us is to be able to assign deployment rights to developers without
+giving them actual access to the production servers.
+
+When centralized deployment will be implemented, we will probably move to other
+nice to have features like scheduled deployment and continous integration.
