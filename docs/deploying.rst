@@ -245,4 +245,5 @@ advantage for us is to be able to assign deployment rights to developers without
 giving them actual access to the production servers.
 
 When centralized deployment will be implemented, we will probably move to other
-nice to have features like scheduled deployment and continous integration.
+nice to have features like scheduled deployment and continous integration and maybe even a plugin
+architecture for things like website monitoring, project management and such.
