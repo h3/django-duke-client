@@ -45,7 +45,7 @@ DUKE_ENV="%(base_path)s"
 DUKE_DIRTRIM=2
 CUSTOM_TEMPLATES="~/.duke/templates"
 _DUKE_OLD_PATH="$PATH"
-
+MRDEVELOPER_BASE="$DUKE_ENV/.duke"
 
 # Add bin/ to the executable path to make them available
 # without having to type their path and make all scripts 
@@ -107,14 +107,14 @@ function __duke {
 # solves this issue. If you are still experiencing this problem, consider
 # using -vvv for even more output.
 # https://github.com/fschulze/mr.developer/pull/76
-alias buildout='__duke buildout -c dev.cfg -vv'
+alias buildout='__duke buildout -c dev.cfg'
 alias dev='__duke develop'
 
 # Python commands
 
 # Make sure that while within the dev environment we only
 # use the sandboxed python interpreter.
-alias python="$DUKE_ENV/.duke/bin/python -S" 
+alias python="$DUKE_ENV/.duke/bin/python" 
 alias ipython="$DUKE_ENV/.duke/bin/ipython --autoindent --no-banner --deep-reload"
 
 # Prompt
