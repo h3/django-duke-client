@@ -65,33 +65,49 @@ Configurations
 [buildout]
 ----------
 
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| Directive                       | Default                 | Description                                                                |
-+=================================+=========================+============================================================================+
-| allowed-eggs-from-site-packages | PIL, MySQL-python, ...  | Use this directive to tell buildout which system wide package it can use*  |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| auto-checkout                   | djangodukerecipe        | List of modules sources to auto checkout                                   |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| develop                         | .                       | List of editable modules to install with develop                           |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| eggs                            | none                    | List of eggs to install (project requirements)                             |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| exec-sitecustomize              | false                   | Normally the Python's real sitecustomize module is not processed           |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| extensions                      | mr.developer            | Buildout extensions to load                                                |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| include-site-packages           | true                    | We allow site packages unless allowed-eggs-from-site-packages is specified |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| index                           | http://pypi.python.org  | HTTP URL of pypi (default) or a pypi mirror                                |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| newest                          | false                   | Check for new packages versions                                            |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| parts                           | python, django, scripts | Buildout parts to run (ex: python, djangodev)                              |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| unzip                           | true                    | Zipped eggs make debugging more difficult and often import more slowly     |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
-| versions                        | versions                | Freeze eggs or sources to specific versions                                |
-+---------------------------------+-------------------------+----------------------------------------------------------------------------+
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| Directive                        | Default                 | Description                                                                |
++==================================+=========================+============================================================================+
+| allowed-eggs-from-site-packages  | PIL, MySQL-python, ...  | Use this directive to tell buildout which system wide package it can use*  |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| auto-checkout                    | djangodukerecipe        | List of modules sources to auto checkout                                   |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| develop                          | .                       | List of editable modules to install with develop                           |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| eggs                             | none                    | List of eggs to install (project requirements)                             |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| exec-sitecustomize               | false                   | Normally the Python's real sitecustomize module is not processed           |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| extensions                       | mr.developer            | Buildout extensions to load                                                |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| include-site-packages            | true                    | We allow site packages unless allowed-eggs-from-site-packages is specified |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| index                            | http://pypi.python.org  | HTTP URL of pypi (default) or a pypi mirror                                |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| newest                           | false                   | Check for new packages versions                                            |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| parts                            | python, django, scripts | Buildout parts to run (ex: python, djangodev)                              |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| unzip                            | true                    | Zipped eggs make debugging more difficult and often import more slowly     |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| versions                         | versions                | Freeze eggs or sources to specific versions                                |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| sources                          | sources                 | This specifies the name of a section which lists the repositories          |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| sources-dir                      | src                     | This specifies the directory where your package sources will be placed     |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| auto-checkout                    | src                     | This specifies the names of packages which should be checked out during    |
+|                                  |                         | buildout. Packages already checked out are skipped. You can use `*` as a   |
+|                                  |                         | wildcard for all packages in `sources`                                     |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| always-checkout                  | false                   | This defaults to false. If it's true, then all packages specified by       |
+|                                  |                         | auto-checkout and currently in develop mode are updated during each        |
+|                                  |                         | buildout run. If set to force, then packages are updated even when they    |
+|                                  |                         | are dirty instead of asking interactively.                                 |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
+| always-accept-server-certificate | false                   | If it's true, invalid server certificates are accepted without asking      |
+|                                  |                         | (for subversion repositories)                                              |
++----------------------------------+-------------------------+----------------------------------------------------------------------------+
 
 * If allowed-eggs-from-site-packages is an empty list, then no eggs from site-packages are chosen, but site-packages will still be included at the end of path lists.
 
@@ -129,9 +145,15 @@ Configurations
 
 Example::
 
-    [sources] # svn, hg or git                                                    
+    [sources]
     django = git git://github.com/django/django.git
-    django-mptt = git git://github.com/django-mptt/django-mptt.git
+    django-mptt = git git://github.com/django-mptt/django-mptt.git branch=reodering_test
+    django-fiber = git://github.com/ridethepony/django-fiber.git update=true
+
+Supported source kinds: svn, hg, git, bzr, darcs, cvs, and fs.
+
+When adding new sources, don't forget to also add them in to the `extra-paths` of the 
+`[python]` section and the `auto-checkout` in the `[buildout]` section.
 
 
 [versions]
