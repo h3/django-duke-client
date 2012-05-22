@@ -76,6 +76,7 @@ def require_root_cwd():
         puts("You must be in the root directory of your project to use this command.")
         sys.exit(1)
 
+
 def get_repos(env):
     if '+' in env.site['repos']:
         return env.site['repos'].split('+')
@@ -85,8 +86,35 @@ def get_repos(env):
         elif env.site['repos'].startswith('svn:'):
             return ('git', env.site['repos'])
 
+
 def is_svn(env):
     return get_repos(env)[0] == 'svn'
 
+
 def is_git(env):
     return get_repos(env)[0] == 'git'
+
+
+def get_context(env, extra_context=None):
+    ctx = {
+        # Site global conf
+        'domain': env.site['domain'],
+        'package': env.site['package'],
+        'project': env.site['project'],
+        'repos': env.site['repos'],
+        # Stage specific conf
+        'hosts': get_conf(env, 'hosts'),
+        'document-root': get_conf(env, 'document-root'),
+        'media-root': get_conf(env, 'media-root'),
+        'static-root': get_conf(env, 'static-root'),
+        'vhost-conf': get_conf(env, 'vhost-conf'),
+        'virtualenv': get_conf(env, 'virtualenv', False),
+        'user': get_conf(env, 'user', 'www-data'),
+        'group': get_conf(env, 'group', 'www-data'),
+        'wsgi-processes': get_conf(env, 'wsgi-processes', 5),
+        'wsgi-threads': get_conf(env, 'wsgi-threads', 1),
+    }
+    if extra_context is not None:
+        ctx.update(extra_context)
+    return ctx
+

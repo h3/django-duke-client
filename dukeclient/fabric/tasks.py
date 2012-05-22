@@ -303,12 +303,8 @@ def setup_vhost(reload=True):
     dispatch_event(env, 'on-setup-vhost')
     vhost = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
     if os.path.exists(vhost):
-        files.upload_template(vhost, get_conf(env, 'vhost-conf'), context={
-            'document-root': get_conf(env, 'document-root'),
-            'package': env.site['package'],
-            'project': env.site['project'],
-            'domain': env.site['domain'],
-        }, use_sudo=True, backup=False)
+        files.upload_template(vhost, get_conf(env, 'vhost-conf'), 
+                context=get_context(env), use_sudo=True, backup=False)
         if reload:
             apache('reload')
     dispatch_event(env, 'on-setup-vhost-done')
@@ -324,12 +320,8 @@ def setup_settings(reload=True):
     if os.path.exists(settings_file):
         dest_path = os.path.join(get_conf(env, 'document-root'), env.site['package'], 
                         env.site['project'], 'local_settings.py')
-        files.upload_template(settings_file, dest_path, context={
-            'document-root': get_conf(env, 'document-root'),
-            'package': env.site['package'],
-            'project': env.site['project'],
-            'domain': env.site['domain'],
-        }, use_sudo=True, backup=False)
+        files.upload_template(settings_file, dest_path, 
+                context=get_context(env), use_sudo=True, backup=False)
         if reload:
             apache('reload')
     dispatch_event(env, 'on-setup-settings-done')
