@@ -113,6 +113,8 @@ def get_context(env, extra_context=None):
         'group': get_conf(env, 'group', 'www-data'),
         'wsgi-processes': get_conf(env, 'wsgi-processes', 5),
         'wsgi-threads': get_conf(env, 'wsgi-threads', 1),
+        'wsgi-user': get_conf(env, 'wsgi-user', get_conf(env, 'user', 'www-data')),
+        'wsgi-group': get_conf(env, 'wsgi-group', env.site['project']),
     }
     if extra_context is not None:
         ctx.update(extra_context)
