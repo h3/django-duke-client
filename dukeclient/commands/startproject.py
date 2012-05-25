@@ -27,6 +27,9 @@ class StartprojectCommand(BaseCommand):
 
         if len(args) < 1:
             self.error("usage: duke startproject <project-name> [options]\n")
+
+        if os.environ.get('DUKE_ENV') is None:
+            self.error("you cannot start a duke project from within a duke instance.\n")
        #else:
        #    django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$', 
        #            default=project_name.split('.')[0].replace('-','_'))
