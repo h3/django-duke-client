@@ -353,10 +353,14 @@ def django(cmd):
     """
     Helper: run a management command remotely.
     """
-    dispatch_event(env, 'on-django-' + cmd)
     django = os.path.join(get_project_path(env), '.duke/bin/django')
-    sudo('%s %s --settings=%s.settings' % (django, cmd, env.site['project']))
-    dispatch_event(env, 'on-django-' + cmd + '-done')
+    cmd = '%s %s --settings=%s.settings' % (django, cmd, env.site['project'])
+    if os.path.exists(django):
+        dispatch_event(env, 'on-django-' + cmd)
+        sudo(cmd)
+        dispatch_event(env, 'on-django-' + cmd + '-done')
+    else:
+        print "Error: file not found: %s" % cmd
 
 
 #@task
