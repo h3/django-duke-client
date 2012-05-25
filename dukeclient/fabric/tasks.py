@@ -286,8 +286,8 @@ def full_deploy(no_input=False):
     deploy_code(reload=False)
     buildout()
     setup_settings(reload=False)
-    if no_input or console.confirm("Run syncdb ?", default=False):
-       syncdb()
+   #if no_input or console.confirm("Run syncdb ?", default=False):
+   #   syncdb()
     setup_vhost(reload=False)
     collectstatic()
     apache('reload')
