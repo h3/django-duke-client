@@ -32,7 +32,7 @@ __vcs_status () {
 
 # Prefix the command prompt with %(project_name)s
 function __in_project {
-    if [ "`pwd | xargs basename`" = "%(project_name)s" ] ; then
+    if [[ "`pwd | xargs basename`" = "%(project_name)s" && -e "settings.py" ]] ; then
         echo "$DUKE_DJANGO_STR"
     else
         echo ""

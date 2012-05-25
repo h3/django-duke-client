@@ -70,6 +70,7 @@ class InitCommand(BaseCommand):
         # than setuptools, it is disabled by default because I cannot get the
         # project sandboxing to work properly with it .. bummer.
         if options['distribute']:
+            self.info("Using distribute")
             opts = ' -d'
 
         status, output = self.local('%s bootstrap.py%s' % (python, boot_opts))
@@ -90,8 +91,7 @@ class InitCommand(BaseCommand):
         if not os.path.exists(os.path.join(self.duke_path, 'project_conf.yml')):
             self.install_file('project_conf.yml', self.duke_path, context)
 
-        self.info("Done!\n")
-        self.info("Type \"buildout\" to build the environment and install requirements.")
+        self.info("\nDone! Now type \"buildout\" to build the environment and install requirements.\n")
 
         if not options['nodev']:
             DevCommand().call()
