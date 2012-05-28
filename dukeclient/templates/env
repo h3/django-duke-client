@@ -84,6 +84,7 @@ function __django {
     fi
 }
 
+alias help="duke help"
 alias syncdb="__django syncdb"
 alias runserver="__django runserver"
 alias shell="__django shell"
