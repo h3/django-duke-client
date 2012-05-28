@@ -355,7 +355,7 @@ def django(cmd):
     """
     django = os.path.join(get_project_path(env), '.duke/bin/django')
     cmd = '%s %s --settings=%s.settings' % (django, cmd, env.site['project'])
-    if os.path.exists(django):
+    if files.exists(django):
         dispatch_event(env, 'on-django-' + cmd)
         sudo(cmd)
         dispatch_event(env, 'on-django-' + cmd + '-done')
