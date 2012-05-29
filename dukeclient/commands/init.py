@@ -59,6 +59,7 @@ class InitCommand(BaseCommand):
         self.install_file('bootstrap.py', self.base_path)
         self.install_file('buildout.cfg', self.base_path, context)
         self.install_file('base.cfg', self.duke_path, context)
+        self.install_file('python27.cfg', self.duke_path, context)
         self.install_file('dev.cfg', self.base_path, context)
 
         self.info("Initializing zc.buildout")
