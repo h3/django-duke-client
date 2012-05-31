@@ -111,8 +111,8 @@ def get_context(env, extra_context=None):
         'virtualenv': get_conf(env, 'virtualenv', False),
         'user': get_conf(env, 'user', 'www-data'),
         'group': get_conf(env, 'group', 'www-data'),
-        'wsgi-processes': get_conf(env, 'wsgi-processes', 5),
-        'wsgi-threads': get_conf(env, 'wsgi-threads', 1),
+        'wsgi-processes': get_conf(env, 'wsgi-processes', 1),
+        'wsgi-threads': get_conf(env, 'wsgi-threads', 5),
         'wsgi-user': get_conf(env, 'wsgi-user', get_conf(env, 'user', 'www-data')),
         'wsgi-group': get_conf(env, 'wsgi-group', get_conf(env, 'group', 'www-data')),
     }
