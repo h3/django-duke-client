@@ -18,7 +18,6 @@ DEFAULT_RSYNC_EXCLUDE = (
     '~*',
 )
 
-
 # TODO: use decorators for events
 
 @task
@@ -250,8 +249,9 @@ def deploy(reload=True):
     """
     dispatch_event(env, 'on-deploy')
     deploy_code(reload=reload)
-    setup_settings(reload=False)
-    collectstatic()
+    if is_django:
+        setup_settings(reload=False)
+        collectstatic()
     setup_permissions()
     dispatch_event(env, 'on-deploy-done')
 

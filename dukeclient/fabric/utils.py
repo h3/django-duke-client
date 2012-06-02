@@ -3,6 +3,11 @@ import os
 from fabric.api import *
 
 
+def is_django(env):
+    return files.exists(os.path.join(
+            get_project_path(env), '.duke/bin/django'))
+
+
 def get_role(env):
     """
     Returns the current active role
