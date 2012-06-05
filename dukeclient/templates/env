@@ -91,6 +91,7 @@ alias shell="__django shell"
 alias dbshell="__django dbshell"
 alias loaddata="__django loaddata"
 alias dumpdata="__django dumpdata"
+alias safedumpdata="__django dumpdata --natural --exclude=contenttypes --exclude=auth.Permission"
 
 # Duke commands 
 
