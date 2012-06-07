@@ -66,23 +66,27 @@ def copy_template(template, dest, src=False):
     shutil.copy2(src, dest)
 
 
-def create_from_template(template, dest, variables=None):
+def create_from_template(template, dest, variables=None,dest_name=None):
     """
     Copy a template to a specific destination. The variables kwargs should 
     either be False or a dictionary. If the later is provided, it will be 
     used for variables substitution in the template.
 
-    >>> create_from_template('env', '/proect/path/.duke/',\
+    >>> create_from_template('env', '/project/path/.duke/',\
     >>> {'project': 'my_project'})
     True
     """
-    dest = os.path.join(dest, template)
+    dest_name = dest_name or template
+    dest = os.path.join(dest, dest_name)
     src  = get_template_path(template)
     fs   = open(src, 'r')
     fd   = open(dest, 'w+')
     buff = fs.read()
-    args = [variables is False and buff or buff % variables]
-    fd.write(*args)
+    if variables:
+        args = [variables is False and buff or buff % variables]
+        fd.write(*args)
+    else:
+        fd.write(buff)
     fd.close()
     fs.close()
     return True
