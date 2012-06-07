@@ -30,6 +30,7 @@ def main():
         'dev',
         'init',
         'startproject',
+        'startapp',
         'customize',
         'help',
        #'deploy',           # ++++
