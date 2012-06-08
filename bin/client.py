@@ -33,12 +33,14 @@ def main():
         'startapp',
         'customize',
         'help',
-       #'deploy',           # ++++
-       #'rollback',         # +
        #'service',          # +++ or command ?
        #'list',
        #'update',           # +++
     )
+
+    if len(sys.argv) == 2 and sys.argv[1] == 'tags':
+        print " ".join(command_list)
+        sys.exit(0)
 
     if len(sys.argv) < 2\
         or sys.argv[1] not in command_list\
