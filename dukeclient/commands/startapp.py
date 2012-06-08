@@ -19,6 +19,7 @@ ARCHI = [
         (TEMPLATE,"tests.py"),
         (TEMPLATE,"urls.py"),
         (TEMPLATE,"views.py"),
+        (TEMPLATE,"admin.py"),
         (DIR,"static",(
             (DIR,"<app-name>",(
                 (DIR,"css"),
