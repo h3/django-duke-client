@@ -2,5 +2,5 @@
 
 from django.contrib import admin
 
-from %(project_name)s.model import *
+from %(project_name)s.models import *
 
