@@ -7,4 +7,3 @@ from django.contrib import admin
 #from grappellifit.admin import TranslationAdmin
 from %(project_name)s.models import *
 
-

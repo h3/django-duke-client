@@ -143,3 +143,15 @@ function __duke_prompt {
     fi
 }
 __duke_prompt
+
+# duke autocomplete
+
+_duke_complete() {
+    local cur tags
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    tags=`duke tags`
+    COMPREPLY=($(compgen -W "${tags}" $cur))        
+}
+
+complete -o default -F _duke_complete duke
