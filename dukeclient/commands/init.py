@@ -35,7 +35,7 @@ class InitCommand(BaseCommand):
         self.duke_path  = os.path.join(self.base_path, '.duke/')
         self.bin_path   = os.path.join(self.duke_path, 'bin/')
         self.conf_path  = os.path.join(os.getenv("HOME"), '.duke/')
-        self.cache_path = '/tmp/duke-client/cache/'
+        self.cache_path = '/tmp/duke-client-cache/'
 
         if not os.path.exists(self.duke_path):
             os.makedirs(self.duke_path)
