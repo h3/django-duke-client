@@ -31,16 +31,20 @@ class InitCommand(BaseCommand):
         # FIXME: Validate for proper python module name
         project_name = args[0].replace('/', '').replace('-', '_')
 
-        self.base_path = 'base_path' in options and options['base_path'] or os.getcwd()
-        self.duke_path = os.path.join(self.base_path, '.duke/')
-        self.bin_path  = os.path.join(self.duke_path, 'bin/')
-        self.conf_path = os.path.join(os.getenv("HOME"), '.duke/')
+        self.base_path  = 'base_path' in options and options['base_path'] or os.getcwd()
+        self.duke_path  = os.path.join(self.base_path, '.duke/')
+        self.bin_path   = os.path.join(self.duke_path, 'bin/')
+        self.conf_path  = os.path.join(os.getenv("HOME"), '.duke/')
+        self.cache_path = '/tmp/duke-client/cache/'
 
         if not os.path.exists(self.duke_path):
             os.makedirs(self.duke_path)
 
         if not os.path.exists(self.conf_path):
             os.mkdir(self.conf_path)
+            
+        if not os.path.exists(self.cache_path):
+            os.mkdir(self.cache_path)
 
         # Variables passed to generated .cfg files
         context = {
