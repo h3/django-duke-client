@@ -186,7 +186,7 @@ def deploy_code(reload=True):
     project_path = get_project_path(env)
 
     if not files.exists(docroot):
-        sudo('mkdir %s' % docroot)
+        sudo('mkdir -p %s' % docroot)
 
     if not files.exists(project_path):
         checkout_code(reload=False)
