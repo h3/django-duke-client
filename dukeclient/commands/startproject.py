@@ -12,10 +12,6 @@ class StartprojectCommand(BaseCommand):
     """
 
     options   = [
-        ('-m', '--minimal', {
-            'dest': 'minimal', 
-            'action': 'store_true',
-            'help': 'Create only the project folder with the setup.py file (no readme/license/tests.'}),
         ('-b', '--base-path', {
             'dest': 'base_path', 
             'help': 'Directory where the project should be created.'}),
@@ -46,10 +42,5 @@ class StartprojectCommand(BaseCommand):
             'project_name': project_name,
             'duke_client_version': dukeclient.VERSION,
         })
-
-        if self.option('minimal') is not True:
-            os.makedirs(os.path.join(project_path, 'tests/'))
-            self.local('touch %s' % os.path.join(project_path, 'README.rst'))
-            self.local('touch %s' % os.path.join(project_path, 'LICENSE'))
 
         self.info("Created project %s" % project_name)
