@@ -56,9 +56,9 @@ class InitCommand(BaseCommand):
             'settings_module': 'settings',
         }
 
-        if not os.path.exists(os.path.join(self.conf_path, 'duke_conf.yml')):
-            self.info("Creating default global configuration file")
-            self.install_file('duke_conf.yml', self.conf_path, context)
+        #if not os.path.exists(os.path.join(self.conf_path, 'duke_conf.yml')):
+        #    self.info("Creating default global configuration file")
+        #    self.install_file('duke_conf.yml', self.conf_path, context)
 
         self.install_file('bootstrap.py', self.base_path)
         self.install_file('buildout.cfg', self.base_path, context)
