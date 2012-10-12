@@ -332,8 +332,12 @@ def collectstatic():
     """
     Run django collectstatic
     """
+
     dispatch_event(env, 'on-django-collectstatic')
-    django('collectstatic --noinput --link')
+    if get_conf(env, 'static-copy', False):
+        django('collectstatic --noinput')
+    else:
+        django('collectstatic --noinput --link')
     dispatch_event(env, 'on-django-collectstatic-done')
 
 
