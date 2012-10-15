@@ -218,7 +218,7 @@ def buildout(reload=True):
     """
     Run buildout on the project
     """
-
+    require_root_cwd()
     dispatch_event(env, 'on-buildout')
     duke_init(env)
 
@@ -247,11 +247,11 @@ def deploy(reload=True):
     """
     Quick deploy: new code and an in-place reload.
     """
+    require_root_cwd()
     dispatch_event(env, 'on-deploy')
     deploy_code(reload=reload)
-    if is_django:
-        setup_settings(reload=False)
-        collectstatic()
+    setup_settings(reload=False)
+    collectstatic()
     setup_permissions()
     dispatch_event(env, 'on-deploy-done')
 
@@ -300,6 +300,7 @@ def setup_vhost(reload=True):
     """
     Setup virtual host
     """
+    require_root_cwd()
     dispatch_event(env, 'on-setup-vhost')
     vhost = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
     if os.path.exists(vhost):
@@ -315,6 +316,7 @@ def setup_settings(reload=True):
     """
     Setup production settings
     """
+    require_root_cwd()
     dispatch_event(env, 'on-setup-settings')
     settings_file = os.path.join(os.getcwd(), 'deploy/%s_settings.py' % env.name)
     if os.path.exists(settings_file):
@@ -332,7 +334,7 @@ def collectstatic():
     """
     Run django collectstatic
     """
-
+    require_root_cwd()
     dispatch_event(env, 'on-django-collectstatic')
     if get_conf(env, 'static-copy', False):
         django('collectstatic --noinput')
@@ -346,6 +348,7 @@ def syncdb():
     """
     Run django syncdb.
     """
+    require_root_cwd()
     dispatch_event(env, 'on-django-syncdb')
     django('syncdb')
     dispatch_event(env, 'on-django-synchdb-done')
@@ -357,14 +360,12 @@ def django(cmd):
     """
     Helper: run a management command remotely.
     """
+    require_root_cwd()
     django = os.path.join(get_project_path(env), '.duke/bin/django')
     cmd = '%s %s --settings=%s.settings' % (django, cmd, env.site['project'])
-   #if files.exists(django):
     dispatch_event(env, 'on-django-' + cmd)
     sudo(cmd)
     dispatch_event(env, 'on-django-' + cmd + '-done')
-   #else:
-   #    print "Error: file not found: %s" % cmd
 
 
 #@task
