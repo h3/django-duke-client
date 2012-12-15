@@ -161,6 +161,7 @@ def update_code(reload=True):
         if is_svn(env):
             sudo('svn up')
         elif is_git(env):
+            sudo('git reset --hard')
             sudo('git pull')
 
 @task
