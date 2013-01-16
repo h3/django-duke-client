@@ -163,6 +163,9 @@ def update_code(reload=True):
         elif is_git(env):
             sudo('git reset --hard')
             sudo('git pull')
+            branch = get_branch(env)
+            if branch:
+                sudo('git checkout %s' % branch)
 
 @task
 def checkout_code(reload=True):
@@ -175,7 +178,9 @@ def checkout_code(reload=True):
         sudo('svn co %s %s' % (repos, project_path))
     elif kind == 'git':
         sudo('git clone %s %s' % (repos, project_path))
-
+        branch = get_branch(env)
+        if branch:
+            sudo('git checkout %s' % branch)
 
 @task
 def deploy_code(reload=True):

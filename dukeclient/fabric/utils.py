@@ -92,6 +92,10 @@ def get_repos(env):
             return ('git', env.site['repos'])
 
 
+def get_branch(env):
+    return get_conf(env, 'branch', env.site.get('branch', False))
+
+
 def is_svn(env):
     return get_repos(env)[0] == 'svn'
 
