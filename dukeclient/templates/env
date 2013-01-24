@@ -84,31 +84,50 @@ function __django {
     fi
 }
 
+# Django shortcuts
 alias help="duke help"
-alias syncdb="__django syncdb"
-alias runserver="__django runserver"
-alias shell="__django shell"
+alias cleanup="__django cleanup"
+alias compilemessages="django compilemessages"
+alias createcachetable="__django createcachetable"
 alias dbshell="__django dbshell"
-alias loaddata="__django loaddata"
+alias diffsettings="__django diffsettings"
 alias dumpdata="__django dumpdata"
+alias flush="__django flush"
+alias inspectdb="__django inspectdb"
+alias loaddata="__django loaddata"
+alias makemessages="django makemessages -a"
+alias reset="__django reset"
+alias runfcgi="__django runfcgi"
+alias shell="__django shell"
+alias sql="__django sql"
+alias sqlall="__django sqlall"
+alias sqlclear="__django sqlclear"
+alias sqlcustom="__django sqlcustom"
+alias sqlflush="__django sqlflush"
+alias sqlindexes="__django sqlindexes"
+alias sqlinitialdata="__django sqlinitialdata"
+alias sqlreset="__django sqlreset"
+alias sqlsequencereset="__django sqlsequencereset"
+alias startapp="__django startapp"
+alias startproject="__django startproject"
+alias syncdb="__django syncdb"
+alias test="__django test"
+alias testserver="__django testserver"
+alias validate="__django validate"
+
+# Django useful commands
 alias safedumpdata="__django dumpdata --natural --exclude=contenttypes --exclude=auth.Permission"
 
 # Duke commands 
 
 function __duke {
-    if [ -e "buildout.cfg" ] ; then
+    if [ -e ".duke/base.cfg" ] ; then
         $@
     else
         echo "Error: You must be within a duke project to use this command."
     fi
 }
 
-# FIXME: The -vv flag is only a dirty hack to workaround a suspected 
-# threading issue with python. For some reason, on a fast machine with 
-# multiple cores, buildout hangs randomly. Increasing buildout's output
-# solves this issue. If you are still experiencing this problem, consider
-# using -vvv for even more output.
-# https://github.com/fschulze/mr.developer/pull/76
 alias buildout='__duke buildout -c dev.cfg'
 alias dev='__duke develop'
 
