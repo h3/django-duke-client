@@ -11,7 +11,9 @@ Intitialisation
 
 You can tweak your development environment quite alot. 
 
-To do so, simply type this command::
+To do so, simply type this command:
+
+.. code-block:: bash
 
     user@host$ duke customize
     Copying setup.py to ~/.duke/templates/
@@ -29,7 +31,9 @@ To do so, simply type this command::
 
 Files
 =====
-In the same shell::
+In the same shell:
+
+.. code-block:: bash
 
     user@host$ cd ~/.duke/templates
     user@host$ ls
@@ -43,7 +47,9 @@ Customize prompt
 
 If you want to modify your duke prompt, (simply) you have to edit `profile`.
 
-Here the default `profile` file::
+Here the default `profile` file:
+
+.. code-block:: bash
     
     # Typing "--settings=projectname.settingsfile" is annoying.
     DJANGO_SETTINGS_MODULE=settings
@@ -55,7 +61,9 @@ Here the default `profile` file::
     DUKE_GIT_STR="git:"
     DUKE_PS1="${NO_COLOR}\u@\h${SEP}${BOLD_CYAN}\$(__in_project)${CYAN}%(project_name)s${NO_COLOR}${SEP}${BOLD_YELLOW}\$(__vcs_status)${YELLOW}\w${NO_COLOR}${ENDCHAR}"
 
-will produce the following prompt::
+will produce the following prompt:
+
+.. code-block:: bash
 
     user@host|projectname|svn:~/.../path/in/project$
 
@@ -67,7 +75,9 @@ If it's not enough, you can edit the `env` file.
     all that you make in `profile` overwrite `env`
 
 
-Here the default `env` file::
+Here the default `env` file:
+
+.. code-block:: bash
 
     . ~/.bashrc 
     # based on virtualenv's activate
