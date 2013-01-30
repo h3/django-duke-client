@@ -165,6 +165,9 @@ def update_code(reload=True):
             branch = get_branch(env)
             if branch:
                 sudo('git checkout %s' % branch)
+            else:
+                branch = 'master'
+            sudo('git rebase %s' % branch)
             sudo('git pull')
 
 @task
