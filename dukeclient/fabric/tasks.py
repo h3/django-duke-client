@@ -162,10 +162,13 @@ def update_code(reload=True):
             sudo('svn up')
         elif is_git(env):
             sudo('git reset --hard')
-            sudo('git pull')
             branch = get_branch(env)
             if branch:
                 sudo('git checkout %s' % branch)
+            else:
+                branch = 'master'
+            sudo('git rebase %s' % branch)
+            sudo('git pull')
 
 @task
 def checkout_code(reload=True):

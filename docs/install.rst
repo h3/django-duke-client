@@ -11,7 +11,9 @@ Official releases
 Official releases will eventually be available from `PyPI`_.
 
 Download the .zip distribution file and unpack it. Inside is a script
-named ``setup.py``. Enter this command::
+named ``setup.py``. Enter this command:
+
+.. code-block:: bash
 
    python setup.py install
 
@@ -23,7 +25,9 @@ named ``setup.py``. Enter this command::
 Development version
 ===================
 
-Alternatively, you can get the latest source from our `git`_ repository::
+Alternatively, you can get the latest source from our `git`_ repository:
+
+.. code-block:: bash
 
    git clone git://github.com/h3/django-duke-client.git
 
@@ -32,7 +36,9 @@ directory inside it into a directory which is on your PYTHONPATH, such as
 your Python installation's ``site-packages`` directory.
 
 You can verify that the application is installed by typing the following
-command in a terminal::
+command in a terminal:
+
+.. code-block:: bash
 
    $: duke help
 

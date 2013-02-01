@@ -15,13 +15,17 @@ Installation
 ============
 
 We're still in early development so it's suggested to install it from source
-using `develop` instead of install::
+using `develop` instead of install:
+
+.. code-block:: bash
 
    $ git clone git://github.com/h3/django-duke-client.git
    $ cd django-duke-client/
    $ sudo python setup.py develop
 
-To update it::
+To update it:
+
+.. code-block:: bash
 
    $ cd django-duke-client/
    $ git pull
@@ -33,14 +37,18 @@ Usage
 for the impatients
 ^^^^^^^^^^^^^^^^^^
 
-Create and build a project::
+Create and build a project:
+
+.. code-block:: bash
 
     user@host$ duke startproject test-project
     user@host$ cd test-project/
     user@host$ duke init testproject
     user@host|testproject:~/.../trunk/test-project$ buildout
 
-Start working::
+Start working:
+
+.. code-block:: bash
 
     user@host|testproject:~/.../trunk/test-project$ cd testproject/
     user@host|testproject:~/.../trunk/test-project$ django syncdb
