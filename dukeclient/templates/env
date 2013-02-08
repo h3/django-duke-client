@@ -117,7 +117,7 @@ alias testserver="__django testserver"
 alias validate="__django validate"
 
 # Django useful commands
-alias safedumpdata="__django dumpdata --natural --exclude=contenttypes --exclude=auth.Permission"
+alias safedumpdata="__django dumpdata --natural --exclude=contenttypes --exclude=auth.Permission --exclude=south.MigrationHistory"
 
 # Duke commands 
 
