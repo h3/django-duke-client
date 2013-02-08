@@ -165,6 +165,9 @@ def update_code(reload=True):
             branch = get_branch(env)
             if branch:
                 sudo('git checkout %s' % branch)
+            else:
+                branch = 'master'
+            sudo('git rebase %s' % branch)
             sudo('git pull')
 
 @task
@@ -191,10 +194,10 @@ def deploy_code(reload=True):
     docroot = get_conf(env, 'document-root')
     project_path = get_project_path(env)
 
-    if not files.exists(docroot):
+    if not files.exists(docroot, use_sudo=True):
         sudo('mkdir -p %s' % docroot)
 
-    if not files.exists(project_path):
+    if not files.exists(project_path, use_sudo=True):
         checkout_code(reload=False)
     else:
         update_code(reload=False)

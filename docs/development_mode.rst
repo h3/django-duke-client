@@ -14,7 +14,9 @@ environment which provide some shortcuts and utilities to make it easier to
 work with django.
 
 To activate the development environment on a project managed by duke, simply
-go in the project folder and type `duke dev`::
+go in the project folder and type `duke dev`:
+
+.. code-block:: bash
 
     user@host$: cd my-project-name/
     user@host$: duke dev

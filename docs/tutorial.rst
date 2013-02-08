@@ -41,7 +41,9 @@ When the project is built, it looks like this::
 Starting a project from scratch
 ===============================
 
-Creating a new project from scratch is easy as::
+Creating a new project from scratch is easy as:
+
+.. code-block:: bash
 
     user@host$ duke startproject my-project-name
     user@host$ cd my-project-name/
@@ -56,7 +58,9 @@ Initializing your project
 =========================
 
 Next we need to initialize duke on this project. Which can be done
-like so::
+like so:
+
+.. code-block:: bash
 
     user@host$ duke init myprojectname
     Installing bootstrap.py..
@@ -91,7 +95,9 @@ Once the initialization done, django duke automatically enters development
 mode (which can be done by typing `duke dev` in your project folder). 
 
 You know when you are in development mode when your shell prompt is prefixed
-with a project name like this::
+with a project name like this:
+
+.. code-block:: bash
 
     user@host|myprojectname:~/.../trunk/my-project-name$ ls
     bootstrap.py  buildout.cfg  dev.cfg  prod.cfg  README.rst  setup.py
@@ -107,7 +113,9 @@ Building your project
 =====================
 
 At this point you need to edit `buildout.cfg` to add the requirements you need 
-and buildout your project::
+and buildout your project:
+
+.. code-block:: bash
 
     user@host|myprojectname:~/.../trunk/my-project-name$ buildout
     Getting distribution for 'mr.developer'.
@@ -142,7 +150,9 @@ and buildout your project::
 
 
 Once buildout has been run for the first time, you'll see new files in your project
-folder::
+folder:
+
+.. code-block:: bash
 
     user@host|myprojectname|svn:~/.../trunk/my-project-name$ ls -a
     bootstrap.py  buildout.cfg  dev.cfg  .duke  myprojectname/
@@ -152,7 +162,9 @@ folder::
 Start working !
 ===============
 
-At this point you can start working on your django project::
+At this point you can start working on your django project:
+
+.. code-block:: bash
 
     user@host|myprojectname|svn:~/.../trunk/my-project-name$ cd projectname/
     user@host|myprojectname|svn:~/.../trunk/my-project-name$ django syncdb
@@ -175,7 +187,9 @@ Customization
 
 You can tweak your development environment quite alot. 
 
-To do so, simply type this command::
+To do so, simply type this command:
+
+.. code-block:: bash
 
     user@host$ duke customize
     Copying setup.py to ~/.duke/templates/
