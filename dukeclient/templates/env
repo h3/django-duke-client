@@ -120,12 +120,12 @@ alias validate="__django validate"
 alias safedumpdata="__django dumpdata --natural --exclude=contenttypes --exclude=auth.Permission --exclude=south.MigrationHistory"
 
 # South shortcuts
-alias convert_to_south="__django convert_to_south"
-alias datamigration="__django datamigration"
-alias graphmigrations="__django graphmigrations"
-alias migrate="__django migrate"
-alias migrationcheck="__django migrationcheck"
-alias schemamigration="__django schemamigration"
+alias convert_to_south="django convert_to_south"
+alias datamigration="django datamigration"
+alias graphmigrations="django graphmigrations"
+alias migrate="django migrate"
+alias migrationcheck="django migrationcheck"
+alias schemamigration="django schemamigration"
 
 # Duke commands 
 
