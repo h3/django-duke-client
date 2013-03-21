@@ -23,7 +23,7 @@ DEFAULT_RSYNC_EXCLUDE = (
 @task
 def media_diff(from_role=None):
     if from_role is None:
-        ls = 'ls -ABFgRhl1 --ignore=.svn'
+        ls = 'ls -ABFgRhl1 --ignore=.svn --ignore=*cache*'
         diff_1 = '/tmp/%s.%s' % (env.site['project'], get_role(env))
 
         sudo('%s %s > %s' % (ls, get_conf(env, 'media-root'), diff_1))
@@ -36,7 +36,7 @@ def media_diff(from_role=None):
 
         local('%s %s > %s' % (ls, media_root, diff_2))
         local('vim -fdRmMn %s %s' % (diff_1, diff_2))
-        local('rm -f %s %s' % diff_1, diff_2)
+        local('rm -f %s %s' % (diff_1, diff_2))
 
 
 @task

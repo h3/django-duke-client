@@ -31,12 +31,16 @@ class StartprojectCommand(BaseCommand):
        #            default=project_name.split('.')[0].replace('-','_'))
 
         project_name = args[0].replace('/', '')
-        project_path = os.path.join(self.base_path, project_name)
 
-        if os.path.exists(project_path):
-            self.error("Could not create project \"%s\", directory already exists." % project_name)
-        
-        os.makedirs(project_path)
+        if len(args) > 1 and args[1] == '.':
+            project_path = self.base_path
+        else:
+            project_path = os.path.join(self.base_path, project_name)
+
+            if os.path.exists(project_path):
+                self.error("Could not create project \"%s\", directory already exists." % project_name)
+            else: 
+                os.makedirs(project_path)
 
         create_from_template('setup.py', project_path, {
             'project_name': project_name,

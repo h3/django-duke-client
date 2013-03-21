@@ -22,6 +22,9 @@ class InitCommand(BaseCommand):
         ('-p', '--python', {
             'dest': 'python', 
             'help': 'Python version to use (defaults to system default). Ex: python2.7'}),
+        ('-q', '--quiet', {
+            'dest': 'quiet', 'default': False,
+            'help': 'No output'}),
     ]
 
     def call(self, *args, **options):
@@ -66,7 +69,8 @@ class InitCommand(BaseCommand):
        #self.install_file('python27.cfg', self.duke_path, context)
         self.install_file('dev.cfg', self.base_path, context)
 
-        self.info("Initializing zc.buildout")
+        if not options['quiet']:
+            self.info("Initializing zc.buildout")
         
         # Temporarely forcing bootstrap 1.7.0 since 2.0 seems to breaks everything it can break
         boot_opts = ' -v 1.7.0'
@@ -76,14 +80,16 @@ class InitCommand(BaseCommand):
         # than setuptools, it is disabled by default because I cannot get the
         # project sandboxing to work properly with it .. bummer.
         if options['distribute']:
-            self.info("Using distribute")
+            if not options['quiet']:
+                self.info("Using distribute")
             opts = ' -d'
 
         status, output = self.local('%s bootstrap.py%s' % (python, boot_opts))
         self.debug(output)
 
         # Dev source
-        self.info("Installing dev hooks")
+        if not options['quiet']:
+            self.info("Installing dev hooks")
 
         if not os.path.exists(self.bin_path):
             os.makedirs(self.bin_path)
@@ -97,7 +103,8 @@ class InitCommand(BaseCommand):
         if not os.path.exists(os.path.join(self.duke_path, 'project_conf.yml')):
             self.install_file('project_conf.yml', self.duke_path, context)
 
-        self.info("\nDone! Now type \"buildout\" to build the environment and install requirements.\n")
+        if not options['quiet']:
+            self.info("\nDone! Now type \"buildout\" to build the environment and install requirements.\n")
 
         if not options['nodev']:
             DevCommand().call()
