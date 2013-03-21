@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, datetime
 
 from fabric.api import *
 from fabric.contrib import files
@@ -37,6 +37,21 @@ def media_diff(from_role=None):
         local('%s %s > %s' % (ls, media_root, diff_2))
         local('vim -fdRmMn %s %s' % (diff_1, diff_2))
         local('rm -f %s %s' % (diff_1, diff_2))
+
+
+@task
+def media_download(*dest_roles):
+    src_role = get_role(env)
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+    tarfile = '%s-media-%s.tar.gz' % (env.site['project'], timestamp)
+    tmpdest = os.path.join('/tmp', tarfile)
+    media_root   = get_conf(env, 'media-root')
+    media_parent = os.path.abspath(os.path.join(media_root, '../'))
+    media_folder = os.path.basename(os.path.abspath(media_root))
+
+    sudo('tar -czf %s -C %s %s --exclude-caches' % (tmpdest, media_parent, media_folder))
+    get(tmpdest, os.getcwd())
+    puts("Downloaded medias from %s" % src_role)
 
 
 @task
