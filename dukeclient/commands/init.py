@@ -72,8 +72,8 @@ class InitCommand(BaseCommand):
         if not options['quiet']:
             self.info("Initializing zc.buildout")
         
-        # Temporarely forcing bootstrap 1.7.0 since 2.0 seems to breaks everything it can break
-        boot_opts = ' -v 1.7.0'
+        # Temporarely forcing bootstrap 1.7.1 since 2.0 seems to breaks everything it can break
+        boot_opts = ' -v 1.7.1'
         python = options['python'] or 'python' # and python !
 
         # Even though distribute is considered superior and better maintained
