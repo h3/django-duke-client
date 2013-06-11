@@ -44,4 +44,10 @@ $ duke init <project_name>")
             self.install_file('env', self.bin_path, context, quiet=True, overwrite=True)
             self.install_file('profile', self.bin_path, context, quiet=True, overwrite=True)
 
-            os.system('bash --rcfile .duke/bin/dev')
+            devsrc = os.path.join(context.get('duke_path'), 'bin/dev')
+            dukerc = os.path.join(context.get('base_path'), '.dukerc')
+            
+            if os.path.exists(dukerc):
+                os.system('bash --rcfile %s' % dukerc)
+            else:
+                os.system('bash --rcfile %s' % devsrc)
