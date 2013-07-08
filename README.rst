@@ -55,6 +55,9 @@ Create and build a project:
     user@host$ duke init testproject
     user@host|testproject:~/.../trunk/test-project$ buildout
 
+Note:
+ "test-project" must not contain any ".".
+
 Start working:
 
 .. code-block:: bash
