@@ -11,6 +11,15 @@ a priority.
 
 Official documentation: http://readthedocs.org/docs/django-duke-client/en/latest/
 
+Requirement
+===========
+
+.. code-block:: bash
+
+    $ sudo apt-get install python-yaml
+
+
+
 Installation
 ============
 
