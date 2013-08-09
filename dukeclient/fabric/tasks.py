@@ -225,6 +225,7 @@ def apache(cmd):
     """
     Manage the apache service. For example, `fab apache:restart`.
     """
+    error = False
     dispatch_event(env, 'on-apache-reload')
     if files.exists('/usr/sbin/invoke-rc.d') and files.exists('/etc/init.d/apache2'):
         sudo('invoke-rc.d apache2 %s' % cmd)
@@ -235,9 +236,11 @@ def apache(cmd):
             cmd = 'graceful'
         sudo('/etc/init.d/httpd %s' % cmd)
     else:
+        error = True
         puts("WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
-        sys.exit(1)
-    dispatch_event(env, 'on-apache-reload-done')
+
+    if error == False:
+        dispatch_event(env, 'on-apache-reload-done')
 
 
 @task
