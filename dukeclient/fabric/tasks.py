@@ -29,7 +29,7 @@ def media_diff(from_role=None):
         sudo('%s %s > %s' % (ls, get_conf(env, 'media-root'), diff_1))
         get(diff_1, '/tmp/')
         sudo('rm -f %s' % diff_1)
-        
+
         # TODO: determine actual MEDIA_ROOT using settings
         media_root = '%s/media/' % env.site['project']
         diff_2 = '/tmp/%s' % env.site['project']
@@ -94,7 +94,7 @@ def media_sync(*dest_roles):
         media_folder = os.path.basename(os.path.abspath(media_root))
 
         sudo('tar -czf %s -C %s %s' % (tmpdest, media_parent, media_folder))
-    
+
         for dest_role in dest_roles:
             if dest_role == 'local':
                 get(tmpdest, tmpdir)
@@ -130,14 +130,14 @@ def setup_permissions():
     elif user:
         sudo("chown -R %s %s" % (user, docroot))
 
-    static_root = get_conf(env, 'static-root') 
+    static_root = get_conf(env, 'static-root')
     if static_root and files.exists(static_root):
         sudo("chmod -R 777 %s" % static_root)
 
-    media_root = get_conf(env, 'media-root') 
+    media_root = get_conf(env, 'media-root')
     if media_root and files.exists(media_root):
         sudo("chmod -R 777 %s" % media_root)
-    
+
     dispatch_event(env, 'on-setup-permissions-done')
 
 
@@ -226,10 +226,13 @@ def apache(cmd):
     Manage the apache service. For example, `fab apache:restart`.
     """
     dispatch_event(env, 'on-apache-reload')
-    if files.exists('/usr/sbin/invoke-rc.d'):
+    if files.exists('/usr/sbin/invoke-rc.d') and files.exists('/etc/init.d/apache2'):
         sudo('invoke-rc.d apache2 %s' % cmd)
+    elif files.exists('/etc/init.d/apache2'):
+        sudo('/etc/init.d/apache2 %s' % cmd)
     elif files.exists('/etc/init.d/httpd'):
-        if cmd == 'reload': cmd = 'graceful'
+        if cmd == 'reload':
+            cmd = 'graceful'
         sudo('/etc/init.d/httpd %s' % cmd)
     else:
         puts("WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
@@ -283,8 +286,8 @@ def deploy(reload=True):
 @task
 def full_deploy(no_input=False):
     """
-    Full deploy: 
-    
+    Full deploy:
+
      - setup virtualenv (?)
      - update code
      - run buildout
@@ -328,7 +331,7 @@ def setup_vhost(reload=True):
     dispatch_event(env, 'on-setup-vhost')
     vhost = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
     if os.path.exists(vhost):
-        files.upload_template(vhost, get_conf(env, 'vhost-conf'), 
+        files.upload_template(vhost, get_conf(env, 'vhost-conf'),
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
             apache('reload')
@@ -344,9 +347,9 @@ def setup_settings(reload=True):
     dispatch_event(env, 'on-setup-settings')
     settings_file = os.path.join(os.getcwd(), 'deploy/%s_settings.py' % env.name)
     if os.path.exists(settings_file):
-        dest_path = os.path.join(get_conf(env, 'document-root'), env.site['package'], 
+        dest_path = os.path.join(get_conf(env, 'document-root'), env.site['package'],
                         env.site['project'], 'local_settings.py')
-        files.upload_template(settings_file, dest_path, 
+        files.upload_template(settings_file, dest_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
             apache('reload')
