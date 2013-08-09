@@ -281,6 +281,7 @@ def deploy(reload=True):
     dispatch_event(env, 'on-deploy')
     deploy_code(reload=reload)
     setup_settings(reload=False)
+    setup_vhost(reload=False)
     collectstatic()
     setup_permissions()
     dispatch_event(env, 'on-deploy-done')
