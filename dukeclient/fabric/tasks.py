@@ -290,9 +290,13 @@ def deploy(reload=True):
     """
     require_root_cwd()
     dispatch_event(env, 'on-deploy')
-    deploy_code(reload=reload)
+    deploy_code(reload=False)
     setup_settings(reload=False)
     setup_vhost(reload=False)
+    setup_nginx(reload=False)
+    setup_uwsgi(reload=reload)
+    if reload:
+        reload_webserver()
     collectstatic()
     setup_permissions()
     dispatch_event(env, 'on-deploy-done')
@@ -384,10 +388,11 @@ def setup_nginx(reload=True):
 
     """
     require_root_cwd()
-    dispatch_event(env, 'on-setup-nginx')
-    vhost = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
-    if os.path.exists(vhost):
-        files.upload_template(vhost, get_conf(env, 'nginx-conf'),
+    nginx_conf = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
+    if os.path.exists(nginx_conf):
+        dispatch_event(env, 'on-setup-nginx')
+        nginx_path = get_conf(env, 'nginx-conf', '/etc/nginx/site-enabled/%s.nginx' % env.name)
+        files.upload_template(vhost, nginx_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
             reload_webserver()
