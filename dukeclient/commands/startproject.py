@@ -13,7 +13,7 @@ class StartprojectCommand(BaseCommand):
 
     options   = [
         ('-b', '--base-path', {
-            'dest': 'base_path', 
+            'dest': 'base_path',
             'help': 'Directory where the project should be created.'}),
     ]
 
@@ -27,7 +27,7 @@ class StartprojectCommand(BaseCommand):
         if os.environ.get('DUKE_ENV') is not None:
             self.error("you cannot start a duke project from within a duke instance.\n")
        #else:
-       #    django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$', 
+       #    django_project_name = prompt('Django project name:', validate=r'^[_a-zA-Z]\w*$',
        #            default=project_name.split('.')[0].replace('-','_'))
 
         project_name = args[0].replace('/', '')
@@ -39,7 +39,7 @@ class StartprojectCommand(BaseCommand):
 
             if os.path.exists(project_path):
                 self.error("Could not create project \"%s\", directory already exists." % project_name)
-            else: 
+            else:
                 os.makedirs(project_path)
 
         create_from_template('setup.py', project_path, {

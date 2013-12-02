@@ -1,4 +1,4 @@
-import os, sys, datetime
+import os, sys, datetime, glob
 
 from fabric.api import *
 from fabric.contrib import files
@@ -217,30 +217,41 @@ def deploy_code(reload=True):
     else:
         update_code(reload=False)
     if reload:
-        apache('reload')
-
+        reload_webserver()
 
 @task
-def apache(cmd):
+def reload_webserver(server=None):
     """
-    Manage the apache service. For example, `fab apache:restart`.
+    Reloads the webserver. For example, `fab apache:nginx`.
     """
-    error = False
-    dispatch_event(env, 'on-apache-reload')
-    if files.exists('/usr/sbin/invoke-rc.d') and files.exists('/etc/init.d/apache2'):
-        sudo('invoke-rc.d apache2 %s' % cmd)
-    elif files.exists('/etc/init.d/apache2'):
-        sudo('/etc/init.d/apache2 %s' % cmd)
-    elif files.exists('/etc/init.d/httpd'):
-        if cmd == 'reload':
-            cmd = 'graceful'
-        sudo('/etc/init.d/httpd %s' % cmd)
-    else:
-        error = True
-        puts("WARNING: UNKNOWN HTTP SERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
+    reloaded = False
+    nginx_conf = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
+    if server == 'nginx' or os.path.exists(nginx_conf):
+        dispatch_event(env, 'on-nginx-reload')
+        sudo('service nginx reload')
+        dispatch_event(env, 'on-nginx-reload-done')
+        reloaded = True
 
-    if error == False:
-        dispatch_event(env, 'on-apache-reload-done')
+    vhost_conf = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
+    if server == 'apache' or os.path.exists(vhost_conf):
+        dispatch_event(env, 'on-apache-reload')
+        if files.example('/usr/bin/service'):
+            sudo('service apache reload')
+        elif files.exists('/usr/sbin/invoke-rc.d') and files.exists('/etc/init.d/apache2'):
+            sudo('invoke-rc.d apache2 reload')
+        elif files.exists('/etc/init.d/apache2'):
+            sudo('/etc/init.d/apache2 reload')
+        elif files.exists('/etc/init.d/httpd'):
+            sudo('/etc/init.d/httpd graceful')
+        else:
+            error = True
+
+        if error == False:
+            reloaded = True
+            dispatch_event(env, 'on-apache-reload-done')
+
+    if reloaded == True:
+        puts("WARNING: UNKNOWN WEBSERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
 
 
 @task
@@ -267,7 +278,7 @@ def buildout(reload=True):
         sudo('%s -vvv -c %s' % (buildout_bin, cfg))
 
     if reload:
-        apache('reload')
+        reload_webserver()
 
     dispatch_event(env, 'on-buildout-done')
 
@@ -321,15 +332,37 @@ def full_deploy(no_input=False):
    #   syncdb()
     setup_vhost(reload=False)
     collectstatic()
-    apache('reload')
+    reload_webserver()
     setup_permissions()
     dispatch_event(env, 'on-deploy-done')
 
 
 @task
+def setup_uwsgi(reload=True):
+    """
+    Setup uwsgi
+    """
+    require_root_cwd()
+    uwsgi_conf = os.path.join(os.getcwd(), 'deploy/%s.%s.uwsgi' % (env.name, env.site['domain']))
+    if os.path.exists(uwsgi_conf):
+        dispatch_event(env, 'on-setup-uwsgi')
+        uwsgi_path = get_conf(env, 'uwsgi-conf', '/etc/uwsgi/apps-enabled/%s.%s.ini' % (env.name, env.site['domain']))
+
+        if os.path.exists(uwsgi_path):
+            files.upload_template(uwsgi_conf, uwsgi_path,
+                    context=get_context(env), use_sudo=True, backup=False)
+            if reload:
+                sudo('touch %s' % uwsgi_path)
+        dispatch_event(env, 'on-setup-uwsgi-done')
+
+
+@task
 def setup_vhost(reload=True):
     """
-    Setup virtual host
+    Setup apache virtual host
+
+     - deploy/$env.name.vhost
+
     """
     require_root_cwd()
     dispatch_event(env, 'on-setup-vhost')
@@ -338,8 +371,27 @@ def setup_vhost(reload=True):
         files.upload_template(vhost, get_conf(env, 'vhost-conf'),
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
-            apache('reload')
+            reload_webserver()
     dispatch_event(env, 'on-setup-vhost-done')
+
+
+@task
+def setup_nginx(reload=True):
+    """
+    Setup nginx site config
+
+     - deploy/$env.name.nginx
+
+    """
+    require_root_cwd()
+    dispatch_event(env, 'on-setup-nginx')
+    vhost = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
+    if os.path.exists(vhost):
+        files.upload_template(vhost, get_conf(env, 'nginx-conf'),
+                context=get_context(env), use_sudo=True, backup=False)
+        if reload:
+            reload_webserver()
+    dispatch_event(env, 'on-setup-nginx-done')
 
 
 @task
@@ -356,7 +408,7 @@ def setup_settings(reload=True):
         files.upload_template(settings_file, dest_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
-            apache('reload')
+            reload_webserver()
     dispatch_event(env, 'on-setup-settings-done')
 
 

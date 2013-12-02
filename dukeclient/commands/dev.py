@@ -46,7 +46,7 @@ $ duke init <project_name>")
 
             devsrc = os.path.join(context.get('duke_path'), 'bin/dev')
             dukerc = os.path.join(context.get('base_path'), '.dukerc')
-            
+
             if os.path.exists(dukerc):
                 os.system('bash --rcfile %s' % dukerc)
             else:
