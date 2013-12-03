@@ -323,10 +323,10 @@ def full_deploy(no_input=False):
 
     vhost_file = '%s.vhost' % env.name
     vhost = os.path.join(os.getcwd(), 'deploy/', vhost_file)
-    if no_input or not os.path.exists(vhost) \
-        and console.confirm("Warning vhost file not found: deploy/%s, abort ?" % vhost_file, default=True):
-        dispatch_event(env, 'on-deploy-aborted')
-        sys.exit(0)
+   #if no_input or not os.path.exists(vhost) \
+   #    and console.confirm("Warning vhost file not found: deploy/%s, abort ?" % vhost_file, default=True):
+   #    dispatch_event(env, 'on-deploy-aborted')
+   #    sys.exit(0)
 
     if get_conf(env, 'virtualenv'):
         setup_virtualenv()
