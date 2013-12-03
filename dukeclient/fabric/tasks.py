@@ -347,16 +347,14 @@ def setup_uwsgi(reload=True):
     Setup uwsgi
     """
     require_root_cwd()
-    uwsgi_conf = os.path.join(os.getcwd(), 'deploy/%s.%s.uwsgi' % (env.name, env.site['domain']))
+    uwsgi_conf = os.path.join(os.getcwd(), 'deploy/%s.uwsgi' % env.name)
     if os.path.exists(uwsgi_conf):
         dispatch_event(env, 'on-setup-uwsgi')
-        uwsgi_path = get_conf(env, 'uwsgi-conf', '/etc/uwsgi/apps-enabled/%s.%s.ini' % (env.name, env.site['domain']))
-
-        if os.path.exists(uwsgi_path):
-            files.upload_template(uwsgi_conf, uwsgi_path,
-                    context=get_context(env), use_sudo=True, backup=False)
-            if reload:
-                sudo('touch %s' % uwsgi_path)
+        uwsgi_path = get_conf(env, 'uwsgi-conf')
+        files.upload_template(uwsgi_conf, uwsgi_path,
+                context=get_context(env), use_sudo=True, backup=False)
+        if reload:
+            sudo('touch %s' % uwsgi_path)
         dispatch_event(env, 'on-setup-uwsgi-done')
 
 
@@ -392,7 +390,7 @@ def setup_nginx(reload=True):
     if os.path.exists(nginx_conf):
         dispatch_event(env, 'on-setup-nginx')
         nginx_path = get_conf(env, 'nginx-conf', '/etc/nginx/site-enabled/%s.nginx' % env.name)
-        files.upload_template(vhost, nginx_path,
+        files.upload_template(nginx_conf, nginx_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
             reload_webserver()

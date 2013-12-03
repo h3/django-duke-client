@@ -31,21 +31,25 @@ def get_conf(env, key, default=None):
         env.hosts = env.roleconfs[env.name]['hosts']
         env.conf  = env.roleconfs[env.name]
 
+    context = {'env_name': env.name}
+    context.update(env.conf)
+    context.update(env.site)
+
     try:
-        v = env.conf[key]
-    except:
-        return default
+        v = context[key]
+    except KeyError:
+        v = default
+
 
     if isinstance(v, list):
         o = []
         for r in v:
-            o.append(r % env.site)
+            o.append(r % context)
         return o
+    elif isinstance(v, str):
+        return v % context
     else:
-        if isinstance(v, str):
-            return v % env.site
-        else:
-            return v
+        return v
 
 
 def get_project_path(env):
@@ -54,13 +58,9 @@ def get_project_path(env):
 
 
 def dispatch_event(env, name):
-    ctx = {
-        'package': env.site['package'],
-        'project': env.site['project'],
-        'domain':  env.site['domain'],
-    }
     ev = get_conf(env, name)
     if ev:
+        ctx = get_context(env)
         for cmd in ev:
             sudo(cmd % ctx)
 
@@ -105,25 +105,44 @@ def is_git(env):
 
 
 def get_context(env, extra_context=None):
+    slug = u'%s.%s' % (env.name, env.site['domain'])
     ctx = {
-        # Site global conf
+        # Global conf
         'domain': env.site['domain'],
         'package': env.site['package'],
         'project': env.site['project'],
         'repos': env.site['repos'],
-        # Stage specific conf
-        'hosts': get_conf(env, 'hosts'),
-        'document-root': get_conf(env, 'document-root'),
-        'media-root': get_conf(env, 'media-root'),
-        'static-root': get_conf(env, 'static-root'),
-        'vhost-conf': get_conf(env, 'vhost-conf'),
-        'virtualenv': get_conf(env, 'virtualenv', False),
         'user': get_conf(env, 'user', 'www-data'),
         'group': get_conf(env, 'group', 'www-data'),
+        'hosts': get_conf(env, 'hosts'),
+        'document-root': get_conf(env, 'document-root'),
+        # Apache specific
+        'vhost-conf': get_conf(env, 'vhost-conf'),
+        'virtualenv': get_conf(env, 'virtualenv', False),
+        'virtualenv-root': get_conf(env, 'virtualenv-root'),
+        # Django specific
+        'media-root': get_conf(env, 'media-root'),
+        'static-root': get_conf(env, 'static-root'),
+        # Apache+wsgi
         'wsgi-processes': get_conf(env, 'wsgi-processes', 1),
         'wsgi-threads': get_conf(env, 'wsgi-threads', 5),
         'wsgi-user': get_conf(env, 'wsgi-user', get_conf(env, 'user', 'www-data')),
         'wsgi-group': get_conf(env, 'wsgi-group', get_conf(env, 'group', 'www-data')),
+        # Uwsgi
+        'uwsgi-conf': get_conf(env, 'uwsgi-conf', '/etc/uwsgi/apps-enabled/%s.ini' % slug),
+        'uwsgi-file': get_conf(env, 'uwsgi-file', os.path.join(get_conf(env, 'package'), get_conf(env, 'project'), 'app.wsgi')),
+        'uwsgi-pass': get_conf(env, 'uwsgi-pass', '127.0.0.1:3030'),
+        'uwsgi-master': get_conf(env, 'uwsgi-master', 'true'),
+        'uwsgi-processes': get_conf(env, 'uwsgi-processes', 4),
+        'uwsgi-fastrouter-cheap': get_conf(env, 'uwsgi-fastrouter-cheap', 'true'),
+        'uwsgi-fastrouter-subscription-server': get_conf(env, 'uwsgi-fastrouter-subscription-server', '127.0.0.1:4040'),
+        'uwsgi-req-logger': get_conf(env, 'uwsgi-req-logger', 'file:/var/log/uwsgi/app/%s-access' % slug),
+        'uwsgi-logger': get_conf(env, 'uwsgi-logger', 'file:/var/log/uwsgi/app/%s-error' % slug),
+        # nginx
+        'nginx-conf': get_conf(env, 'nginx-conf', '/etc/nginx/site-enabled/%s' % slug),
+        'nginx-listen': get_conf(env, 'nginx-listen', '0.0.0.0:80'),
+        'nginx-server-name': get_conf(env, 'nginx-server-name', get_conf(env, 'domain')),
+        'nginx-client-max-body-size': get_conf(env, 'nginx-client-max-body-size', '10M'),
     }
     if extra_context is not None:
         ctx.update(extra_context)
