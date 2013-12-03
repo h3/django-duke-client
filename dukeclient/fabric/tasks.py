@@ -7,113 +7,6 @@ from fabric.utils import abort, warn
 
 from dukeclient.fabric.utils import *
 
-DEFAULT_RSYNC_EXCLUDE = (
-    '.DS_Store',
-    '.git',
-    '.hg',
-    '*.pyc',
-    'Thumbs.db',
-    '.svn',
-    '.sass-cache',
-    '~*',
-)
-
-# TODO: use decorators for events
-
-@task
-def media_diff(from_role=None):
-    if from_role is None:
-        ls = 'ls -ABFgRhl1 --ignore=.svn --ignore=*cache*'
-        diff_1 = '/tmp/%s.%s' % (env.site['project'], get_role(env))
-
-        sudo('%s %s > %s' % (ls, get_conf(env, 'media-root'), diff_1))
-        get(diff_1, '/tmp/')
-        sudo('rm -f %s' % diff_1)
-
-        # TODO: determine actual MEDIA_ROOT using settings
-        media_root = '%s/media/' % env.site['project']
-        diff_2 = '/tmp/%s' % env.site['project']
-
-        local('%s %s > %s' % (ls, media_root, diff_2))
-        local('vim -fdRmMn %s %s' % (diff_1, diff_2))
-        local('rm -f %s %s' % (diff_1, diff_2))
-
-
-@task
-def media_download(*dest_roles):
-    src_role = get_role(env)
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
-    tarfile = '%s-media-%s.tar.gz' % (env.site['project'], timestamp)
-    tmpdest = os.path.join('/tmp', tarfile)
-    media_root   = get_conf(env, 'media-root')
-    media_parent = os.path.abspath(os.path.join(media_root, '../'))
-    media_folder = os.path.basename(os.path.abspath(media_root))
-
-    sudo('tar -czf %s -C %s %s --exclude-caches' % (tmpdest, media_parent, media_folder))
-    get(tmpdest, os.getcwd())
-    puts("Downloaded medias from %s" % src_role)
-
-
-@task
-#@event(env, 'on-sync-media')
-def media_sync(*dest_roles):
-    """
-    Synchronize media folder accross stages
-
-    $ fab -R demo media_sync
-    sync demo -> local, prod
-
-    $ fab -R demo media_sync:local
-    sync demo -> local
-
-    $ fab -R demo media_sync:prod
-    sync demo -> prod
-
-    $ fab -R prod media_sync:demo
-    sync prod -> demo
-
-    """
-    dispatch_event(env, 'on-sync-media')
-
-    src_role = get_role(env)
-
-    # If no dest_roles are specified, all available roles are used
-    # except the currently active role
-    if len(dest_roles) == 0:
-        dest_roles = [x for x in get_roles(env) if x != src_role]
-        dest_roles.append('local')
-
-    if console.confirm("Media sync %s -> %s" % (src_role, ", ".join(dest_roles)), default=False):
-
-        tarfile = '%s.tar.gz' % env.site['project']
-        tmpdir  = '/tmp'
-        tmpdest = os.path.join(tmpdir, tarfile)
-
-        media_root   = get_conf(env, 'media-root')
-        media_parent = os.path.abspath(os.path.join(media_root, '../'))
-        media_folder = os.path.basename(os.path.abspath(media_root))
-
-        sudo('tar -czf %s -C %s %s' % (tmpdest, media_parent, media_folder))
-
-        for dest_role in dest_roles:
-            if dest_role == 'local':
-                get(tmpdest, tmpdir)
-                local('cd %s && tar -xvzf %s; cd -' % (tmpdir, tmpdest))
-                local('rsync --omit-dir-times --exclude ".svn" --exclude ".sass-cache" -pthrvz %s %s' % (\
-                        os.path.join(tmpdir, media_folder), os.path.join(os.getcwd(), env.site['project'])))
-            else:
-                "Sync media to %s (NOT IMPLEMENTED)" % dest_role
-
-    else:
-        puts("Nothing changed.")
-
-       #if console.confirm('Delete out of sync files ? (WARNING: permanent !)', default=False):
-       #    delete = True
-       #else:
-       #    delete = False
-
-    dispatch_event(env, 'on-sync-media-done')
-
 
 @task
 def setup_permissions():
@@ -165,6 +58,7 @@ def setup_virtualenv():
         sudo("chown -R %s %s" % (user, venv_root))
     dispatch_event(env, 'on-setup-virtualenv-done')
 
+
 @task
 def update_code(reload=True):
     """
@@ -185,6 +79,7 @@ def update_code(reload=True):
             sudo('git rebase %s' % branch)
             sudo('git pull')
 
+
 @task
 def checkout_code(reload=True):
     """
@@ -199,6 +94,7 @@ def checkout_code(reload=True):
         branch = get_branch(env)
         if branch:
             sudo('git checkout %s' % branch)
+
 
 @task
 def deploy_code(reload=True):
@@ -218,6 +114,7 @@ def deploy_code(reload=True):
         update_code(reload=False)
     if reload:
         reload_webserver()
+
 
 @task
 def reload_webserver(server=None):
@@ -296,10 +193,10 @@ def deploy(reload=True):
     setup_vhost(reload=False)
     setup_nginx(reload=False)
     setup_uwsgi(reload=reload)
-    if reload:
-        reload_webserver()
     collectstatic()
     setup_permissions()
+    if reload:
+        reload_webserver()
     dispatch_event(env, 'on-deploy-done')
 
 
@@ -323,10 +220,6 @@ def full_deploy(no_input=False):
 
     vhost_file = '%s.vhost' % env.name
     vhost = os.path.join(os.getcwd(), 'deploy/', vhost_file)
-   #if no_input or not os.path.exists(vhost) \
-   #    and console.confirm("Warning vhost file not found: deploy/%s, abort ?" % vhost_file, default=True):
-   #    dispatch_event(env, 'on-deploy-aborted')
-   #    sys.exit(0)
 
     if get_conf(env, 'virtualenv'):
         setup_virtualenv()
@@ -336,9 +229,11 @@ def full_deploy(no_input=False):
    #if no_input or console.confirm("Run syncdb ?", default=False):
    #   syncdb()
     setup_vhost(reload=False)
+    setup_nginx(reload=False)
+    setup_uwsgi(reload=True)
     collectstatic()
-    reload_webserver()
     setup_permissions()
+    reload_webserver()
     dispatch_event(env, 'on-deploy-done')
 
 
@@ -369,9 +264,9 @@ def setup_vhost(reload=True):
     """
     require_root_cwd()
     dispatch_event(env, 'on-setup-vhost')
-    vhost = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
-    if os.path.exists(vhost):
-        files.upload_template(vhost, get_conf(env, 'vhost-conf'),
+    vhost_conf = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
+    if os.path.exists(vhost_conf):
+        files.upload_template(vhost_conf, get_conf(env, 'vhost-conf'),
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
             reload_webserver()
@@ -390,7 +285,7 @@ def setup_nginx(reload=True):
     nginx_conf = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
     if os.path.exists(nginx_conf):
         dispatch_event(env, 'on-setup-nginx')
-        nginx_path = get_conf(env, 'nginx-conf', '/etc/nginx/site-enabled/%s.nginx' % env.name)
+        nginx_path = get_conf(env, 'nginx-conf')
         files.upload_template(nginx_conf, nginx_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
@@ -455,60 +350,102 @@ def django(cmd):
     dispatch_event(env, 'on-django-' + cmd + '-done')
 
 
-#@task
-#def copy_db():
-#    """
-#    Copy the production DB locally for testing.
-#    """
-#    local('ssh %s pg_dump -U djangoproject -c djangoproject | psql djangoproject' % env.hosts[0])
+"""
 
-#@task
-#def on(name):
-#    """
-#    Set the stage to work on, ex:
-#
-#    $ fab on:demo deploy
-#
-#    """
-#    if not env.site.get(name, None):
-#        raise Exception("Error: unknown stage %s" % name)
-#    else:
-#        env.hosts = env.site[name]['hosts']
-#        env.conf  = env.site[name]
-#        env.name  = name
+EXPERIMENTAL
 
-#def southify(app):
-#    """
-#Southify an app remotely.
-#
-#This fakes the initial migration and then migrates forward. Use it the first
-#time you do a deploy on app that's been newly southified.
-#"""
-#    managepy('migrate %s 0001 --fake' % app)
-#    managepy('migrate %s' % app)
-
-#def copy_docs():
-#    """
-#Copy build docs locally for testing.
-#"""
-#    local('rsync -av --delete --exclude=.svn %s:%s/ /tmp/djangodocs/' %
-#            (env.hosts[0], env.deploy_base.child('docbuilds')))
+"""
 
 
-#def update_docs():
-#    """
-#Force an update of the docs on the server.
-#"""
-#    managepy('update_docs', site='docs')
+@task
+def media_diff(from_role=None):
+    if from_role is None:
+        ls = 'ls -ABFgRhl1 --ignore=.svn --ignore=*cache*'
+        diff_1 = '/tmp/%s.%s' % (env.site['project'], get_role(env))
+
+        sudo('%s %s > %s' % (ls, get_conf(env, 'media-root'), diff_1))
+        get(diff_1, '/tmp/')
+        sudo('rm -f %s' % diff_1)
+
+        # TODO: determine actual MEDIA_ROOT using settings
+        media_root = '%s/media/' % env.site['project']
+        diff_2 = '/tmp/%s' % env.site['project']
+
+        local('%s %s > %s' % (ls, media_root, diff_2))
+        local('vim -fdRmMn %s %s' % (diff_1, diff_2))
+        local('rm -f %s %s' % (diff_1, diff_2))
 
 
-#def memcached(cmd):
-#    """
-#Manage the memcached service. For example, `fab memcached:--h`.
-#"""
-#    sudo('invoke-rc.d memcached %s' % cmd)
+@task
+def media_download(*dest_roles):
+    src_role = get_role(env)
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+    tarfile = '%s-media-%s.tar.gz' % (env.site['project'], timestamp)
+    tmpdest = os.path.join('/tmp', tarfile)
+    media_root   = get_conf(env, 'media-root')
+    media_parent = os.path.abspath(os.path.join(media_root, '../'))
+    media_folder = os.path.basename(os.path.abspath(media_root))
+
+    sudo('tar -czf %s -C %s %s --exclude-caches' % (tmpdest, media_parent, media_folder))
+    get(tmpdest, os.getcwd())
+    puts("Downloaded medias from %s" % src_role)
 
 
-#def get_kernel_name():
-#    run('uname -s')
+@task
+def media_sync(*dest_roles):
+    """
+    Synchronize media folder accross stages
 
+    $ fab -R demo media_sync
+    sync demo -> local, prod
+
+    $ fab -R demo media_sync:local
+    sync demo -> local
+
+    $ fab -R demo media_sync:prod
+    sync demo -> prod
+
+    $ fab -R prod media_sync:demo
+    sync prod -> demo
+
+    """
+    dispatch_event(env, 'on-sync-media')
+
+    src_role = get_role(env)
+
+    # If no dest_roles are specified, all available roles are used
+    # except the currently active role
+    if len(dest_roles) == 0:
+        dest_roles = [x for x in get_roles(env) if x != src_role]
+        dest_roles.append('local')
+
+    if console.confirm("Media sync %s -> %s" % (src_role, ", ".join(dest_roles)), default=False):
+
+        tarfile = '%s.tar.gz' % env.site['project']
+        tmpdir  = '/tmp'
+        tmpdest = os.path.join(tmpdir, tarfile)
+
+        media_root   = get_conf(env, 'media-root')
+        media_parent = os.path.abspath(os.path.join(media_root, '../'))
+        media_folder = os.path.basename(os.path.abspath(media_root))
+
+        sudo('tar -czf %s -C %s %s' % (tmpdest, media_parent, media_folder))
+
+        for dest_role in dest_roles:
+            if dest_role == 'local':
+                get(tmpdest, tmpdir)
+                local('cd %s && tar -xvzf %s; cd -' % (tmpdir, tmpdest))
+                local('rsync --omit-dir-times --exclude ".svn" --exclude ".sass-cache" -pthrvz %s %s' % (\
+                        os.path.join(tmpdir, media_folder), os.path.join(os.getcwd(), env.site['project'])))
+            else:
+                "Sync media to %s (NOT IMPLEMENTED)" % dest_role
+
+    else:
+        puts("Nothing changed.")
+
+       #if console.confirm('Delete out of sync files ? (WARNING: permanent !)', default=False):
+       #    delete = True
+       #else:
+       #    delete = False
+
+    dispatch_event(env, 'on-sync-media-done')
