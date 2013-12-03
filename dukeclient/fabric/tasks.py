@@ -250,8 +250,9 @@ def reload_webserver(server=None):
             reloaded = True
             dispatch_event(env, 'on-apache-reload-done')
 
-    if reloaded == True:
+    if not reloaded:
         puts("WARNING: UNKNOWN WEBSERVER TYPE OR CONFIGURATION, CANNOT RELOAD")
+        dispatch_event(env, 'on-apache-reload-fail')
 
 
 @task

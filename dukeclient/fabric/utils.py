@@ -26,10 +26,9 @@ def get_roles(env):
 
 
 def get_conf(env, key, default=None):
-    if not hasattr(env, 'conf'):
-        env.name  = get_role(env)
-        env.hosts = env.roleconfs[env.name]['hosts']
-        env.conf  = env.roleconfs[env.name]
+    env.name  = get_role(env)
+    env.hosts = env.roleconfs[env.name]['hosts']
+    env.conf  = env.roleconfs[env.name]
 
     context = {'env_name': env.name}
     context.update(env.conf)
@@ -58,10 +57,10 @@ def get_project_path(env):
 
 
 def dispatch_event(env, name):
-    ev = get_conf(env, name)
-    if ev:
+    cmd_list = get_conf(env, name)
+    if cmd_list:
         ctx = get_context(env)
-        for cmd in ev:
+        for cmd in cmd_list:
             sudo(cmd % ctx)
 
 
@@ -130,7 +129,7 @@ def get_context(env, extra_context=None):
         'wsgi-group': get_conf(env, 'wsgi-group', get_conf(env, 'group', 'www-data')),
         # Uwsgi
         'uwsgi-conf': get_conf(env, 'uwsgi-conf', '/etc/uwsgi/apps-enabled/%s.ini' % slug),
-        'uwsgi-file': get_conf(env, 'uwsgi-file', os.path.join(get_conf(env, 'package'), get_conf(env, 'project'), 'app.wsgi')),
+        'uwsgi-file': get_conf(env, 'uwsgi-file', os.path.join(get_conf(env, 'document-root'), get_conf(env, 'package'), get_conf(env, 'project'), 'app.wsgi')),
         'uwsgi-pass': get_conf(env, 'uwsgi-pass', '127.0.0.1:3030'),
         'uwsgi-master': get_conf(env, 'uwsgi-master', 'true'),
         'uwsgi-processes': get_conf(env, 'uwsgi-processes', 4),
