@@ -28,8 +28,8 @@ When the project is built, it looks like this::
         + develop-eggs/
         + eggs/
         + parts/
+        + src/
       + projectname.egg-info
-      + src/
       + projectname/
         - settings.py
         - local_settings.py
