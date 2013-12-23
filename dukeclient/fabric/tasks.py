@@ -132,7 +132,7 @@ def reload_webserver(server=None):
     vhost_conf = os.path.join(os.getcwd(), 'deploy/%s.vhost' % env.name)
     if server == 'apache' or os.path.exists(vhost_conf):
         dispatch_event(env, 'on-apache-reload')
-        if files.example('/usr/bin/service'):
+        if files.exists('/usr/bin/service'):
             sudo('service apache reload')
         elif files.exists('/usr/sbin/invoke-rc.d') and files.exists('/etc/init.d/apache2'):
             sudo('invoke-rc.d apache2 reload')
@@ -285,7 +285,7 @@ def setup_nginx(reload=True):
     nginx_conf = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
     if os.path.exists(nginx_conf):
         dispatch_event(env, 'on-setup-nginx')
-        nginx_path = get_conf(env, 'nginx-conf')
+        nginx_path = get_conf(env, 'nginx-conf', '/etc/uwsgi/apps-enabled/%s.ini' % (u'%s.%s' % (env.name, env.site['domain'])))
         files.upload_template(nginx_conf, nginx_path,
                 context=get_context(env), use_sudo=True, backup=False)
         if reload:
@@ -319,9 +319,9 @@ def collectstatic():
     require_root_cwd()
     dispatch_event(env, 'on-django-collectstatic')
     if get_conf(env, 'static-copy', False):
-        django('collectstatic --noinput')
+        django('collectstatic --noinput --verbosity=0')
     else:
-        django('collectstatic --noinput --link')
+        django('collectstatic --noinput --link --verbosity=0')
     dispatch_event(env, 'on-django-collectstatic-done')
 
 
