@@ -7,6 +7,9 @@ from fabric.utils import abort, warn
 
 from dukeclient.fabric.utils import *
 
+if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
+    env.use_ssh_config = True
+
 
 @task
 def setup_permissions():
@@ -122,6 +125,7 @@ def reload_webserver(server=None):
     Reloads the webserver. For example, `fab apache:nginx`.
     """
     reloaded = False
+    error = False
     nginx_conf = os.path.join(os.getcwd(), 'deploy/%s.nginx' % env.name)
     if server == 'nginx' or os.path.exists(nginx_conf):
         dispatch_event(env, 'on-nginx-reload')
