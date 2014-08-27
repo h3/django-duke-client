@@ -7,8 +7,8 @@ from fabric.utils import abort, warn
 
 from dukeclient.fabric.utils import *
 
-django.settings_module('clientsbp.settings')
-from django.conf import settings
+#django.settings_module('<PROJECT>.settings')
+#from django.conf import settings
 
 if env.ssh_config_path and os.path.isfile(os.path.expanduser(env.ssh_config_path)):
     env.use_ssh_config = True
@@ -53,7 +53,7 @@ def setup_virtualenv():
         sudo('mkdir -p %s' % venv_root)
 
     with cd(venv_root):
-        sudo("virtualenv --distribute --no-site-packages %s" % env.site['project'])
+        sudo("virtualenv --no-setuptools --no-site-packages %s" % env.site['project'])
 
     user  = get_conf(env, 'user')
     group = get_conf(env, 'group')
@@ -458,27 +458,27 @@ def media_sync(*dest_roles):
     dispatch_event(env, 'on-sync-media-done')
 
 
-@task
-def dumpdb(database='default', filename=None):
-    role = get_role(env)
-    if filename is None:
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
-        filename = u'dump-%s-%s-%s-%s.sql' % (env.site['project'], role, database, timestamp)
-
-    tmpdest = os.path.join('/tmp', filename)
-
-    run('mysqldump -u %s -p=%s %s > %s' % (
-        settings.DATABASE_USER,
-        settings.DATABASE_PASSWORD,
-        settings.DATABASE_NAME,
-        settings.DATABASE_HOST,
-        filename
-    ))
-    get(tmpdest, os.getcwd())
-    sudo('rm -f %s' % filename)
-    puts('Database dumped to %s' % filename)
-
-   #media_root   = get_conf(env, 'media-root')
-   #media_parent = os.path.abspath(os.path.join(media_root, '../'))
-   #media_folder = os.path.basename(os.path.abspath(media_root))
+#@task
+#def dumpdb(database='default', filename=None):
+#    role = get_role(env)
+#    if filename is None:
+#        timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
+#        filename = u'dump-%s-%s-%s-%s.sql' % (env.site['project'], role, database, timestamp)
+#
+#    tmpdest = os.path.join('/tmp', filename)
+#
+#    run('mysqldump -u %s -p=%s %s > %s' % (
+#        settings.DATABASE_USER,
+#        settings.DATABASE_PASSWORD,
+#        settings.DATABASE_NAME,
+#        settings.DATABASE_HOST,
+#        filename
+#    ))
+#    get(tmpdest, os.getcwd())
+#    sudo('rm -f %s' % filename)
+#    puts('Database dumped to %s' % filename)
+#
+#   #media_root   = get_conf(env, 'media-root')
+#   #media_parent = os.path.abspath(os.path.join(media_root, '../'))
+#   #media_folder = os.path.basename(os.path.abspath(media_root))
 
