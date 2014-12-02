@@ -56,7 +56,7 @@ Create and build a project:
     user@host|testproject:~/.../trunk/test-project$ buildout
 
 Note:
- "test-project" must not contain any ".".
+ "test-project" must not contain any dots "."
 
 Start working:
 
@@ -72,13 +72,3 @@ Tutorials
 * Official getting started tutorial_
 
 .. _tutorial: http://readthedocs.org/docs/django-duke-client/en/latest/tutorial.html
-
-Credits
-=======
-
-This project was created and is sponsored by:
-
-.. figure:: http://motion-m.ca/media/img/logo.png
-    :figwidth: image
-
-Motion Média (http://motion-m.ca)
