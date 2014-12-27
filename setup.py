@@ -28,7 +28,7 @@ setup(
     name='dukeclient',
     version=VERSION,
     author='Maxime Haineault',
-    author_email='max@motion-m.ca',
+    author_email='haineault@gmail.com',
     url='https://github.com/h3/django-duke-client',
     description = 'Duke client',
     long_description=__doc__,
